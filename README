@@ -1,0 +1,50 @@
+EasyMineLauncher
+----------------
+
+An easy and lightweight launcher for Minecraft which takes some of the hassle away.
+
+
+What it does:
+-------------
+
+ * Removes the need to login if you just want to play offline or on a private server
+ * There's no check for an update, you're directly catapulted to the main menu
+ * Additional parameters (f.e. start as maximized window or loading of certain versions from different directories)
+
+
+What it does not:
+-----------------
+
+ * Remove the need to authenticate at servers if they demand it
+ * Loading and applying updates
+ * Let's you play Minecraft for free, you'll still need to get an account and download the binaries
+
+
+How does it work?
+-----------------
+
+Basically this is just mimicking the behavior of the official launcher, except that it removes the online authentication and the update process. I figured most of that out with Trial & Error, that's why it's looking a little bit crude and has debugging output all over the place.
+
+
+What can I do with it?
+----------------------
+
+Awesome stuff?
+
+Here's the output from `--help`:
+
+    Usage: EasyMineLauncher.jar [OPTION]
+    Launch Minecraft directly.
+    
+      --help                   Prints this help.
+      --version                Prints the version.
+    
+      --jar-dir=DIRECTORY      Set the directory for the jar files.
+      --native-dir=DIRECTORY   Set the directory for the native files.
+      --username=USERNAME      Set the username to USERNAME.
+    
+      --title=TITLE            Replace the window title.
+      --height=HEIGHT          The width of the window.
+      --width=WIDTH            The height of the window.
+      --maximized              Maximize the window.
+
