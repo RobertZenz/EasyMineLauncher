@@ -48,3 +48,7 @@ Here's the output from `--help`:
       --width=WIDTH            The height of the window.
       --maximized              Maximize the window.
 
+Examples:
+
+    java --jar -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --username=MyAwesomeName
+    java --jar -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --native-dir=/home/user/updatedLWJGL/native/ --username=MyNotSoAwesomeName --maximized
