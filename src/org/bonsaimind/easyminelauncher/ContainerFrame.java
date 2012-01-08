@@ -75,10 +75,18 @@ public class ContainerFrame extends Frame {
 		setLayout(new BorderLayout());
 	}
 
+	/**
+	 * Get the ContainerApplet.
+	 * @return The ContainerApplet.
+	 */
 	public ContainerApplet getContainerApplet() {
 		return containerApplet;
 	}
 
+	/**
+	 * Set the ContainerApplet.
+	 * @param container The ContainerApplet.
+	 */
 	public void setContainerApplet(ContainerApplet container) {
 		this.containerApplet = container;
 		add("Center", container);

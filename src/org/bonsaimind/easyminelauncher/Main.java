@@ -88,9 +88,11 @@ public class Main {
 			width = 800;
 		}
 
+		// Create the applet.
 		ContainerApplet container = new ContainerApplet();
 		container.setUsername(username);
 
+		// Create and setup the frame.
 		ContainerFrame frame = new ContainerFrame(title);
 		frame.setSize(width, height);
 		if (maximized) {
@@ -99,6 +101,7 @@ public class Main {
 		frame.setContainerApplet(container);
 		frame.setVisible(true);
 
+		// Load
 		container.loadNatives(nativeDir);
 		if (container.loadJarsAndApplet(jarDir)) {
 			container.init();
