@@ -33,11 +33,13 @@ import java.io.File;
 public class Main {
 
 	private static String name = "EasyMineLauncher";
-	private static String version = "0.1";
+	private static String version = "0.2";
 
 	public static void main(String[] args) {
 		String jarDir = "";
 		String nativeDir = "";
+		String port = null;
+		String server = null;
 		String username = "Username";
 		String title = "Minecraft (EasyMineLauncher)";
 		boolean maximized = false;
@@ -50,6 +52,10 @@ public class Main {
 				jarDir = arg.substring(10);
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
+			} else if (arg.startsWith("--port=")) {
+				port = arg.substring(7);
+			} else if (arg.startsWith("--server=")) {
+				server = arg.substring(9);
 			} else if (arg.startsWith("--username=")) {
 				username = arg.substring(11);
 			} else if (arg.startsWith("--title=")) {
@@ -88,8 +94,14 @@ public class Main {
 			width = 800;
 		}
 
+		// Creation of the applet.
 		ContainerApplet container = new ContainerApplet();
+
+		// Pass arguments to the applet.
 		container.setUsername(username);
+		if (server != null) {
+			container.setServer(server, port != null ? port : "25565");
+		}
 
 		ContainerFrame frame = new ContainerFrame(title);
 		frame.setSize(width, height);

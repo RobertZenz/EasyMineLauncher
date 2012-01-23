@@ -172,6 +172,16 @@ public class ContainerApplet extends Applet
 	}
 
 	/**
+	 * Set the server to connect to.
+	 * @param server The server address (valid would be good).
+	 * @param port The port (also valid).
+	 */
+	public void setServer(String server, String port) {
+		parameters.put("server", server);
+		parameters.put("port", port);
+	}
+
+	/**
 	 * Set the username.
 	 *
 	 * @param username The username
