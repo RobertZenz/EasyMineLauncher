@@ -70,6 +70,9 @@ public class ContainerApplet extends Applet
 	public void appletResize(int width, int height) {
 	}
 
+	/**
+	 * Destroy the applet and the contained MinecraftApplet (if any).
+	 */
 	@Override
 	public void destroy() {
 		if (minecraftApplet != null) {
@@ -78,6 +81,10 @@ public class ContainerApplet extends Applet
 		super.destroy();
 	}
 
+	/**
+	 * Returns a stub-URL which points to localhost.
+	 * @return
+	 */
 	@Override
 	public URL getDocumentBase() {
 		try {
@@ -89,19 +96,33 @@ public class ContainerApplet extends Applet
 		return null;
 	}
 
+	/**
+	 * Returns parameters requested by the MinecraftApplet.
+	 * @param name
+	 * @return
+	 */
 	@Override
 	public String getParameter(String name) {
 		System.out.print("Parameter requested: " + name + "...");
 
+		// Check if we now about the parameters.
+		// If we don't, you most likely try to launch an update
+		// which is now requesting further parameters as I knew about.
 		if (parameters.containsKey(name)) {
 			System.out.println(parameters.get(name));
 			return parameters.get(name);
 		} else {
 			System.out.println("UNHANDLED!");
+			System.err.println("Parameter \"" + name + "\" is unhandled!");
 			return "";
 		}
 	}
 
+	/**
+	 * This returns always true. The MinecraftApplet will check
+	 * this state and exit if it does not return true.
+	 * @return Always true.
+	 */
 	@Override
 	public boolean isActive() {
 		// I'm not sure what this is, but it makes it work.
@@ -166,6 +187,9 @@ public class ContainerApplet extends Applet
 		System.setProperty("net.java.games.input.librarypath", nativeDir);
 	}
 
+	/**
+	 * Init the MinecraftApplet.
+	 */
 	@Override
 	public void init() {
 		minecraftApplet.init();
@@ -190,11 +214,17 @@ public class ContainerApplet extends Applet
 		parameters.put("username", username);
 	}
 
+	/**
+	 * Start the MinecraftApplet.
+	 */
 	@Override
 	public void start() {
 		minecraftApplet.start();
 	}
 
+	/**
+	 * Stop the Applet and the contained MinecraftApplet (if any).
+	 */
 	@Override
 	public void stop() {
 		if (minecraftApplet != null) {

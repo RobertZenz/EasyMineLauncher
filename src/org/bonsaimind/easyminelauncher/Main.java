@@ -94,7 +94,7 @@ public class Main {
 			width = 800;
 		}
 
-		// Creation of the applet.
+		// Create the applet.
 		ContainerApplet container = new ContainerApplet();
 
 		// Pass arguments to the applet.
@@ -103,6 +103,7 @@ public class Main {
 			container.setServer(server, port != null ? port : "25565");
 		}
 
+		// Create and setup the frame.
 		ContainerFrame frame = new ContainerFrame(title);
 		frame.setSize(width, height);
 		if (maximized) {
@@ -111,6 +112,7 @@ public class Main {
 		frame.setContainerApplet(container);
 		frame.setVisible(true);
 
+		// Load
 		container.loadNatives(nativeDir);
 		if (container.loadJarsAndApplet(jarDir)) {
 			container.init();
