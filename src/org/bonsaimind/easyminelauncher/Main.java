@@ -138,7 +138,11 @@ public class Main {
 
 		System.out.println("  --jar-dir=DIRECTORY      Set the directory for the jar files.");
 		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files.");
-		System.out.println("  --username=USERNAME      Set the username to USERNAME.");
+		System.out.println("  --port=PORT              Set the port of the server, if not set");
+		System.out.println("                           it will revert to 25565.");
+		System.out.println("  --server=SERVER          Set the address of the server which");
+		System.out.println("                           directly to connect to.");
+		System.out.println("  --username=USERNAME      Set the username to user.");
 
 		System.out.println("");
 		System.out.println("  --title=TITLE            Replace the window title.");
