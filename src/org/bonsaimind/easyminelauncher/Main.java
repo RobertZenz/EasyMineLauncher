@@ -33,7 +33,7 @@ import java.io.File;
 public class Main {
 
 	private static String name = "EasyMineLauncher";
-	private static String version = "0.2";
+	private static String version = "0.3";
 
 	public static void main(String[] args) {
 		String jarDir = "";
