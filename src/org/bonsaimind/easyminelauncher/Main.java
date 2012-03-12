@@ -37,6 +37,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		String jarDir = "";
+		String jar = "";
+		String lwjglDir = "";
 		String nativeDir = "";
 		String port = null;
 		String server = null;
@@ -50,6 +52,10 @@ public class Main {
 		for (String arg : args) {
 			if (arg.startsWith("--jar-dir=")) {
 				jarDir = arg.substring(10);
+			} else if (arg.startsWith("--jar=")) {
+				jar = arg.substring(6);
+			} else if (arg.startsWith("--lwjgl-dir=")) {
+				lwjglDir = arg.substring(12);
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
 			} else if (arg.startsWith("--port=")) {
@@ -79,11 +85,20 @@ public class Main {
 		}
 
 		// Check the arguments
-		if (jarDir.isEmpty()) {
+		if (jarDir.isEmpty() && jar.isEmpty()) {
 			printHelp();
 			return;
 		}
-		jarDir = new File(jarDir).getAbsolutePath();
+
+		if (jarDir.isEmpty()) {
+			jarDir = new File(jar).getParent();
+		} else {
+			jarDir = new File(jarDir).getAbsolutePath();
+			jar = jarDir;
+		}
+		if (lwjglDir.isEmpty()) {
+			lwjglDir = jarDir;
+		}
 		if (nativeDir.isEmpty()) {
 			nativeDir = new File(jarDir, "natives").getAbsolutePath();
 		}
@@ -114,7 +129,7 @@ public class Main {
 
 		// Load
 		container.loadNatives(nativeDir);
-		if (container.loadJarsAndApplet(jarDir)) {
+		if (container.loadJarsAndApplet(jar, lwjglDir)) {
 			container.init();
 			container.start();
 		} else {
@@ -139,7 +154,13 @@ public class Main {
 		System.out.println("");
 
 		System.out.println("  --jar-dir=DIRECTORY      Set the directory for the jar files.");
-		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files.");
+		System.out.println("  --jar=MINECRAFT.JAR      Set the path to the minecraft.jar.");
+		System.out.println("                           Either specify jar-dir or this.");
+		System.out.println("  --lwjgl-dir=DIRECTORY    Set the directory for the jar files");
+		System.out.println("                           of lwjgl (lwjgl.jar, lwjgl_util.jar,");
+		System.out.println("                           and jinput.jar)");
+		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files");
+		System.out.println("                           of lwjgl.");
 		System.out.println("  --port=PORT              Set the port of the server, if not set");
 		System.out.println("                           it will revert to 25565.");
 		System.out.println("  --server=SERVER          Set the address of the server which");

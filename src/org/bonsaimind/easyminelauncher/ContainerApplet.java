@@ -135,16 +135,20 @@ public class ContainerApplet extends Applet
 	 * @param jarDir The directory of the jars.
 	 * @return
 	 */
-	public boolean loadJarsAndApplet(String jarDir) {
-		System.out.println("Loading Minecraft from: " + jarDir);
+	public boolean loadJarsAndApplet(String jar, String lwjglDir) {
+		if(new File(jar).isDirectory()) {
+			jar = new File(jar, "minecraft.jar").getAbsolutePath();
+		}
+
+		System.out.println("Loading Minecraft from: " + jar);
 
 		try {
 			// Our 4 jars which we need.
 			URL[] urls = new URL[]{
-				new File(jarDir, "minecraft.jar").toURI().toURL(),
-				new File(jarDir, "lwjgl.jar").toURI().toURL(),
-				new File(jarDir, "lwjgl_util.jar").toURI().toURL(),
-				new File(jarDir, "jinput.jar").toURI().toURL()
+				new File(jar).toURI().toURL(),
+				new File(lwjglDir, "lwjgl.jar").toURI().toURL(),
+				new File(lwjglDir, "lwjgl_util.jar").toURI().toURL(),
+				new File(lwjglDir, "jinput.jar").toURI().toURL()
 			};
 
 			// Load the jars.
