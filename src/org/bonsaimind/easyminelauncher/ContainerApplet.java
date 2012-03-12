@@ -141,10 +141,10 @@ public class ContainerApplet extends Applet
 		try {
 			// Our 4 jars which we need.
 			URL[] urls = new URL[]{
-				new URL("file://" + new File(jarDir, "minecraft.jar").getAbsolutePath()),
-				new URL("file://" + new File(jarDir, "lwjgl.jar").getAbsolutePath()),
-				new URL("file://" + new File(jarDir, "lwjgl_util.jar").getAbsolutePath()),
-				new URL("file://" + new File(jarDir, "jinput.jar").getAbsolutePath())
+				new File(jarDir, "minecraft.jar").toURI().toURL(),
+				new File(jarDir, "lwjgl.jar").toURI().toURL(),
+				new File(jarDir, "lwjgl_util.jar").toURI().toURL(),
+				new File(jarDir, "jinput.jar").toURI().toURL()
 			};
 
 			// Load the jars.
@@ -181,6 +181,9 @@ public class ContainerApplet extends Applet
 	 * @param nativeDir The directory which contains the native LWJGL libraries.
 	 */
 	public void loadNatives(String nativeDir) {
+		// This fixes issues on a certain OS...
+		nativeDir = new File(nativeDir).getAbsolutePath();
+		
 		System.out.println("Loading natives from: " + nativeDir);
 
 		System.setProperty("org.lwjgl.librarypath", nativeDir);
