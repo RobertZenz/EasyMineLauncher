@@ -40,7 +40,13 @@ Here's the output from `--help`:
       --version                Prints the version.
     
       --jar-dir=DIRECTORY      Set the directory for the jar files.
-      --native-dir=DIRECTORY   Set the directory for the native files.
+      --jar=MINECRAFT.JAR      Set the path to the minecraft.jar.
+                               Either specify jar-dir or this.
+      --lwjgl-dir=DIRECTORY    Set the directory for the jar files
+                               of lwjgl (lwjgl.jar, lwjgl_util.jar,
+                               and jinput.jar)
+      --native-dir=DIRECTORY   Set the directory for the native files
+                               of lwjgl.
       --port=PORT              Set the port of the server, if not set
                                it will revert to 25565.
       --server=SERVER          Set the address of the server which
@@ -53,10 +59,21 @@ Here's the output from `--help`:
       --maximized              Maximize the window.
 
 
+
 Examples:
 
+Launch the current version of Minecraft with a certain username:
+
     java --jar -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --username=MyAwesomeName
+
+Launch the current version of Minecraft with an updated lwjgl version which lays in a different directory:
+
+    java --jar -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --lwjgl-dir=/home/user/updatedLWJGL/ --native-dir=/home/user/updatedLWJGL/native/ --username=MyNotSoAwesomeName --maximized
     
-    java --jar -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --native-dir=/home/user/updatedLWJGL/native/ --username=MyNotSoAwesomeName --maximized
-    
+Launch the current version of Minecraft and directly connect to a server:
+
     java --jar -Xmx1536M -Xms1536M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --username=MyAwesomeName --server=myprivate.server.com
+
+Launch specific jar, with different lwjgl directory, connect to a server on a different port, maximize the window and rename it:
+
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar=./bin/Beta\ 1.7.3.jar/ --lwjgl-dir=./bin/lwjgl/ --native-dir=./bin/natives/ --username=Octiface --server=awesome.server.com --port=666 --maximized --title=UberGame
