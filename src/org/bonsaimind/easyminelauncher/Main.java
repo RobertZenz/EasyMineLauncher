@@ -40,6 +40,7 @@ public class Main {
 		String jar = "";
 		String lwjglDir = "";
 		String nativeDir = "";
+		String parentDir = "";
 		String port = null;
 		String server = null;
 		String username = "Username";
@@ -58,6 +59,8 @@ public class Main {
 				lwjglDir = arg.substring(12);
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
+			} else if (arg.startsWith("--parent-dir=")) {
+				parentDir = arg.substring(13);
 			} else if (arg.startsWith("--port=")) {
 				port = arg.substring(7);
 			} else if (arg.startsWith("--server=")) {
@@ -90,6 +93,8 @@ public class Main {
 			return;
 		}
 
+		System.out.println(System.getProperty("user.home"));
+		
 		if (jarDir.isEmpty()) {
 			jarDir = new File(jar).getParent();
 		} else {
@@ -101,6 +106,9 @@ public class Main {
 		}
 		if (nativeDir.isEmpty()) {
 			nativeDir = new File(jarDir, "natives").getAbsolutePath();
+		}
+		if(!parentDir.isEmpty()) {
+			System.setProperty("user.home", parentDir);
 		}
 		if (height <= 0) {
 			height = 600;
