@@ -169,6 +169,8 @@ public class Main {
 		System.out.println("                           and jinput.jar)");
 		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files");
 		System.out.println("                           of lwjgl.");
+		System.out.println("  --parent-dir=DIRECTORY   Set the parent directory. This effectively");
+		System.out.println("                           changes the location of the .minecraft folder.");
 		System.out.println("  --port=PORT              Set the port of the server, if not set");
 		System.out.println("                           it will revert to 25565.");
 		System.out.println("  --server=SERVER          Set the address of the server which");

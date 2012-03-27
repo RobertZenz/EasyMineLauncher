@@ -47,6 +47,8 @@ Here's the output from `--help`:
                                and jinput.jar)
       --native-dir=DIRECTORY   Set the directory for the native files
                                of lwjgl.
+      --parent-dir=DIRECTORY   Set the parent directory. This effectively
+                               changes the location of the .minecraft folder.
       --port=PORT              Set the port of the server, if not set
                                it will revert to 25565.
       --server=SERVER          Set the address of the server which
@@ -77,3 +79,7 @@ Launch the current version of Minecraft and directly connect to a server:
 Launch specific jar, with different lwjgl directory, connect to a server on a different port, maximize the window and rename it:
 
     java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar=./bin/Beta\ 1.7.3.jar/ --lwjgl-dir=./bin/lwjgl/ --native-dir=./bin/natives/ --username=Octiface --server=awesome.server.com --port=666 --maximized --title=UberGame
+    
+A simple portable launcher:
+
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=./bin/ --parent-dir=./
