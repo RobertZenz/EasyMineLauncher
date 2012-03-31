@@ -8,7 +8,7 @@ What it does:
 -------------
 
  * Removes the need to login if you just want to play offline or on a private server
- * There's no check for an update, you're directly catapulted to the main menu
+ * There's no check for an update, you're directly catapulted to the main menu or connected to a server
  * Additional parameters (f.e. start as maximized window or loading of certain versions from different directories)
 
 
@@ -61,20 +61,36 @@ Here's the output from `--help`:
       --maximized              Maximize the window.
 
 
+You can also keep different versions around and launch them with ease, f.e. with such a directory/file-layout:
 
-Examples:
+    bin
+     +- Beta 1.6.6.jar (renamed minecraft.jar)
+     +- Beta 1.7.3.jar
+     +- Beta 1.8.2.jar
+     +- lwjgl
+         +- lwjgl jars go here
+     +- natives
+         +- lwjgl natives go here
+
+With the following command you can launch the versions:
+
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar=./bin/Beta \1.6.6.jar --lwjgl-dir=./bin/lwjgl/ --native-dir=./bin/natives/ --username=Terminator
+
+
+Examples
+--------
 
 Launch the current version of Minecraft with a certain username:
 
-    java --jar -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --username=MyAwesomeName
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --username=MyAwesomeName
 
 Launch the current version of Minecraft with an updated lwjgl version which lays in a different directory:
 
-    java --jar -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --lwjgl-dir=/home/user/updatedLWJGL/ --native-dir=/home/user/updatedLWJGL/native/ --username=MyNotSoAwesomeName --maximized
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --lwjgl-dir=/home/user/updatedLWJGL/ --native-dir=/home/user/updatedLWJGL/native/ --username=MyNotSoAwesomeName --maximized
     
 Launch the current version of Minecraft and directly connect to a server:
 
-    java --jar -Xmx1536M -Xms1536M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --username=MyAwesomeName --server=myprivate.server.com
+    java -Xmx1536M -Xms1536M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --username=MyAwesomeName --server=myprivate.server.com
 
 Launch specific jar, with different lwjgl directory, connect to a server on a different port, maximize the window and rename it:
 
