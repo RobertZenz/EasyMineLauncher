@@ -132,7 +132,8 @@ public class ContainerApplet extends Applet
 	/**
 	 * Load the 4 jars and create an instance of the MinecraftApplet.
 	 * Better call loadNatives(String) first.
-	 * @param jarDir The directory of the jars.
+	 * @param jar The directory of minecraft.jar, or the jar directly.
+	 * @param lwjglDir The directory of the lwjgl-jars.
 	 * @return
 	 */
 	public boolean loadJarsAndApplet(String jar, String lwjglDir) {
