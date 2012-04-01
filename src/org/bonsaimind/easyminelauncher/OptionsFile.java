@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Reads, parses and saves the options.txt-file.
+ * Reads, parses and saves the .minecraft/options.txt-file.
  * @author Robert 'Bobby' Zenz
  */
 public class OptionsFile {
@@ -54,6 +54,18 @@ public class OptionsFile {
 		}
 	}
 
+	/**
+	 * Check fit ehf ile exists.
+	 * @return
+	 */
+	public boolean exists() {
+		return file.exists();
+	}
+
+	/**
+	 * Read the file.
+	 * @return
+	 */
 	public boolean read() {
 		BufferedReader reader = null;
 		try {
@@ -89,6 +101,10 @@ public class OptionsFile {
 		setOption("skin", texturepackFilename);
 	}
 
+	/**
+	 * Write-back the file.
+	 * @return
+	 */
 	public boolean write() {
 		BufferedWriter writer = null;
 		try {

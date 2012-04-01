@@ -119,13 +119,13 @@ public class Main {
 
 		if (!texturepack.isEmpty()) {
 			OptionsFile options = new OptionsFile(parentDir);
-			if (options.read()) {
+			if (options.exists() && options.read()) {
 				options.setTexturePack(texturepack);
 				if (!options.write()) {
 					System.out.println("Failed to write options.txt!");
 				}
 			} else {
-				System.out.println("Failed to read options.txt!");
+				System.out.println("Failed to read options.txt or it does not exist!");
 			}
 		}
 
