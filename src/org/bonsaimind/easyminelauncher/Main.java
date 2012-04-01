@@ -44,6 +44,7 @@ public class Main {
 		String port = null;
 		String server = null;
 		String username = "Username";
+		String texturepack = "";
 		String title = "Minecraft (EasyMineLauncher)";
 		boolean maximized = false;
 		int width = 800;
@@ -65,10 +66,12 @@ public class Main {
 				port = arg.substring(7);
 			} else if (arg.startsWith("--server=")) {
 				server = arg.substring(9);
-			} else if (arg.startsWith("--username=")) {
-				username = arg.substring(11);
+			} else if (arg.startsWith("--texturepack=")) {
+				texturepack = arg.substring(14);
 			} else if (arg.startsWith("--title=")) {
 				title = arg.substring(8);
+			} else if (arg.startsWith("--username=")) {
+				username = arg.substring(11);
 			} else if (arg.equals("--version")) {
 				printVersion();
 				return;
@@ -94,7 +97,7 @@ public class Main {
 		}
 
 		System.out.println(System.getProperty("user.home"));
-		
+
 		if (jarDir.isEmpty()) {
 			jarDir = new File(jar).getParent();
 		} else {
@@ -107,9 +110,25 @@ public class Main {
 		if (nativeDir.isEmpty()) {
 			nativeDir = new File(jarDir, "natives").getAbsolutePath();
 		}
-		if(!parentDir.isEmpty()) {
+		if (!parentDir.isEmpty()) {
 			System.setProperty("user.home", parentDir);
+		} else {
+			parentDir = System.getProperty("user.home");
 		}
+		parentDir = new File(parentDir, ".minecraft").toString();
+
+		if (!texturepack.isEmpty()) {
+			OptionsFile options = new OptionsFile(parentDir);
+			if (options.read()) {
+				options.setTexturePack(texturepack);
+				if (!options.write()) {
+					System.out.println("Failed to write options.txt!");
+				}
+			} else {
+				System.out.println("Failed to read options.txt!");
+			}
+		}
+
 		if (height <= 0) {
 			height = 600;
 		}
@@ -173,6 +192,9 @@ public class Main {
 		System.out.println("                           changes the location of the .minecraft folder.");
 		System.out.println("  --port=PORT              Set the port of the server, if not set");
 		System.out.println("                           it will revert to 25565.");
+		System.out.println("  --texturepack=FILE       Set the texturepack to use, this takes");
+		System.out.println("                           only the filename (including extension).");
+		System.out.println("                           Use 'Default' for default.");
 		System.out.println("  --server=SERVER          Set the address of the server which");
 		System.out.println("                           directly to connect to.");
 		System.out.println("  --username=USERNAME      Set the username to user.");
