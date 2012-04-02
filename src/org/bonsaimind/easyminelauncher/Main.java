@@ -169,6 +169,8 @@ public class Main {
 
 	private static void printVersion() {
 		System.out.println(name + " " + version);
+		System.out.println("Copyright 2012 Robert 'Bobby' Zenz. All rights reserved.");
+		System.out.println("Licensed under 2-clause-BSD.");
 	}
 
 	private static void printHelp() {
