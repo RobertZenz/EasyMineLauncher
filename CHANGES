@@ -1,0 +1,33 @@
+0.5
+---
+
+ * Added possibility to set the texturepack:
+   * texturepack
+
+
+0.4
+---
+
+ * Added possibility to change the location of .minecraft:
+   * parent-dir
+
+
+0.3
+---
+
+ * Added additional parameters:
+   * jar
+   * lwjgl-dir
+   * native-dir
+
+   
+0.2
+---
+
+ * Added possibility to directly conenct to server.
+
+
+0.1
+---
+
+ * Initial Release
