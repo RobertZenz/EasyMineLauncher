@@ -53,6 +53,7 @@ Here's the output from `--help`:
                                it will revert to 25565.
       --server=SERVER          Set the address of the server which
                                directly to connect to.
+      --set-option=NAME:VALUE  Set this option in the options.txt file.
       --texturepack=FILE       Set the texturepack to use, this takes
                                only the filename (including extension).
                                Use 'Default' for default.
