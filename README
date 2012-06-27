@@ -102,3 +102,59 @@ Launch specific jar, with different lwjgl directory, connect to a server on a di
 A simple portable launcher:
 
     java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=./bin/ --parent-dir=./
+    
+
+Not so fast...
+--------------
+
+...okay, step by step.
+
+How do make yourMinecraft portable, if you already have a `.minecraft` directory, skip to step 4:
+
+ 1. Start the official launcher, download the binaries
+ 2. Launch Minecraft one time to create the data directory and necessary files
+ 3. Exit Minecraft
+ 4. Copy the `~/.minecraft` directory to `/media/yourUsbStick/`
+ 5. Rename it to something more meaningful
+ 6. Create a sript with the following contents:
+ 
+    #!/bin/sh
+    # Launcher.sh, /media/yourUsbStick/MinecraftPortable/
+    
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
+    --jar-dir=./bin/ \
+    --parent-dir=./ \
+    --username=YourOfflineUsername
+ 
+ 7. Make the script executable, done.
+ 
+Okay, now to something more sopisticated, let's extract and split the `.minecraft` directory so that we can have multiple versions with ease (assuming you already have different versions and a `.minecraft` dir):
+
+ 1. Create a directory as target, e.g. `~/Minecraft/`
+ 2. Create the following sub-directories: `bin`, `data`, `lwjgl` and `natives`
+ 3. Copy `~/.minecraft/bin/minecraft.jar` to `~/Minecraft/bin/VERSION.jar`
+ 4. Copy `~/.minecraft/bin/*.jar` to `~/Minecraft/lwjgl/*.jar`
+ 5. Copy `~/.minecraft/bin/natives/*.so` to `~/Minecraft/natives/*.so`
+ 6. Copy everything from `~/.minecraft/` to `~/Minecraft/data/` except the `bin` directory
+ 7. Copy the `EasyMineLauncher.jar` into `~/Minecraft/`
+ 8. Create the `Launcher.sh` script and make it executable:
+ 
+    #!/bin/sh
+    # Launcher.sh, ~/Minecraft/
+    
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
+    --jar=./bin/$1.jar \
+    --lwjgl-dir=./lwjgl/ \
+    --native-dir=./natives/ \
+    --parent-dir=./data/ \
+    --username=YourOfflineUsername \
+    --title=Minecraft\ $1
+    
+ 9. Create a version specific script and make it executable:
+ 
+    #!/bin/sh
+    # VERSION.sh, ~/Minecraft/
+    
+    ./Launcher.sh VERSION
+    
+ 10. Repeat steps 3 and 9 to add further versions.
