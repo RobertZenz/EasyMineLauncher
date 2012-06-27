@@ -97,6 +97,10 @@ public class OptionsFile {
 		return false;
 	}
 
+	public void setOption(String key, String value) {
+		values.set(keys.indexOf(key), value);
+	}
+	
 	public void setTexturePack(String texturepackFilename) {
 		setOption("skin", texturepackFilename);
 	}
@@ -128,9 +132,5 @@ public class OptionsFile {
 		}
 
 		return false;
-	}
-
-	private void setOption(String key, String value) {
-		values.set(keys.indexOf(key), value);
 	}
 }
