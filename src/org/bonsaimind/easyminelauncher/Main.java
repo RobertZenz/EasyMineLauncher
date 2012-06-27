@@ -45,7 +45,7 @@ public class Main {
 		String server = null;
 		String username = "Username";
 		String texturepack = "";
-		String title = "Minecraft (EasyMineLauncher)";
+		String title = "Minecraft (" + name + ")";
 		boolean maximized = false;
 		int width = 800;
 		int height = 600;
