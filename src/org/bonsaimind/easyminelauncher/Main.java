@@ -29,6 +29,8 @@ package org.bonsaimind.easyminelauncher;
 
 import java.awt.Frame;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -40,6 +42,7 @@ public class Main {
 		String jar = "";
 		String lwjglDir = "";
 		String nativeDir = "";
+		List<String> options = new ArrayList<String>();
 		String parentDir = "";
 		String port = null;
 		String server = null;
@@ -66,6 +69,8 @@ public class Main {
 				port = arg.substring(7);
 			} else if (arg.startsWith("--server=")) {
 				server = arg.substring(9);
+			} else if (arg.startsWith("--set-option=")) {
+				options.add(arg.substring(13));
 			} else if (arg.startsWith("--texturepack=")) {
 				texturepack = arg.substring(14);
 			} else if (arg.startsWith("--title=")) {
@@ -118,10 +123,19 @@ public class Main {
 		parentDir = new File(parentDir, ".minecraft").toString();
 
 		if (!texturepack.isEmpty()) {
-			OptionsFile options = new OptionsFile(parentDir);
-			if (options.exists() && options.read()) {
-				options.setTexturePack(texturepack);
-				if (!options.write()) {
+			OptionsFile optionsFile = new OptionsFile(parentDir);
+			if (optionsFile.exists() && optionsFile.read()) {
+				optionsFile.setTexturePack(texturepack);
+
+				// Set the options.
+				for (String option : options) {
+					int splitIdx = option.indexOf(":");
+					if (splitIdx > 0) { // we don't want not-named options either.
+						optionsFile.setOption(option.substring(0, splitIdx), option.substring(splitIdx + 1));
+					}
+				}
+
+				if (!optionsFile.write()) {
 					System.out.println("Failed to write options.txt!");
 				}
 			} else {
@@ -199,6 +213,7 @@ public class Main {
 		System.out.println("                           Use 'Default' for default.");
 		System.out.println("  --server=SERVER          Set the address of the server which");
 		System.out.println("                           directly to connect to.");
+		System.out.println("  --set-option=NAME:VALUE  Set this option in the options.txt file.");
 		System.out.println("  --username=USERNAME      Set the username to user.");
 
 		System.out.println("");
