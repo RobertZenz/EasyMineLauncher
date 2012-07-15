@@ -42,6 +42,7 @@ public class Main {
 		String jar = "";
 		String lwjglDir = "";
 		String nativeDir = "";
+		boolean noFrame = false;
 		List<String> options = new ArrayList<String>();
 		String parentDir = "";
 		String port = null;
@@ -63,6 +64,8 @@ public class Main {
 				lwjglDir = arg.substring(12);
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
+			} else if (arg.equals("--no-frame")) {
+				noFrame = true;
 			} else if (arg.startsWith("--parent-dir=")) {
 				parentDir = arg.substring(13);
 			} else if (arg.startsWith("--port=")) {
@@ -161,6 +164,7 @@ public class Main {
 
 		// Create and setup the frame.
 		ContainerFrame frame = new ContainerFrame(title);
+		frame.setUndecorated(noFrame);
 		frame.setSize(width, height);
 		if (maximized) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -204,6 +208,7 @@ public class Main {
 		System.out.println("                           and jinput.jar)");
 		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files");
 		System.out.println("                           of lwjgl.");
+		System.out.println("  --no-frame               Remove the border of the window.");
 		System.out.println("  --parent-dir=DIRECTORY   Set the parent directory. This effectively");
 		System.out.println("                           changes the location of the .minecraft folder.");
 		System.out.println("  --port=PORT              Set the port of the server, if not set");
