@@ -204,6 +204,14 @@ public class ContainerApplet extends Applet
 	}
 
 	/**
+	 * Set the mppass variable...not sure what it does.
+	 * @param pass
+	 */
+	public void setMpPass(String pass) {
+		parameters.put("mppass", pass);
+	}
+
+	/**
 	 * Set the server to connect to.
 	 * @param server The server address (valid would be good).
 	 * @param port The port (also valid).

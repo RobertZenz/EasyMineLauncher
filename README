@@ -45,6 +45,7 @@ Here's the output from `--help`:
       --lwjgl-dir=DIRECTORY    Set the directory for the jar files
                                of lwjgl (lwjgl.jar, lwjgl_util.jar,
                                and jinput.jar)
+      --mppass=MPPASS          Set the mppass variable.
       --native-dir=DIRECTORY   Set the directory for the native files
                                of lwjgl.
       --parent-dir=DIRECTORY   Set the parent directory. This effectively

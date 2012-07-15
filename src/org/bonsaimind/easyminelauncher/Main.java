@@ -41,6 +41,7 @@ public class Main {
 		String jarDir = "";
 		String jar = "";
 		String lwjglDir = "";
+		String mppass = "";
 		String nativeDir = "";
 		boolean noFrame = false;
 		List<String> options = new ArrayList<String>();
@@ -63,6 +64,8 @@ public class Main {
 				jar = arg.substring(6);
 			} else if (arg.startsWith("--lwjgl-dir=")) {
 				lwjglDir = arg.substring(12);
+			} else if (arg.startsWith("--mppass=")) {
+				mppass = arg.substring(9);
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
 			} else if (arg.equals("--no-frame")) {
@@ -164,6 +167,7 @@ public class Main {
 		if (server != null) {
 			container.setServer(server, port != null ? port : "25565");
 		}
+		container.setMpPass(mppass);
 		container.setSessionId(sessionId);
 
 		// Create and setup the frame.
@@ -210,6 +214,7 @@ public class Main {
 		System.out.println("  --lwjgl-dir=DIRECTORY    Set the directory for the jar files");
 		System.out.println("                           of lwjgl (lwjgl.jar, lwjgl_util.jar,");
 		System.out.println("                           and jinput.jar)");
+		System.out.println("  --mppass=MPPASS          Set the mppass variable.");
 		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files");
 		System.out.println("                           of lwjgl.");
 		System.out.println("  --parent-dir=DIRECTORY   Set the parent directory. This effectively");
