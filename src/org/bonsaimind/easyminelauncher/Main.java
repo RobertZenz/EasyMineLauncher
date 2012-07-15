@@ -47,6 +47,7 @@ public class Main {
 		String parentDir = "";
 		String port = null;
 		String server = null;
+		String sessionId = "0";
 		String username = "Username";
 		String texturepack = "";
 		String title = "Minecraft (" + name + ")";
@@ -72,6 +73,8 @@ public class Main {
 				port = arg.substring(7);
 			} else if (arg.startsWith("--server=")) {
 				server = arg.substring(9);
+			} else if (arg.startsWith("--session-id=")) {
+				sessionId = arg.substring(13);
 			} else if (arg.startsWith("--set-option=")) {
 				options.add(arg.substring(13));
 			} else if (arg.startsWith("--texturepack=")) {
@@ -161,6 +164,7 @@ public class Main {
 		if (server != null) {
 			container.setServer(server, port != null ? port : "25565");
 		}
+		container.setSessionId(sessionId);
 
 		// Create and setup the frame.
 		ContainerFrame frame = new ContainerFrame(title);
@@ -218,6 +222,7 @@ public class Main {
 		System.out.println("                           Use 'Default' for default.");
 		System.out.println("  --server=SERVER          Set the address of the server which");
 		System.out.println("                           directly to connect to.");
+		System.out.println("  --session-id=SESSIONID   Set the session id.");
 		System.out.println("  --set-option=NAME:VALUE  Set this option in the options.txt file.");
 		System.out.println("  --username=USERNAME      Set the username to user.");
 

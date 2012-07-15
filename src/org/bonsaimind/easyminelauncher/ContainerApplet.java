@@ -214,6 +214,14 @@ public class ContainerApplet extends Applet
 	}
 
 	/**
+	 * Set the Session-Id.
+	 * @param sessionId The new id.
+	 */
+	public void setSessionId(String sessionId) {
+		parameters.put("sessionid", sessionId);
+	}
+
+	/**
 	 * Set the username.
 	 *
 	 * @param username The username

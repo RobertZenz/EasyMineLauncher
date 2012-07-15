@@ -47,12 +47,14 @@ Here's the output from `--help`:
                                and jinput.jar)
       --native-dir=DIRECTORY   Set the directory for the native files
                                of lwjgl.
+      --no-frame               Remove the border of the window.
       --parent-dir=DIRECTORY   Set the parent directory. This effectively
                                changes the location of the .minecraft folder.
       --port=PORT              Set the port of the server, if not set
                                it will revert to 25565.
       --server=SERVER          Set the address of the server which
                                directly to connect to.
+      --session-id=SESSIONID   Set the session id.
       --set-option=NAME:VALUE  Set this option in the options.txt file.
       --texturepack=FILE       Set the texturepack to use, this takes
                                only the filename (including extension).
