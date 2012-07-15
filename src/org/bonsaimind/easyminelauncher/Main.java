@@ -212,7 +212,6 @@ public class Main {
 		System.out.println("                           and jinput.jar)");
 		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files");
 		System.out.println("                           of lwjgl.");
-		System.out.println("  --no-frame               Remove the border of the window.");
 		System.out.println("  --parent-dir=DIRECTORY   Set the parent directory. This effectively");
 		System.out.println("                           changes the location of the .minecraft folder.");
 		System.out.println("  --port=PORT              Set the port of the server, if not set");
@@ -231,5 +230,6 @@ public class Main {
 		System.out.println("  --height=HEIGHT          The width of the window.");
 		System.out.println("  --width=WIDTH            The height of the window.");
 		System.out.println("  --maximized              Maximize the window.");
+		System.out.println("  --no-frame               Remove the border of the window.");
 	}
 }

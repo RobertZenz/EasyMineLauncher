@@ -47,7 +47,6 @@ Here's the output from `--help`:
                                and jinput.jar)
       --native-dir=DIRECTORY   Set the directory for the native files
                                of lwjgl.
-      --no-frame               Remove the border of the window.
       --parent-dir=DIRECTORY   Set the parent directory. This effectively
                                changes the location of the .minecraft folder.
       --port=PORT              Set the port of the server, if not set
@@ -65,6 +64,7 @@ Here's the output from `--help`:
       --height=HEIGHT          The width of the window.
       --width=WIDTH            The height of the window.
       --maximized              Maximize the window.
+      --no-frame               Remove the border of the window.
 
 
 You can also keep different versions around and launch them with ease, f.e. with such a directory/file-layout:
