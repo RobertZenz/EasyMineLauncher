@@ -1,3 +1,13 @@
+0.6
+---
+
+ * Added more options:
+   * --set-option=NAME:VALUE
+   * --no-frame
+   * --session-id=SESSIONID
+   * --mppass=MPPASS
+
+
 0.5
 ---
 
