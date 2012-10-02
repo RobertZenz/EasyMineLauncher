@@ -27,7 +27,9 @@
  */
 package org.bonsaimind.easyminelauncher;
 
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,8 @@ public class Main {
 		boolean maximized = false;
 		int width = 800;
 		int height = 600;
-
+		boolean alwaysOnTop = false;
+		
 		// Parse arguments
 		for (String arg : args) {
 			if (arg.startsWith("--jar-dir=")) {
@@ -95,6 +98,8 @@ public class Main {
 				height = Integer.parseInt(arg.substring(9));
 			} else if (arg.equals("--maximized")) {
 				maximized = true;
+			} else if (arg.equals("--always-on-top")) {
+				alwaysOnTop = true;
 			} else if (arg.equals("--help")) {
 				printHelp();
 				return;
@@ -172,6 +177,7 @@ public class Main {
 
 		// Create and setup the frame.
 		ContainerFrame frame = new ContainerFrame(title);
+		frame.setAlwaysOnTop(alwaysOnTop);
 		frame.setUndecorated(noFrame);
 		frame.setSize(width, height);
 		if (maximized) {
@@ -179,7 +185,7 @@ public class Main {
 		}
 		frame.setContainerApplet(container);
 		frame.setVisible(true);
-
+		
 		// Load
 		container.loadNatives(nativeDir);
 		if (container.loadJarsAndApplet(jar, lwjglDir)) {
@@ -236,5 +242,6 @@ public class Main {
 		System.out.println("  --width=WIDTH            The height of the window.");
 		System.out.println("  --maximized              Maximize the window.");
 		System.out.println("  --no-frame               Remove the border of the window.");
+		System.out.println("  --always-on-top          Make the window stay above all others.");
 	}
 }
