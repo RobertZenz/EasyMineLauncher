@@ -58,7 +58,8 @@ public class Main {
 		int width = 800;
 		int height = 600;
 		boolean alwaysOnTop = false;
-		
+		boolean fullscreen = false;
+
 		// Parse arguments
 		for (String arg : args) {
 			if (arg.startsWith("--jar-dir=")) {
@@ -100,6 +101,8 @@ public class Main {
 				maximized = true;
 			} else if (arg.equals("--always-on-top")) {
 				alwaysOnTop = true;
+			} else if (arg.equals("--fullscreen")) {
+				fullscreen = true;
 			} else if (arg.equals("--help")) {
 				printHelp();
 				return;
@@ -177,15 +180,22 @@ public class Main {
 
 		// Create and setup the frame.
 		ContainerFrame frame = new ContainerFrame(title);
-		frame.setAlwaysOnTop(alwaysOnTop);
-		frame.setUndecorated(noFrame);
-		frame.setSize(width, height);
-		if (maximized) {
-			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		if (fullscreen) {
+			Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
+			frame.setAlwaysOnTop(true);
+			frame.setUndecorated(true);
+			frame.setSize(dimensions.width, dimensions.height);
+		} else {
+			frame.setAlwaysOnTop(alwaysOnTop);
+			frame.setUndecorated(noFrame);
+			frame.setSize(width, height);
+			if (maximized) {
+				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+			}
 		}
 		frame.setContainerApplet(container);
 		frame.setVisible(true);
-		
+
 		// Load
 		container.loadNatives(nativeDir);
 		if (container.loadJarsAndApplet(jar, lwjglDir)) {
