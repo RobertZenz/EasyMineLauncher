@@ -66,7 +66,16 @@ Here's the output from `--help`:
       --width=WIDTH            The height of the window.
       --maximized              Maximize the window.
       --no-frame               Remove the border of the window.
-
+      --always-on-top          Make the window stay above all others.
+      --fullscreen             Makes the window the same size as the
+                               specified monitor or the while desktop.
+                               This is basically shorthand for
+                                 --width=SCREENWIDTH
+                                --height=SCREENHEIGHT
+                                 --no-frame
+                                 --always-on-top
+                               This might yield odd results in multi-
+                               monitor environments.
 
 You can also keep different versions around and launch them with ease, f.e. with such a directory/file-layout:
 
