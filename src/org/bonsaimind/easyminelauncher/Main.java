@@ -253,5 +253,12 @@ public class Main {
 		System.out.println("  --maximized              Maximize the window.");
 		System.out.println("  --no-frame               Remove the border of the window.");
 		System.out.println("  --always-on-top          Make the window stay above all others.");
+		System.out.println("  --fullscreen             Makes the window the same size as the");
+		System.out.println("                           specified monitor or the while desktop.");
+		System.out.println("                           This is basically shorthand for");
+		System.out.println("                             --width=SCREENwidth");
+		System.out.println("                             --height=SCREENHEIGHT");
+		System.out.println("                             --no-frame");
+		System.out.println("                             --always-on-top");
 	}
 }
