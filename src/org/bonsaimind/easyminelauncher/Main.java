@@ -107,6 +107,7 @@ public class Main {
 				printHelp();
 				return;
 			} else {
+				System.err.println("Unknown parameter: " + arg);
 				printHelp();
 				return;
 			}
@@ -256,7 +257,7 @@ public class Main {
 		System.out.println("  --fullscreen             Makes the window the same size as the");
 		System.out.println("                           specified monitor or the while desktop.");
 		System.out.println("                           This is basically shorthand for");
-		System.out.println("                             --width=SCREENwidth");
+		System.out.println("                             --width=SCREENWIDTH");
 		System.out.println("                             --height=SCREENHEIGHT");
 		System.out.println("                             --no-frame");
 		System.out.println("                             --always-on-top");
