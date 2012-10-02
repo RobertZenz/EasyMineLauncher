@@ -261,5 +261,7 @@ public class Main {
 		System.out.println("                             --height=SCREENHEIGHT");
 		System.out.println("                             --no-frame");
 		System.out.println("                             --always-on-top");
+		System.out.println("                           This might yield odd results in multi-");
+		System.out.println("                           monitor environments.");
 	}
 }
