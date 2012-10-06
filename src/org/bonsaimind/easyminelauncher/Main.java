@@ -31,8 +31,13 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
 
@@ -45,6 +50,7 @@ public class Main {
 		String lwjglDir = "";
 		String mppass = "";
 		String nativeDir = "";
+		String launcherJar = "";
 		boolean noFrame = false;
 		List<String> options = new ArrayList<String>();
 		String parentDir = "";
@@ -72,6 +78,8 @@ public class Main {
 				mppass = arg.substring(9);
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
+			} else if (arg.startsWith("--launcher-jar=")) {
+				launcherJar = arg.substring(15);
 			} else if (arg.equals("--no-frame")) {
 				noFrame = true;
 			} else if (arg.startsWith("--parent-dir=")) {
@@ -168,6 +176,22 @@ public class Main {
 			width = 800;
 		}
 
+		// Load the launcher
+		if(!launcherJar.isEmpty()) {
+			try {
+				// This might fix issues for Mods which assume that they
+				// are loaded via the real launcher...not sure, thought adding
+				// it would be a good idea.
+				URL launcherURL = new File(launcherJar).toURI().toURL();
+				URLClassLoader loader = new URLClassLoader(new URL[] {launcherURL});
+			} catch (MalformedURLException ex) {
+				System.err.println("Failed to load launcher-jar from: " + launcherJar);
+				System.err.println(ex);
+				return;
+			}
+			
+		}
+
 		// Create the applet.
 		ContainerApplet container = new ContainerApplet();
 
@@ -234,6 +258,8 @@ public class Main {
 		System.out.println("  --mppass=MPPASS          Set the mppass variable.");
 		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files");
 		System.out.println("                           of lwjgl.");
+		System.out.println("  --launcher-jar=JAR       Load the specified launcher jar.");
+		System.out.println("                           This might be needed by some mods.");
 		System.out.println("  --parent-dir=DIRECTORY   Set the parent directory. This effectively");
 		System.out.println("                           changes the location of the .minecraft folder.");
 		System.out.println("  --port=PORT              Set the port of the server, if not set");

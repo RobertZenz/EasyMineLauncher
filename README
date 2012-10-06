@@ -42,6 +42,8 @@ Here's the output from `--help`:
       --jar-dir=DIRECTORY      Set the directory for the jar files.
       --jar=MINECRAFT.JAR      Set the path to the minecraft.jar.
                                Either specify jar-dir or this.
+      --launcher-jar=JAR       Load the specified launcher jar.
+                               This might be needed by some mods.
       --lwjgl-dir=DIRECTORY    Set the directory for the jar files
                                of lwjgl (lwjgl.jar, lwjgl_util.jar,
                                and jinput.jar)
