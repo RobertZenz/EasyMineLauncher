@@ -68,10 +68,10 @@ Here's the output from `--help`:
       --no-frame               Remove the border of the window.
       --always-on-top          Make the window stay above all others.
       --fullscreen             Makes the window the same size as the
-                               specified monitor or the while desktop.
+                               specified monitor or the whole desktop.
                                This is basically shorthand for
                                  --width=SCREENWIDTH
-                                --height=SCREENHEIGHT
+                                 --height=SCREENHEIGHT
                                  --no-frame
                                  --always-on-top
                                This might yield odd results in multi-
