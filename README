@@ -151,13 +151,13 @@ How do make yourMinecraft portable, if you already have a `.minecraft` directory
  5. Rename it to something more meaningful
  6. Create a sript with the following contents:
  
-    #!/bin/sh
-    # Launcher.sh, /media/yourUsbStick/MinecraftPortable/
-    
-    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
-    --jar-dir=./bin/ \
-    --parent-dir=./ \
-    --username=YourOfflineUsername
+      #!/bin/sh
+      # Launcher.sh, /media/yourUsbStick/MinecraftPortable/
+      
+      java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
+      --jar-dir=./bin/ \
+      --parent-dir=./ \
+      --username=YourOfflineUsername
  
  7. Make the script executable, done.
  
@@ -172,22 +172,22 @@ Okay, now to something more sopisticated, let's extract and split the `.minecraf
  7. Copy the `EasyMineLauncher.jar` into `~/Minecraft/`
  8. Create the `Launcher.sh` script and make it executable:
  
-    #!/bin/sh
-    # Launcher.sh, ~/Minecraft/
+      #!/bin/sh
+      # Launcher.sh, ~/Minecraft/
     
-    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
-    --jar=./bin/$1.jar \
-    --lwjgl-dir=./lwjgl/ \
-    --native-dir=./natives/ \
-    --parent-dir=./data/ \
-    --username=YourOfflineUsername \
-    --title=Minecraft\ $1
+      java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
+      --jar=./bin/$1.jar \
+      --lwjgl-dir=./lwjgl/ \
+      --native-dir=./natives/ \
+      --parent-dir=./data/ \
+      --username=YourOfflineUsername \
+      --title=Minecraft\ $1
     
  9. Create a version specific script and make it executable:
  
-    #!/bin/sh
-    # VERSION.sh, ~/Minecraft/
-    
-    ./Launcher.sh VERSION
+      #!/bin/sh
+      # VERSION.sh, ~/Minecraft/
+      
+      ./Launcher.sh VERSION
     
  10. Repeat steps 3 and 9 to add further versions.
