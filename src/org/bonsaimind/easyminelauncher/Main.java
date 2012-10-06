@@ -302,7 +302,7 @@ public class Main {
 		System.out.println("  --mppass=MPPASS          Set the mppass variable.");
 		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files");
 		System.out.println("                           of lwjgl.");
-		System.out.println("  --additoinal-jar=JAR     Load the specified jars.");
+		System.out.println("  --additional-jar=JAR     Load the specified jars.");
 		System.out.println("                           This might be needed by some mods.");
 		System.out.println("                           Specify multiple times or list separated");
 		System.out.println("                           with ','.");
