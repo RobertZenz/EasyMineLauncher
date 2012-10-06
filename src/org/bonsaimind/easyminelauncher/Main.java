@@ -43,7 +43,7 @@ import java.util.List;
 public class Main {
 
 	private static String name = "EasyMineLauncher";
-	private static String version = "0.6";
+	private static String version = "0.7";
 
 	public static void main(String[] args) {
 		String jarDir = "";
