@@ -17,7 +17,7 @@ What it does not:
 
  * Remove the need to authenticate at servers if they demand it
  * Loading and applying updates
- * Let's you play Minecraft for free, you'll still need to get an account and download the binaries
+ * Lets you play Minecraft for free, you'll still need to get an account and download the binaries
 
 
 How does it work?
@@ -102,7 +102,7 @@ Notes on the parameters
 
 ### --additional-jar=JAR
 
-This will allow you to load other jars into memory. Please be aware that this nothing but load the jars so that they're available via reflection. There are some mods which need external jars or the official launcher...you can specify them with this.
+This will allow you to load other jars into memory. Please be aware that this does nothing but load the jars so that they're available via reflection. There are some mods which need external jars or the official launcher...you can specify them with this.
 
 You can specify this either multiple times:
 
@@ -111,6 +111,8 @@ You can specify this either multiple times:
 Or you can specfiy a list, whatever suits your needs:
 
     --additional-jar=./first.jar,./second.jar,./third.jar
+
+There's also the possibility that this might not work, drop an Issue with the mod and I'll have a look.
 
 
 Examples
@@ -142,7 +144,7 @@ Not so fast...
 
 ...okay, step by step.
 
-How do make yourMinecraft portable, if you already have a `.minecraft` directory, skip to step 4:
+How do make your Minecraft portable, if you already have a `.minecraft` directory, skip to step 4:
 
  1. Start the official launcher, download the binaries
  2. Launch Minecraft one time to create the data directory and necessary files
