@@ -42,8 +42,10 @@ Here's the output from `--help`:
       --jar-dir=DIRECTORY      Set the directory for the jar files.
       --jar=MINECRAFT.JAR      Set the path to the minecraft.jar.
                                Either specify jar-dir or this.
-      --launcher-jar=JAR       Load the specified launcher jar.
+      --additional-jar=JAR     Load the specified jars.
                                This might be needed by some mods.
+                               Specify multiple times or list separated
+                               with ','.
       --lwjgl-dir=DIRECTORY    Set the directory for the jar files
                                of lwjgl (lwjgl.jar, lwjgl_util.jar,
                                and jinput.jar)
@@ -93,6 +95,22 @@ You can also keep different versions around and launch them with ease, f.e. with
 With the following command you can launch the versions:
 
     java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar=./bin/Beta \1.6.6.jar --lwjgl-dir=./bin/lwjgl/ --native-dir=./bin/natives/ --username=Terminator
+
+
+Notes on the parameters
+-----------------------
+
+### --additional-jar=JAR
+
+This will allow you to load other jars into memory. Please be aware that this nothing but load the jars so that they're available via reflection. There are some mods which need external jars or the official launcher...you can specify them with this.
+
+You can specify this either multiple times:
+
+    --additional-jar=./first.jar --additional-jar=./second.jar --additional-jar=./third.jar
+
+Or you can specfiy a list, whatever suits your needs:
+
+    --additional-jar=./first.jar,./second.jar,./third.jar
 
 
 Examples
