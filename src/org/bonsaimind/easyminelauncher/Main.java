@@ -31,6 +31,8 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -186,7 +188,10 @@ public class Main {
 				for (String item : additionalJars) {
 					urls.add(new File(item).toURI().toURL());
 				}
-				URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[urls.size() - 1]));
+				if (!extendClassLoaders(urls.toArray(new URL[urls.size() - 1]))) {
+					System.err.println("Failed to inject additional jars!");
+					return;
+				}
 			} catch (MalformedURLException ex) {
 				System.err.println("Failed to load additional jars!");
 				System.err.println(ex);
@@ -205,7 +210,6 @@ public class Main {
 		}
 		container.setMpPass(mppass);
 		container.setSessionId(sessionId);
-
 		// Create and set up the frame.
 		ContainerFrame frame = new ContainerFrame(title);
 		if (fullscreen) {
@@ -235,6 +239,43 @@ public class Main {
 			// Exit just to be sure.
 			System.exit(0);
 		}
+	}
+
+	/**
+	 * This is mostly from here: http://stackoverflow.com/questions/252893/how-do-you-change-the-classpath-within-java
+	 * @param url
+	 * @return
+	 */
+	private static boolean extendClassLoaders(URL[] urls) {
+		// Extend the ClassLoader of the current thread.
+		URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+		Thread.currentThread().setContextClassLoader(loader);
+
+		// Extend the SystemClassLoader...this is needed for mods which will
+		// use the WhatEver.getClass().getClassLoader() method to retrieve
+		// a ClassLoader.
+		URLClassLoader systemLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+
+		try {
+			Method addURLMethod = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+			addURLMethod.setAccessible(true);
+
+			for (URL url : urls) {
+				addURLMethod.invoke(systemLoader, url);
+			}
+
+			return true;
+		} catch (NoSuchMethodException ex) {
+			System.err.println(ex);
+		} catch (SecurityException ex) {
+			System.err.println(ex);
+		} catch (IllegalAccessException ex) {
+			System.err.println(ex);
+		} catch (InvocationTargetException ex) {
+			System.err.println(ex);
+		}
+
+		return false;
 	}
 
 	private static void printVersion() {
