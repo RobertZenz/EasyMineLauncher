@@ -64,6 +64,8 @@ public class Main {
 		boolean maximized = false;
 		int width = 800;
 		int height = 600;
+		int x = -1;
+		int y = -1;
 		boolean alwaysOnTop = false;
 		boolean fullscreen = false;
 
@@ -107,6 +109,10 @@ public class Main {
 				width = Integer.parseInt(arg.substring(8));
 			} else if (arg.equals("--height=")) {
 				height = Integer.parseInt(arg.substring(9));
+			} else if (arg.equals("--x=")) {
+				x = Integer.parseInt(arg.substring(4));
+			} else if (arg.equals("--y=")) {
+				y = Integer.parseInt(arg.substring(4));
 			} else if (arg.equals("--maximized")) {
 				maximized = true;
 			} else if (arg.equals("--always-on-top")) {
@@ -221,6 +227,11 @@ public class Main {
 			frame.setAlwaysOnTop(alwaysOnTop);
 			frame.setUndecorated(noFrame);
 			frame.setSize(width, height);
+
+			// It is more likely that no location is set...I think.
+			frame.setLocation(
+					x == -1 ? frame.getX() : x,
+					y == -1 ? frame.getY() : y);
 			if (maximized) {
 				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 			}
@@ -323,6 +334,8 @@ public class Main {
 		System.out.println("  --title=TITLE            Replace the window title.");
 		System.out.println("  --height=HEIGHT          The width of the window.");
 		System.out.println("  --width=WIDTH            The height of the window.");
+		System.out.println("  --x=X                    The x-location of the window.");
+		System.out.println("  --y=Y                    The y-location of the window.");
 		System.out.println("  --maximized              Maximize the window.");
 		System.out.println("  --no-frame               Remove the border of the window.");
 		System.out.println("  --always-on-top          Make the window stay above all others.");
