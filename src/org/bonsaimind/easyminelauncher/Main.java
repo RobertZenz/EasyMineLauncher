@@ -223,6 +223,7 @@ public class Main {
 			frame.setAlwaysOnTop(true);
 			frame.setUndecorated(true);
 			frame.setSize(dimensions.width, dimensions.height);
+			frame.setLocation(0, 0);
 		} else {
 			frame.setAlwaysOnTop(alwaysOnTop);
 			frame.setUndecorated(noFrame);
@@ -344,6 +345,8 @@ public class Main {
 		System.out.println("                           This is basically shorthand for");
 		System.out.println("                             --width=SCREENWIDTH");
 		System.out.println("                             --height=SCREENHEIGHT");
+		System.out.println("                             --x=0");
+		System.out.println("                             --y=0");
 		System.out.println("                             --no-frame");
 		System.out.println("                             --always-on-top");
 		System.out.println("                           This might yield odd results in multi-");
