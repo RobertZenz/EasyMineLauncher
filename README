@@ -17,7 +17,7 @@ What it does not:
 
  * Remove the need to authenticate at servers if they demand it
  * Loading and applying updates
- * Let's you play Minecraft for free, you'll still need to get an account and download the binaries
+ * Lets you play Minecraft for free, you'll still need to get an account and download the binaries
 
 
 How does it work?
@@ -42,6 +42,10 @@ Here's the output from `--help`:
       --jar-dir=DIRECTORY      Set the directory for the jar files.
       --jar=MINECRAFT.JAR      Set the path to the minecraft.jar.
                                Either specify jar-dir or this.
+      --additional-jar=JAR     Load the specified jars.
+                               This might be needed by some mods.
+                               Specify multiple times or list separated
+                               with ','.
       --lwjgl-dir=DIRECTORY    Set the directory for the jar files
                                of lwjgl (lwjgl.jar, lwjgl_util.jar,
                                and jinput.jar)
@@ -68,10 +72,10 @@ Here's the output from `--help`:
       --no-frame               Remove the border of the window.
       --always-on-top          Make the window stay above all others.
       --fullscreen             Makes the window the same size as the
-                               specified monitor or the while desktop.
+                               specified monitor or the whole desktop.
                                This is basically shorthand for
                                  --width=SCREENWIDTH
-                                --height=SCREENHEIGHT
+                                 --height=SCREENHEIGHT
                                  --no-frame
                                  --always-on-top
                                This might yield odd results in multi-
@@ -91,6 +95,24 @@ You can also keep different versions around and launch them with ease, f.e. with
 With the following command you can launch the versions:
 
     java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar=./bin/Beta \1.6.6.jar --lwjgl-dir=./bin/lwjgl/ --native-dir=./bin/natives/ --username=Terminator
+
+
+Notes on the parameters
+-----------------------
+
+### --additional-jar=JAR
+
+This will allow you to load other jars into memory. Please be aware that this does nothing but load the jars so that they're available via reflection. There are some mods which need external jars or the official launcher...you can specify them with this.
+
+You can specify this either multiple times:
+
+    --additional-jar=./first.jar --additional-jar=./second.jar --additional-jar=./third.jar
+
+Or you can specfiy a list, whatever suits your needs:
+
+    --additional-jar=./first.jar,./second.jar,./third.jar
+
+There's also the possibility that this might not work, drop an Issue with the mod and I'll have a look.
 
 
 Examples
@@ -122,7 +144,7 @@ Not so fast...
 
 ...okay, step by step.
 
-How do make yourMinecraft portable, if you already have a `.minecraft` directory, skip to step 4:
+How do make your Minecraft portable, if you already have a `.minecraft` directory, skip to step 4:
 
  1. Start the official launcher, download the binaries
  2. Launch Minecraft one time to create the data directory and necessary files
@@ -131,13 +153,13 @@ How do make yourMinecraft portable, if you already have a `.minecraft` directory
  5. Rename it to something more meaningful
  6. Create a sript with the following contents:
  
-    #!/bin/sh
-    # Launcher.sh, /media/yourUsbStick/MinecraftPortable/
-    
-    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
-    --jar-dir=./bin/ \
-    --parent-dir=./ \
-    --username=YourOfflineUsername
+        #!/bin/sh
+        # Launcher.sh, /media/yourUsbStick/MinecraftPortable/
+        
+        java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
+        --jar-dir=./bin/ \
+        --parent-dir=./ \
+        --username=YourOfflineUsername
  
  7. Make the script executable, done.
  
@@ -152,22 +174,22 @@ Okay, now to something more sopisticated, let's extract and split the `.minecraf
  7. Copy the `EasyMineLauncher.jar` into `~/Minecraft/`
  8. Create the `Launcher.sh` script and make it executable:
  
-    #!/bin/sh
-    # Launcher.sh, ~/Minecraft/
+        #!/bin/sh
+        # Launcher.sh, ~/Minecraft/
     
-    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
-    --jar=./bin/$1.jar \
-    --lwjgl-dir=./lwjgl/ \
-    --native-dir=./natives/ \
-    --parent-dir=./data/ \
-    --username=YourOfflineUsername \
-    --title=Minecraft\ $1
+        java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
+        --jar=./bin/$1.jar \
+        --lwjgl-dir=./lwjgl/ \
+        --native-dir=./natives/ \
+        --parent-dir=./data/ \
+        --username=YourOfflineUsername \
+        --title=Minecraft\ $1
     
  9. Create a version specific script and make it executable:
  
-    #!/bin/sh
-    # VERSION.sh, ~/Minecraft/
-    
-    ./Launcher.sh VERSION
+        #!/bin/sh
+        # VERSION.sh, ~/Minecraft/
+        
+        ./Launcher.sh VERSION
     
  10. Repeat steps 3 and 9 to add further versions.

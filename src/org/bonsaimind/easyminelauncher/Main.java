@@ -31,13 +31,19 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
 
 	private static String name = "EasyMineLauncher";
-	private static String version = "0.6";
+	private static String version = "0.7";
 
 	public static void main(String[] args) {
 		String jarDir = "";
@@ -45,6 +51,7 @@ public class Main {
 		String lwjglDir = "";
 		String mppass = "";
 		String nativeDir = "";
+		List<String> additionalJars = new ArrayList<String>();
 		boolean noFrame = false;
 		List<String> options = new ArrayList<String>();
 		String parentDir = "";
@@ -57,6 +64,8 @@ public class Main {
 		boolean maximized = false;
 		int width = 800;
 		int height = 600;
+		int x = -1;
+		int y = -1;
 		boolean alwaysOnTop = false;
 		boolean fullscreen = false;
 
@@ -72,6 +81,9 @@ public class Main {
 				mppass = arg.substring(9);
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
+			} else if (arg.startsWith("--additional-jar=")) {
+				String param = arg.substring(17);
+				additionalJars.addAll(Arrays.asList(param.split(",")));
 			} else if (arg.equals("--no-frame")) {
 				noFrame = true;
 			} else if (arg.startsWith("--parent-dir=")) {
@@ -97,6 +109,10 @@ public class Main {
 				width = Integer.parseInt(arg.substring(8));
 			} else if (arg.equals("--height=")) {
 				height = Integer.parseInt(arg.substring(9));
+			} else if (arg.equals("--x=")) {
+				x = Integer.parseInt(arg.substring(4));
+			} else if (arg.equals("--y=")) {
+				y = Integer.parseInt(arg.substring(4));
 			} else if (arg.equals("--maximized")) {
 				maximized = true;
 			} else if (arg.equals("--always-on-top")) {
@@ -165,6 +181,28 @@ public class Main {
 			width = 800;
 		}
 
+		// Load the launcher
+		if (!additionalJars.isEmpty()) {
+			try {
+				// This might fix issues for Mods which assume that they
+				// are loaded via the real launcher...not sure, thought adding
+				// it would be a good idea.
+				List<URL> urls = new ArrayList<URL>();
+				for (String item : additionalJars) {
+					urls.add(new File(item).toURI().toURL());
+				}
+				if (!extendClassLoaders(urls.toArray(new URL[urls.size() - 1]))) {
+					System.err.println("Failed to inject additional jars!");
+					return;
+				}
+			} catch (MalformedURLException ex) {
+				System.err.println("Failed to load additional jars!");
+				System.err.println(ex);
+				return;
+			}
+
+		}
+
 		// Create the applet.
 		ContainerApplet container = new ContainerApplet();
 
@@ -175,18 +213,23 @@ public class Main {
 		}
 		container.setMpPass(mppass);
 		container.setSessionId(sessionId);
-
-		// Create and setup the frame.
+		// Create and set up the frame.
 		ContainerFrame frame = new ContainerFrame(title);
 		if (fullscreen) {
 			Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
 			frame.setAlwaysOnTop(true);
 			frame.setUndecorated(true);
 			frame.setSize(dimensions.width, dimensions.height);
+			frame.setLocation(0, 0);
 		} else {
 			frame.setAlwaysOnTop(alwaysOnTop);
 			frame.setUndecorated(noFrame);
 			frame.setSize(width, height);
+
+			// It is more likely that no location is set...I think.
+			frame.setLocation(
+					x == -1 ? frame.getX() : x,
+					y == -1 ? frame.getY() : y);
 			if (maximized) {
 				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 			}
@@ -205,6 +248,43 @@ public class Main {
 			// Exit just to be sure.
 			System.exit(0);
 		}
+	}
+
+	/**
+	 * This is mostly from here: http://stackoverflow.com/questions/252893/how-do-you-change-the-classpath-within-java
+	 * @param url
+	 * @return
+	 */
+	private static boolean extendClassLoaders(URL[] urls) {
+		// Extend the ClassLoader of the current thread.
+		URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+		Thread.currentThread().setContextClassLoader(loader);
+
+		// Extend the SystemClassLoader...this is needed for mods which will
+		// use the WhatEver.getClass().getClassLoader() method to retrieve
+		// a ClassLoader.
+		URLClassLoader systemLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+
+		try {
+			Method addURLMethod = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+			addURLMethod.setAccessible(true);
+
+			for (URL url : urls) {
+				addURLMethod.invoke(systemLoader, url);
+			}
+
+			return true;
+		} catch (NoSuchMethodException ex) {
+			System.err.println(ex);
+		} catch (SecurityException ex) {
+			System.err.println(ex);
+		} catch (IllegalAccessException ex) {
+			System.err.println(ex);
+		} catch (InvocationTargetException ex) {
+			System.err.println(ex);
+		}
+
+		return false;
 	}
 
 	private static void printVersion() {
@@ -231,6 +311,10 @@ public class Main {
 		System.out.println("  --mppass=MPPASS          Set the mppass variable.");
 		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files");
 		System.out.println("                           of lwjgl.");
+		System.out.println("  --additional-jar=JAR     Load the specified jars.");
+		System.out.println("                           This might be needed by some mods.");
+		System.out.println("                           Specify multiple times or list separated");
+		System.out.println("                           with ','.");
 		System.out.println("  --parent-dir=DIRECTORY   Set the parent directory. This effectively");
 		System.out.println("                           changes the location of the .minecraft folder.");
 		System.out.println("  --port=PORT              Set the port of the server, if not set");
@@ -248,14 +332,18 @@ public class Main {
 		System.out.println("  --title=TITLE            Replace the window title.");
 		System.out.println("  --height=HEIGHT          The width of the window.");
 		System.out.println("  --width=WIDTH            The height of the window.");
+		System.out.println("  --x=X                    The x-location of the window.");
+		System.out.println("  --y=Y                    The y-location of the window.");
 		System.out.println("  --maximized              Maximize the window.");
 		System.out.println("  --no-frame               Remove the border of the window.");
 		System.out.println("  --always-on-top          Make the window stay above all others.");
 		System.out.println("  --fullscreen             Makes the window the same size as the");
-		System.out.println("                           specified monitor or the while desktop.");
+		System.out.println("                           specified monitor or the whole desktop.");
 		System.out.println("                           This is basically shorthand for");
 		System.out.println("                             --width=SCREENWIDTH");
 		System.out.println("                             --height=SCREENHEIGHT");
+		System.out.println("                             --x=0");
+		System.out.println("                             --y=0");
 		System.out.println("                             --no-frame");
 		System.out.println("                             --always-on-top");
 		System.out.println("                           This might yield odd results in multi-");

@@ -1,3 +1,14 @@
+0.7
+---
+
+ * Added more options:
+   * --fullscreen
+   * --always-on-top
+   * --additional-jar
+
+Please note that the --additional-jar feature might fail for you, that depends on the mod which tries to load additional classes and the method it uses. It *should* work for most cases.
+
+
 0.6
 ---
 
