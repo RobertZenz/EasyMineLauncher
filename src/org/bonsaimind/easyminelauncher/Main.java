@@ -115,11 +115,8 @@ public class Main {
 
 		// Check the arguments
 		if (jarDir.isEmpty() && jar.isEmpty()) {
-			printHelp();
-			return;
+			jarDir = new File(new File(System.getProperty("user.home"), ".minecraft").toString(), "bin").toString();
 		}
-
-		System.out.println(System.getProperty("user.home"));
 
 		if (jarDir.isEmpty()) {
 			jarDir = new File(jar).getParent();
