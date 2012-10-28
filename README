@@ -115,6 +115,12 @@ Or you can specify a list, whatever suits your needs:
 There's also the possibility that this might not work, drop an Issue with the mod and I'll have a look.
 
 
+ClassNotFoundException
+----------------------
+
+If you're using a mod and you're getting a `ClassNotFoundException: net.minecraft.Launcher` error, you need to specify the original Minecraft-Launcher with the `--additional-jar` option.
+
+
 Examples
 --------
 
