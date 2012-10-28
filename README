@@ -108,7 +108,7 @@ You can specify this either multiple times:
 
     --additional-jar=./first.jar --additional-jar=./second.jar --additional-jar=./third.jar
 
-Or you can specfiy a list, whatever suits your needs:
+Or you can specify a list, whatever suits your needs:
 
     --additional-jar=./first.jar,./second.jar,./third.jar
 
@@ -163,7 +163,7 @@ How do make your Minecraft portable, if you already have a `.minecraft` director
  
  7. Make the script executable, done.
  
-Okay, now to something more sopisticated, let's extract and split the `.minecraft` directory so that we can have multiple versions with ease (assuming you already have different versions and a `.minecraft` dir):
+Okay, now to something more sophisticated, let's extract and split the `.minecraft` directory so that we can have multiple versions with ease (assuming you already have different versions and a `.minecraft` dir):
 
  1. Create a directory as target, e.g. `~/Minecraft/`
  2. Create the following sub-directories: `bin`, `data`, `lwjgl` and `natives`
