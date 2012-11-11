@@ -134,7 +134,7 @@ Run `ant`.
 
 ### The hard way
 
-1. Create a manifest file `MANIFEST.MF` in the base directory with the following content:
+ 1. Create a manifest file `MANIFEST.MF` in the base directory with the following content:
 
         Manifest-Version: 1.0
         Main-Class: org.bonsaimind.easyminelauncher.Main
