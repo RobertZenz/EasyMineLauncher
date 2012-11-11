@@ -1,0 +1,37 @@
+<project name="EasyMineLauncher" default="dist" basedir=".">
+	<description>
+		A free and simple launcher for Minecraft.
+	</description>
+
+	<property name="src" value="src" />
+	<property name="build" value="build" />
+	<property name="dist" value="dist" />
+
+	<target name="clean"
+		description="Cleans the working directory from everything build related">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+	
+	<target name="init"
+		description="Sets up the current working directory.">
+		<mkdir dir="${build}" />
+		<mkdir dir="${dist}" />
+	</target>
+	
+	<target name="compile" depends="init"
+		description="Compiles all source files.">
+		<javac srcdir="${src}" destdir="${build}" />
+		<manifest file="MANIFEST.MF">
+			<attribute name="Main-Class" value="org.bonsaimind.easyminelauncher.Main" />
+		</manifest>
+	</target>
+	
+	<target name="dist" depends="compile"
+		description="Creates the jar.">
+		<jar
+			jarfile="${dist}/EasyMineLauncher.jar"
+			basedir="${build}"
+			manifest="MANIFEST.MF" />
+	</target>
+</project>
