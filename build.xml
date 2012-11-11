@@ -29,9 +29,7 @@
 	
 	<target name="dist" depends="compile"
 		description="Creates the jar.">
-		<jar
-			jarfile="${dist}/EasyMineLauncher.jar"
-			basedir="${build}"
+		<jar jarfile="${dist}/EasyMineLauncher.jar" basedir="${build}"
 			manifest="MANIFEST.MF" />
 	</target>
 </project>
