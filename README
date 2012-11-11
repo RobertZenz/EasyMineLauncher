@@ -121,6 +121,33 @@ ClassNotFoundException
 If you're using a mod and you're getting a `ClassNotFoundException: net.minecraft.Launcher` error, you need to specify the original Minecraft-Launcher with the `--additional-jar` option.
 
 
+Great...so how do I compile this?
+---------------------------------
+
+### The easy way
+
+Download the ready-to-use jar from the Download-Section on GitHub.
+
+### The normal way
+
+Run `ant`.
+
+### The hard way
+
+1. Create a manifest file `MANIFEST.MF` in the base directory with the following content:
+
+        Manifest-Version: 1.0
+        Main-Class: org.bonsaimind.easyminelauncher.Main
+
+ 2. Execute the following commands:
+
+        $ mkdir build dist
+        $ javac -d build src/org/bonsaimind/easyminelauncher/*
+        $ jar -cvfm dist/EasyMineLauncher.jar MANIFEST.MF -C build build/org/bonsaimind/easyminelauncher/*
+
+ 3. Find the ready-to-use jar in `dist`.
+
+
 Examples
 --------
 
