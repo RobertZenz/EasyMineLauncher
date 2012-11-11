@@ -115,12 +115,6 @@ Or you can specify a list, whatever suits your needs:
 There's also the possibility that this might not work, drop an Issue with the mod and I'll have a look.
 
 
-ClassNotFoundException
-----------------------
-
-If you're using a mod and you're getting a `ClassNotFoundException: net.minecraft.Launcher` error, you need to specify the original Minecraft-Launcher with the `--additional-jar` option.
-
-
 Great...so how do I compile this?
 ---------------------------------
 
@@ -226,3 +220,11 @@ Okay, now to something more sophisticated, let's extract and split the `.minecra
         ./Launcher.sh VERSION
     
  10. Repeat steps 3 and 9 to add further versions.
+
+
+Problems? Let's see...
+----------------------
+
+### ClassNotFoundException
+
+If you're using a mod and you're getting a `ClassNotFoundException: net.minecraft.Launcher` error, you need to specify the original Minecraft-Launcher with the `--additional-jar` option.
