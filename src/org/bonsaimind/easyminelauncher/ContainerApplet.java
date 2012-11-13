@@ -65,6 +65,8 @@ public class ContainerApplet extends Applet
 		parameters.put("server", null);
 		parameters.put("port", null);
 		parameters.put("sessionid", "0");
+		parameters.put("loadmap_user", "Username");
+		parameters.put("loadmap_id", "0");
 	}
 
 	public void appletResize(int width, int height) {
@@ -236,6 +238,7 @@ public class ContainerApplet extends Applet
 	 */
 	public void setUsername(String username) {
 		parameters.put("username", username);
+		parameters.put("loadmap_user", username);
 	}
 
 	/**
