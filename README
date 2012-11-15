@@ -68,6 +68,8 @@ Here's the output from `--help`:
       --title=TITLE            Replace the window title.
       --height=HEIGHT          The width of the window.
       --width=WIDTH            The height of the window.
+      --x=X                    The x-location of the window.
+      --y=Y                    The y-location of the window.
       --maximized              Maximize the window.
       --no-frame               Remove the border of the window.
       --always-on-top          Make the window stay above all others.
