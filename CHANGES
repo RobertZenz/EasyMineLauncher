@@ -1,3 +1,18 @@
+0.8
+---
+
+ * Added even more options:
+   * --x
+   * --y
+ * Added build-script for ant
+ * Fixed hanging/not closable window
+ * Fixed possible location issue with --fullscreen
+
+I've tested compatibility with versions through Beta, Alpha back to Indev and was able to launch all versions I got a hold off.
+
+Also, if you don't specify any parameters with this version, it will fall back to your Default-Minecraft install and launch that.
+
+
 0.7
 ---
 
