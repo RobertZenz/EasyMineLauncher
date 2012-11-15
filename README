@@ -73,11 +73,13 @@ Here's the output from `--help`:
       --maximized              Maximize the window.
       --no-frame               Remove the border of the window.
       --always-on-top          Make the window stay above all others.
-      --fullscreen             Makes the window the same size as the
-                               specified monitor or the whole desktop.
+      --fullscreen             Makes the window the same size as
+                               the whole desktop.
                                This is basically shorthand for
                                  --width=SCREENWIDTH
                                  --height=SCREENHEIGHT
+                                 --x=0
+                                 --y=0
                                  --no-frame
                                  --always-on-top
                                This might yield odd results in multi-
