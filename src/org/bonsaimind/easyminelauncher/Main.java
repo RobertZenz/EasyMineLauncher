@@ -105,13 +105,13 @@ public class Main {
 			} else if (arg.equals("--version")) {
 				printVersion();
 				return;
-			} else if (arg.equals("--width=")) {
+			} else if (arg.startsWith("--width=")) {
 				width = Integer.parseInt(arg.substring(8));
-			} else if (arg.equals("--height=")) {
+			} else if (arg.startsWith("--height=")) {
 				height = Integer.parseInt(arg.substring(9));
-			} else if (arg.equals("--x=")) {
+			} else if (arg.startsWith("--x=")) {
 				x = Integer.parseInt(arg.substring(4));
-			} else if (arg.equals("--y=")) {
+			} else if (arg.startsWith("--y=")) {
 				y = Integer.parseInt(arg.substring(4));
 			} else if (arg.equals("--maximized")) {
 				maximized = true;
