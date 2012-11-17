@@ -1,7 +1,7 @@
 0.9
 ---
 
-The following parameters are now correctly recorgnized:
+The following parameters are now correctly recognized:
  * --width
  * --height
  * --x
