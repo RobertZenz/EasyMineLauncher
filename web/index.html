@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>EasyMineLauncher</title>
+<style type="text/css">
+/* 2009 - 2010 (c) | ez-css.org
+ * ez-start-2B ::  version 1.0 (03142010)
+ *
+ * Two columns with header and footer, sidebar on the left hand side, main content comes last. 
+ *
+ *
+ * You should replace the following rule with your own reset or base styles sheet
+ * visit: http://carsonified.com/blog/design/setting-rather-than-resetting-default-styling
+ */
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/*
+ * To set the width of the main wrapper
+ */
+ 
+#wrapper {width: 750px;}
+
+/*
+ * You can use this wrapper for the faux-column technique
+ * Check http://www.alistapart.com/articles/fauxcolumns/
+ */
+
+#body {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	border-bottom: 1px solid #555;
+	border-top:1px solid #555;
+}
+
+/*
+ * This element needs a width
+ */
+
+#aside {
+	width: 20%; 
+	padding: 15px 15px 15px 0;
+}
+
+/*
+ * Unlike the first first column, this element does *not* need a width
+ */
+
+#article {padding: 15px 0 15px 15px;}
+
+
+
+/**********************************************************************************
+ Below this comment are the core rules, there should be no need to edit any of them
+ **********************************************************************************
+ *
+ * auto-centering in IE 5
+ * we reset this value in the next rule so content is left aligned. 
+ */
+ 
+body {text-align: center;}
+
+/* 
+ * margin "auto" is to center this element (we set the width in a separate rule near the top of this styles sheet).
+ * "text-align" is to reset the declaration from "body".
+ * "inline:block" is to create a block-formatting context (the "width" does that in IE).
+ */
+
+#wrapper {
+	margin-right: auto;
+	margin-left: auto;
+	text-align: left;
+	display: inline-block;
+}
+
+/*
+ * this is the clearfix method
+ * we rely on this to contain floats in these elements 
+ */
+ 
+#header:after,
+#body:after,
+#footer:after {
+      content: ".";
+      display: block;
+      height: 0;
+      clear: both;
+      visibility: hidden;
+}
+
+/*
+ * hacks for IE
+ * "min-height" triggers "hasLayout" in IE 7, 
+ * "height" is the trigger for IE 5 and 6.
+ */
+
+#header,
+#body,
+#article,
+#footer {min-height: 0;}    
+* html #header,
+* html #body,
+* html #article,
+* html #footer {height: 1%;}  
+
+/*
+ * this element must create a new block formatting context.
+ * by default, we rely on "overflow:hidden", but if this creates an issue with your design, then apply to this element one of the following rules 
+ * ez-oa
+ * ez-dt 
+ * ez-it
+ * ez-tc
+ * ez-ib
+ */
+ 
+#article {overflow: hidden;}
+
+/*
+ * rules to apply to the second column (#article) if the styling above (overflow:hidden) creates issues with your design
+ */
+
+.ez-oa {overflow: visible; overflow: auto;}
+.ez-dt {overflow: visible; display: table;}
+.ez-it {overflow: visible; display: inline-table;}
+.ez-tc {overflow: visible; display: table-cell;}
+.ez-ib {overflow: visible; display: inline-block;}
+ 
+/* 
+ * 1st column
+ * the negative margin is to allow the border of the two columns to overlap
+ */
+ 
+#aside {
+	float: left;
+	margin-right: -1px;
+}
+
+/* 
+ * the following fixes the "3px jog bug"
+ */
+
+* html #aside {margin-right: -4px;}
+
+/**********************************************************************************
+ ***   The above are core rules, there should be no need to edit any of them    ***
+**********************************************************************************/
+</style>
+
+<style type="text/css">
+	body {
+		background-color: #3465a4;
+		color: #2e3436;
+	}
+	
+	a {
+		color: #204a87;
+		text-decoration: none;
+	}
+	
+	div {
+		border-radius: 1em;
+		background-color: #eeeeec;
+		margin: 1em;
+	}
+	
+	li {
+		margin-left: 2em;
+	}
+	
+	#spacer {
+		margin-top: 1em;
+	}
+</style>
+
+</head>
+<body>
+
+<a href="https://github.com/RobertZenz/EasyMineLauncher"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+
+<!-- ez-start-2B -->
+<div id="wrapper">
+	<div id="header">
+		<h1>EasyMineLauncher</h1>
+		<p>A free and simple Minecraft-Launcher.</p> 
+	</div>
+	<div id="body">
+		<div id="aside">
+			<h2>Downloads</h2>
+			<p>
+				<ul>
+					<li><a href="https://github.com/downloads/RobertZenz/EasyMineLauncher/EasyMineLauncher_v0.9.jar">Version 0.9</a></li>
+					<li><a href="https://github.com/downloads/RobertZenz/EasyMineLauncher/EasyMineLauncher_v0.8.jar">Version 0.8</a></li>
+					<li><a href="https://github.com/downloads/RobertZenz/EasyMineLauncher/EasyMineLauncher_v0.7.jar">Version 0.7</a></li>
+					<li><a href="https://github.com/downloads/RobertZenz/EasyMineLauncher/EasyMineLauncher.jar">Version 0.6</a></li>
+				</ul>
+			</p>				 
+      </div>
+  	<div id="article">
+  		<h2>What it does:</h2>
+  		<ul>
+			<li>Removes the need to login if you just want to play offline or on a private server</li>
+			<li>There's no check for an update, you're directly catapulted to the main menu or connected to a server</li>
+			<li>Additional parameters (f.e. start as maximized window or loading of certain versions from different directories)</li>
+		</ul>
+
+		<h2 id="spacer">What it does not:</h2>
+			<li>Remove the need to authenticate at servers if they demand it</li>
+			<li>Loading and applying updates</li>
+    		<li>Lets you play Minecraft for free, you'll still need to get an account and download the binaries</li>
+
+		<h2 id="spacer">How does it work?</h2>
+			<p>Basically this is just mimicking the behavior of the official launcher, except that it removes the online authentication and the update process. I figured most of that out with Trial & Error, that's why it's looking a little bit crude and has debugging output all over the place.</p>
+			<p id="spacer">Please consult the <a href="https://github.com/RobertZenz/EasyMineLauncher/blob/master/README">README</a> for a thorough documentation on the software.</p>
+     </div>
+  </div>
+	<div id="footer">
+		<h2>License</h2>
+		<p>EasyMineLauncher is a free launcher for the popular game <a href="https://minecraft.net/">Minecraft</a>. It is <a href="https://github.com/RobertZenz/EasyMineLauncher/blob/master/LICENSE">licensed under a 2-clause-BSD</a> and can be found on <a href="https://github.com/RobertZenz/EasyMineLauncher">GitHub</a>.</p> 
+	</div>
+</div>
+</body>
+</html>
+
