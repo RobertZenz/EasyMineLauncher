@@ -67,6 +67,7 @@ public class ContainerApplet extends Applet
 		parameters.put("sessionid", "0");
 		parameters.put("loadmap_user", "Username");
 		parameters.put("loadmap_id", "0");
+		parameters.put("demo", "false");
 	}
 
 	public void appletResize(int width, int height) {
@@ -196,6 +197,13 @@ public class ContainerApplet extends Applet
 		minecraftApplet.init();
 	}
 
+	/**
+	 * Trigger the demo mode.
+	 */
+	public void setDemo(boolean demo) {
+		parameters.put("demo", Boolean.toString(demo));
+	}
+	
 	/**
 	 * Set the mppass variable...not sure what it does.
 	 * @param pass

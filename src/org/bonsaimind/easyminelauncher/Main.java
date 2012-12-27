@@ -54,6 +54,7 @@ public class Main {
 		List<String> additionalJars = new ArrayList<String>();
 		boolean noFrame = false;
 		List<String> options = new ArrayList<String>();
+		boolean demo = false;
 		String parentDir = "";
 		String port = null;
 		String server = null;
@@ -102,6 +103,8 @@ public class Main {
 				title = arg.substring(8);
 			} else if (arg.startsWith("--username=")) {
 				username = arg.substring(11);
+			} else if (arg.equals("--demo")) {
+				demo = true;
 			} else if (arg.equals("--version")) {
 				printVersion();
 				return;
@@ -211,6 +214,7 @@ public class Main {
 		ContainerApplet container = new ContainerApplet();
 
 		// Pass arguments to the applet.
+		container.setDemo(demo);
 		container.setUsername(username);
 		if (server != null) {
 			container.setServer(server, port != null ? port : "25565");
@@ -331,6 +335,8 @@ public class Main {
 		System.out.println("  --session-id=SESSIONID   Set the session id.");
 		System.out.println("  --set-option=NAME:VALUE  Set this option in the options.txt file.");
 		System.out.println("  --username=USERNAME      Set the username to user.");
+		System.out.println("  --demo                   Trigger Demo-Mode. This might break");
+		System.out.println("                           other stuff (no Multiplayer f.e.).");
 
 		System.out.println("");
 		System.out.println("  --title=TITLE            Replace the window title.");

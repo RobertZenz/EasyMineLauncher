@@ -64,6 +64,8 @@ Here's the output from `--help`:
                                only the filename (including extension).
                                Use 'Default' for default.
       --username=USERNAME      Set the username to user.
+      --demo                   Trigger Demo-Mode. This might break
+                               other stuff (no Multiplayer f.e.).
     
       --title=TITLE            Replace the window title.
       --height=HEIGHT          The width of the window.
