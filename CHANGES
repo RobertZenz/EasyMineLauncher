@@ -1,3 +1,12 @@
+0.10
+----
+
+ * Added more options:
+   * --demo
+
+This version should add compatibility with Forge ModLoader.
+
+
 0.9
 ---
 
