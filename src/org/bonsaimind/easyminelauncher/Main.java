@@ -180,7 +180,7 @@ public class Main {
 		if (width <= 0) {
 			width = 800;
 		}
-
+		
 		// Load the launcher
 		if (!additionalJars.isEmpty()) {
 			try {
@@ -203,6 +203,10 @@ public class Main {
 
 		}
 
+		// Let's tell the Forge ModLoader (and others) that it is supposed
+		// to load our applet and not that of the official launcher.
+		System.setProperty("minecraft.applet.WrapperClass", "org.bonsaimind.easyminelauncher.ContainerApplet");
+		
 		// Create the applet.
 		ContainerApplet container = new ContainerApplet();
 

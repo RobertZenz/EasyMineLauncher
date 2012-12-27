@@ -139,7 +139,7 @@ public class ContainerApplet extends Applet
 	 * @return
 	 */
 	public boolean loadJarsAndApplet(String jar, String lwjglDir) {
-		if(new File(jar).isDirectory()) {
+		if (new File(jar).isDirectory()) {
 			jar = new File(jar, "minecraft.jar").getAbsolutePath();
 		}
 
@@ -158,16 +158,7 @@ public class ContainerApplet extends Applet
 			URLClassLoader loader = new URLClassLoader(urls);
 
 			// Create the MinecraftApplet
-			minecraftApplet = (Applet) loader.loadClass("net.minecraft.client.MinecraftApplet").newInstance();
-
-			// Set the size, otherwise LWJGL will fail to initialize the Display.
-			minecraftApplet.setSize(getWidth(), getHeight());
-
-			// We're it's...stub...
-			minecraftApplet.setStub(this);
-
-			// Add it...what else?
-			add(minecraftApplet, "Center");
+			setMinecraftApplet((Applet) loader.loadClass("net.minecraft.client.MinecraftApplet").newInstance());
 
 			return true;
 		} catch (ClassNotFoundException ex) {
@@ -190,7 +181,7 @@ public class ContainerApplet extends Applet
 	public void loadNatives(String nativeDir) {
 		// This fixes issues on a certain OS...
 		nativeDir = new File(nativeDir).getAbsolutePath();
-		
+
 		System.out.println("Loading natives from: " + nativeDir);
 
 		System.setProperty("org.lwjgl.librarypath", nativeDir);
@@ -259,5 +250,42 @@ public class ContainerApplet extends Applet
 		}
 
 		super.stop();
+	}
+
+	/**
+	 * Replace the current MinecraftApplet with the given applet.
+	 * This will also call Applet.init().
+	 * @param applet 
+	 */
+	public void replace(Applet applet) {
+		setMinecraftApplet(applet);
+		
+		// Init the applet we just got.
+		minecraftApplet.init();
+	}
+	
+	/**
+	 * Replace the current MinecraftApplet with the given applet.
+	 * @param applet 
+	 */
+	private void setMinecraftApplet(Applet applet) {
+		// Let's make sure that we do not collide with something.
+		if(minecraftApplet != null) {
+			remove(minecraftApplet);
+			minecraftApplet.stop();
+			minecraftApplet.destroy();
+			minecraftApplet = null;
+		}
+		
+		minecraftApplet = applet;
+
+		// Set the size, otherwise LWJGL will fail to initialize the Display.
+		minecraftApplet.setSize(getWidth(), getHeight());
+
+		// We're it's...stub...
+		minecraftApplet.setStub(this);
+
+		// Add it...what else?
+		add(minecraftApplet, "Center");
 	}
 }
