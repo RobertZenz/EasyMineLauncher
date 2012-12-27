@@ -27,6 +27,7 @@
  */
 package org.bonsaimind.easyminelauncher;
 
+import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.HeadlessException;
@@ -38,7 +39,7 @@ import java.awt.event.WindowListener;
  */
 public class ContainerFrame extends Frame {
 
-	private ContainerApplet containerApplet;
+	private Applet containerApplet;
 
 	public ContainerFrame(String title) throws HeadlessException {
 		super(title);
@@ -49,7 +50,7 @@ public class ContainerFrame extends Frame {
 			}
 
 			public void windowClosing(WindowEvent e) {
-				ContainerApplet container = ContainerFrame.this.containerApplet;
+				Applet container = ContainerFrame.this.containerApplet;
 				if (container != null) {
 					container.stop();
 					container.destroy();
@@ -82,7 +83,7 @@ public class ContainerFrame extends Frame {
 	 * Get the ContainerApplet.
 	 * @return The ContainerApplet.
 	 */
-	public ContainerApplet getContainerApplet() {
+	public Applet getContainerApplet() {
 		return containerApplet;
 	}
 
