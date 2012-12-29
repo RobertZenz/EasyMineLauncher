@@ -151,6 +151,7 @@ public class Main {
 		}
 		if (!parentDir.isEmpty()) {
 			System.setProperty("user.home", parentDir);
+			System.setProperty("minecraft.applet.TargetDirectory", parentDir);
 		} else {
 			parentDir = System.getProperty("user.home");
 		}
