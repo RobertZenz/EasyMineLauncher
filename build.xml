@@ -21,7 +21,8 @@
 	
 	<target name="compile" depends="init"
 		description="Compiles all source files.">
-		<javac srcdir="${src}" destdir="${build}" />
+		<javac srcdir="${src}" destdir="${build}"
+			includeantruntime="false" />
 		<manifest file="MANIFEST.MF">
 			<attribute name="Main-Class" value="org.bonsaimind.easyminelauncher.Main" />
 		</manifest>
