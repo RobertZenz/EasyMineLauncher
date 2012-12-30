@@ -151,6 +151,8 @@ public class Main {
 		}
 		if (!parentDir.isEmpty()) {
 			System.setProperty("user.home", parentDir);
+			
+			// This is needed for the Forge ModLoader and maybe others.
 			System.setProperty("minecraft.applet.TargetDirectory", parentDir);
 		} else {
 			parentDir = System.getProperty("user.home");
