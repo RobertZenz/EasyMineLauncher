@@ -26,6 +26,12 @@ How does it work?
 Basically this is just mimicking the behavior of the official launcher, except that it removes the online authentication and the update process. I figured most of that out with Trial & Error, that's why it's looking a little bit crude and has debugging output all over the place.
 
 
+Where to get it?
+----------------
+
+Ready-to-use jars are available from [the Download-Section](http://easyminelauncher.bonsaimind.org/).
+
+
 What can I do with it?
 ----------------------
 
