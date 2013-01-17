@@ -126,6 +126,10 @@ Or you can specify a list, whatever suits your needs:
 
 There's also the possibility that this might not work, drop an Issue with the mod and I'll have a look.
 
+### --parent-dir=PARENTDIR
+
+This will allow you to change the location of the minecraft directory which is normally located in `~/`. Please be aware that this will only change the location of the `.minecraft` directory, f.e. `/mnt/data/Minecraft/Data/` becomes `/mnt/data/Minecraft/Data/.minecraft/`.
+
 
 Great...so how do I compile this?
 ---------------------------------
@@ -209,7 +213,7 @@ Okay, now to something more sophisticated, let's extract and split the `.minecra
  3. Copy `~/.minecraft/bin/minecraft.jar` to `~/Minecraft/bin/VERSION.jar`
  4. Copy `~/.minecraft/bin/*.jar` to `~/Minecraft/lwjgl/*.jar`
  5. Copy `~/.minecraft/bin/natives/*.so` to `~/Minecraft/natives/*.so`
- 6. Copy everything from `~/.minecraft/` to `~/Minecraft/data/` except the `bin` directory
+ 6. Copy everything from `~/.minecraft/` to `~/Minecraft/.minecraft/` except the `bin` directory
  7. Copy the `EasyMineLauncher.jar` into `~/Minecraft/`
  8. Create the `Launcher.sh` script and make it executable:
  
