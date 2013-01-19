@@ -177,7 +177,7 @@ public class Main {
 			// Reset the path in case we used an external options.txt.
 			optionsFile.setPath(parentDir);
 		} else {
-			System.out.println("Failed to read options.txt from \"" + optionsFile + "\" or it does not exist!");
+			System.out.println("Failed to read options.txt from \"" + optionsFile.getPath() + "\" or it does not exist!");
 		}
 
 		// Set the texturepack.
