@@ -48,20 +48,25 @@ public class OptionsFile {
 	List<String> values = new ArrayList<String>();
 
 	public OptionsFile(String pathOrFile) {
-		this.file = new File(pathOrFile);
-		if (this.file.isDirectory()) {
-			this.file = new File(pathOrFile, "options.txt");
-		}
+		setPath(pathOrFile);
 	}
 
 	/**
-	 * Check fit ehf ile exists.
+	 * Check if the file exists.
 	 * @return
 	 */
 	public boolean exists() {
 		return file.exists();
 	}
 
+	/**
+	 * Get the path to the options.txt file.
+	 * @return 
+	 */
+	public String getPath() {
+		return file.getAbsolutePath();
+	}
+	
 	/**
 	 * Read the file.
 	 * @return
@@ -97,10 +102,22 @@ public class OptionsFile {
 		return false;
 	}
 
+	/**
+	 * Set the path to the options.txt file.
+	 * @param key
+	 * @param value 
+	 */
 	public void setOption(String key, String value) {
 		values.set(keys.indexOf(key), value);
 	}
-	
+
+	public final void setPath(String pathOrFile) {
+		this.file = new File(pathOrFile);
+		if (this.file.isDirectory()) {
+			this.file = new File(pathOrFile, "options.txt");
+		}
+	}
+
 	public void setTexturePack(String texturepackFilename) {
 		setOption("skin", texturepackFilename);
 	}
