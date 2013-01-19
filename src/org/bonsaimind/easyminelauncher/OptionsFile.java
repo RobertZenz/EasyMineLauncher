@@ -121,6 +121,9 @@ public class OptionsFile {
 
 	public final void setPath(String pathOrFile) {
 		this.file = new File(pathOrFile);
+		if(!this.file.isAbsolute()) {
+			this.file = this.file.getAbsoluteFile();
+		}
 		if (this.file.isDirectory()) {
 			this.file = new File(pathOrFile, "options.txt");
 		}
