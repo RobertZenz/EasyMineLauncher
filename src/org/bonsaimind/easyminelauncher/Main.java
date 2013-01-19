@@ -53,6 +53,7 @@ public class Main {
 		String nativeDir = "";
 		List<String> additionalJars = new ArrayList<String>();
 		boolean noFrame = false;
+		String optionsFileFrom = "";
 		List<String> options = new ArrayList<String>();
 		boolean demo = false;
 		String parentDir = "";
@@ -95,6 +96,8 @@ public class Main {
 				server = arg.substring(9);
 			} else if (arg.startsWith("--session-id=")) {
 				sessionId = arg.substring(13);
+			} else if (arg.startsWith("--options-file=")) {
+				optionsFileFrom = arg.substring(15);
 			} else if (arg.startsWith("--set-option=")) {
 				options.add(arg.substring(13));
 			} else if (arg.startsWith("--texturepack=")) {
@@ -159,6 +162,16 @@ public class Main {
 		}
 		parentDir = new File(parentDir, ".minecraft").toString();
 
+		if(!optionsFileFrom.isEmpty()) {
+			OptionsFile optionsFile = new OptionsFile(optionsFileFrom);
+			if(optionsFile.exists() && optionsFile.read()) {
+				optionsFile.setPath(parentDir);
+				optionsFile.write();
+			} else {
+				System.out.println("Failed to read options.txt from \"" + optionsFile + "\" or it does not exist!");
+			}
+		}
+		
 		if (!texturepack.isEmpty()) {
 			OptionsFile optionsFile = new OptionsFile(parentDir);
 			if (optionsFile.exists() && optionsFile.read()) {
@@ -336,6 +349,9 @@ public class Main {
 		System.out.println("  --server=SERVER          Set the address of the server which");
 		System.out.println("                           directly to connect to.");
 		System.out.println("  --session-id=SESSIONID   Set the session id.");
+		System.out.println("  --options-file=FILE      Copy the options.txt from this location.");
+		System.out.println("                           Please be aware that this overwrites the");
+		System.out.println("                           options.txt in the Minecraft directory.");
 		System.out.println("  --set-option=NAME:VALUE  Set this option in the options.txt file.");
 		System.out.println("  --username=USERNAME      Set the username to user.");
 		System.out.println("  --demo                   Trigger Demo-Mode. This might break");
