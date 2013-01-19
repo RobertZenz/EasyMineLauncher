@@ -24,7 +24,8 @@
   --session-id=SESSIONID   Set the session id.
   --options-file=FILE      Copy the options.txt from this location.
                            Please be aware that this overwrites the options.txt
-                           in the Minecraft directory.
+                           in the Minecraft directory. This will also be done
+                           before --texturepack and --set-option.
   --set-option=NAME:VALUE  Set this option in the options.txt file.
   --username=USERNAME      Set the username to user.
   --demo                   Trigger Demo-Mode. This might break other stuff.
