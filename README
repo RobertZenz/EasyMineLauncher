@@ -42,56 +42,58 @@ Here's the output from `--help`:
     Usage: EasyMineLauncher.jar [OPTION]
     Launch Minecraft directly.
     
-      --help                   Prints this help.
-      --version                Prints the version.
-    
-      --jar-dir=DIRECTORY      Set the directory for the jar files.
-      --jar=MINECRAFT.JAR      Set the path to the minecraft.jar.
-                               Either specify jar-dir or this.
-      --additional-jar=JAR     Load the specified jars.
-                               This might be needed by some mods.
-                               Specify multiple times or list separated
-                               with ','.
-      --lwjgl-dir=DIRECTORY    Set the directory for the jar files
-                               of lwjgl (lwjgl.jar, lwjgl_util.jar,
-                               and jinput.jar)
-      --mppass=MPPASS          Set the mppass variable.
-      --native-dir=DIRECTORY   Set the directory for the native files
-                               of lwjgl.
-      --parent-dir=DIRECTORY   Set the parent directory. This effectively
-                               changes the location of the .minecraft folder.
-      --port=PORT              Set the port of the server, if not set
-                               it will revert to 25565.
-      --server=SERVER          Set the address of the server which
-                               directly to connect to.
-      --session-id=SESSIONID   Set the session id.
-      --set-option=NAME:VALUE  Set this option in the options.txt file.
-      --texturepack=FILE       Set the texturepack to use, this takes
-                               only the filename (including extension).
-                               Use 'Default' for default.
-      --username=USERNAME      Set the username to user.
-      --demo                   Trigger Demo-Mode. This might break
-                               other stuff (no Multiplayer f.e.).
-    
-      --title=TITLE            Replace the window title.
-      --height=HEIGHT          The width of the window.
-      --width=WIDTH            The height of the window.
-      --x=X                    The x-location of the window.
-      --y=Y                    The y-location of the window.
-      --maximized              Maximize the window.
-      --no-frame               Remove the border of the window.
-      --always-on-top          Make the window stay above all others.
-      --fullscreen             Makes the window the same size as
-                               the whole desktop.
-                               This is basically shorthand for
-                                 --width=SCREENWIDTH
-                                 --height=SCREENHEIGHT
-                                 --x=0
-                                 --y=0
-                                 --no-frame
-                                 --always-on-top
-                               This might yield odd results in multi-
-                               monitor environments.
+    --help                   Prints this help.
+    --version                Prints the version.
+
+
+    --jar-dir=DIRECTORY      Set the directory for the jar files.
+    --jar=MINECRAFT.JAR      Set the path to the minecraft.jar.
+                             Either specify jar-dir or this.
+    --lwjgl-dir=DIRECTORY    Set the directory for the jar files
+                             of lwjgl (lwjgl.jar, lwjgl_util.jar, and jinput.jar)
+    --mppass=MPPASS          Set the mppass variable.
+    --native-dir=DIRECTORY   Set the directory for the native files of lwjgl.
+    --additional-jar=JAR     Load the specified jars.
+                             This might be needed by some mods.
+                             Specify multiple times or list separated with ','.
+    --parent-dir=DIRECTORY   Set the parent directory. This effectively changes
+                             the location of the .minecraft folder.
+    --port=PORT              Set the port of the server, if not set it will revert
+                             to 25565.
+    --texturepack=FILE       Set the texturepack to use, this takes only
+                             the filename (including extension).
+                             Use 'Default' for default.
+    --server=SERVER          Set the address of the server which directly
+                             to connect to.
+    --session-id=SESSIONID   Set the session id.
+    --options-file=FILE      Copy the options.txt from this location.
+                             Please be aware that this overwrites the options.txt
+                             in the Minecraft directory. This will also be done
+                             before --texturepack and --set-option.
+    --set-option=NAME:VALUE  Set this option in the options.txt file.
+    --username=USERNAME      Set the username to user.
+    --demo                   Trigger Demo-Mode. This might break other stuff.
+
+
+    --title=TITLE            Replace the window title.
+    --height=HEIGHT          The width of the window.
+    --width=WIDTH            The height of the window.
+    --x=X                    The x-location of the window.
+    --y=Y                    The y-location of the window.
+    --maximized              Maximize the window.
+    --no-frame               Remove the border of the window.
+    --always-on-top          Make the window stay above all others.
+    --fullscreen             Makes the window the same size as the whole desktop.
+                             This is basically shorthand for
+                               --width=SCREENWIDTH
+                               --height=SCREENHEIGHT
+                               --x=0
+                               --y=0
+                               --no-frame
+                               --always-on-top
+                             This might yield odd results in multi-monitor
+                             environments.
+
 
 You can also keep different versions around and launch them with ease, f.e. with such a directory/file-layout:
 
@@ -118,11 +120,11 @@ This will allow you to load other jars into memory. Please be aware that this do
 
 You can specify this either multiple times:
 
-    --additional-jar=./first.jar --additional-jar=./second.jar --additional-jar=./third.jar
+      --additional-jar=./first.jar --additional-jar=./second.jar --additional-jar=./third.jar
 
 Or you can specify a list, whatever suits your needs:
 
-    --additional-jar=./first.jar,./second.jar,./third.jar
+      --additional-jar=./first.jar,./second.jar,./third.jar
 
 There's also the possibility that this might not work, drop an Issue with the mod and I'll have a look.
 
@@ -200,9 +202,9 @@ How do make your Minecraft portable, if you already have a `.minecraft` director
         # Launcher.sh, /media/yourUsbStick/MinecraftPortable/
         
         java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
-        --jar-dir=./bin/ \
-        --parent-dir=./ \
-        --username=YourOfflineUsername
+          --jar-dir=./bin/ \
+          --parent-dir=./ \
+          --username=YourOfflineUsername
  
  7. Make the script executable, done.
  
@@ -221,12 +223,12 @@ Okay, now to something more sophisticated, let's extract and split the `.minecra
         # Launcher.sh, ~/Minecraft/
     
         java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar \
-        --jar=./bin/$1.jar \
-        --lwjgl-dir=./lwjgl/ \
-        --native-dir=./natives/ \
-        --parent-dir=./data/ \
-        --username=YourOfflineUsername \
-        --title=Minecraft\ $1
+          --jar=./bin/$1.jar \
+          --lwjgl-dir=./lwjgl/ \
+          --native-dir=./natives/ \
+          --parent-dir=./data/ \
+          --username=YourOfflineUsername \
+          --title=Minecraft\ $1
     
  9. Create a version specific script and make it executable:
  
