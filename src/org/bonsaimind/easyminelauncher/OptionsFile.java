@@ -66,7 +66,7 @@ public class OptionsFile {
 	public boolean isRead() {
 		return !keys.isEmpty() && !values.isEmpty();
 	}
-	
+
 	/**
 	 * Get the path to the options.txt file.
 	 * @return 
@@ -74,7 +74,7 @@ public class OptionsFile {
 	public String getPath() {
 		return file.getAbsolutePath();
 	}
-	
+
 	/**
 	 * Read the file.
 	 * @return
@@ -116,12 +116,16 @@ public class OptionsFile {
 	 * @param value 
 	 */
 	public void setOption(String key, String value) {
-		values.set(keys.indexOf(key), value);
+		if (keys.indexOf(key) >= 0) {
+			values.set(keys.indexOf(key), value);
+		} else {
+			System.err.println("Could not set option: " + key + "=" + value);
+		}
 	}
 
 	public final void setPath(String pathOrFile) {
 		this.file = new File(pathOrFile);
-		if(!this.file.isAbsolute()) {
+		if (!this.file.isAbsolute()) {
 			this.file = this.file.getAbsoluteFile();
 		}
 		if (this.file.isDirectory()) {
