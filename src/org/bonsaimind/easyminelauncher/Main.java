@@ -30,7 +30,11 @@ package org.bonsaimind.easyminelauncher;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -329,60 +333,17 @@ public class Main {
 		System.out.println("Launch Minecraft directly.");
 		System.out.println("");
 
-		System.out.println("  --help                   Prints this help.");
-		System.out.println("  --version                Prints the version.");
-		System.out.println("");
+		InputStream stream = Main.class.getResourceAsStream("/org/bonsaimind/easyminelauncher/help.txt");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-		System.out.println("  --jar-dir=DIRECTORY      Set the directory for the jar files.");
-		System.out.println("  --jar=MINECRAFT.JAR      Set the path to the minecraft.jar.");
-		System.out.println("                           Either specify jar-dir or this.");
-		System.out.println("  --lwjgl-dir=DIRECTORY    Set the directory for the jar files");
-		System.out.println("                           of lwjgl (lwjgl.jar, lwjgl_util.jar,");
-		System.out.println("                           and jinput.jar)");
-		System.out.println("  --mppass=MPPASS          Set the mppass variable.");
-		System.out.println("  --native-dir=DIRECTORY   Set the directory for the native files");
-		System.out.println("                           of lwjgl.");
-		System.out.println("  --additional-jar=JAR     Load the specified jars.");
-		System.out.println("                           This might be needed by some mods.");
-		System.out.println("                           Specify multiple times or list separated");
-		System.out.println("                           with ','.");
-		System.out.println("  --parent-dir=DIRECTORY   Set the parent directory. This effectively");
-		System.out.println("                           changes the location of the .minecraft folder.");
-		System.out.println("  --port=PORT              Set the port of the server, if not set");
-		System.out.println("                           it will revert to 25565.");
-		System.out.println("  --texturepack=FILE       Set the texturepack to use, this takes");
-		System.out.println("                           only the filename (including extension).");
-		System.out.println("                           Use 'Default' for default.");
-		System.out.println("  --server=SERVER          Set the address of the server which");
-		System.out.println("                           directly to connect to.");
-		System.out.println("  --session-id=SESSIONID   Set the session id.");
-		System.out.println("  --options-file=FILE      Copy the options.txt from this location.");
-		System.out.println("                           Please be aware that this overwrites the");
-		System.out.println("                           options.txt in the Minecraft directory.");
-		System.out.println("  --set-option=NAME:VALUE  Set this option in the options.txt file.");
-		System.out.println("  --username=USERNAME      Set the username to user.");
-		System.out.println("  --demo                   Trigger Demo-Mode. This might break");
-		System.out.println("                           other stuff (no Multiplayer f.e.).");
-
-		System.out.println("");
-		System.out.println("  --title=TITLE            Replace the window title.");
-		System.out.println("  --height=HEIGHT          The width of the window.");
-		System.out.println("  --width=WIDTH            The height of the window.");
-		System.out.println("  --x=X                    The x-location of the window.");
-		System.out.println("  --y=Y                    The y-location of the window.");
-		System.out.println("  --maximized              Maximize the window.");
-		System.out.println("  --no-frame               Remove the border of the window.");
-		System.out.println("  --always-on-top          Make the window stay above all others.");
-		System.out.println("  --fullscreen             Makes the window the same size as");
-		System.out.println("                           the whole desktop.");
-		System.out.println("                           This is basically shorthand for");
-		System.out.println("                             --width=SCREENWIDTH");
-		System.out.println("                             --height=SCREENHEIGHT");
-		System.out.println("                             --x=0");
-		System.out.println("                             --y=0");
-		System.out.println("                             --no-frame");
-		System.out.println("                             --always-on-top");
-		System.out.println("                           This might yield odd results in multi-");
-		System.out.println("                           monitor environments.");
+		String line;
+		try {
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+			}
+			reader.close();
+		} catch (IOException ex) {
+			System.err.println(ex);
+		}
 	}
 }
