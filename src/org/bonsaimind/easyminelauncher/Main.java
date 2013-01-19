@@ -173,7 +173,7 @@ public class Main {
 			optionsFile.setPath(optionsFileFrom);
 		}
 
-		if (!optionsFile.exists() || !optionsFile.read()) {
+		if (optionsFile.exists() && optionsFile.read()) {
 			// Reset the path in case we used an external options.txt.
 			optionsFile.setPath(parentDir);
 		} else {
