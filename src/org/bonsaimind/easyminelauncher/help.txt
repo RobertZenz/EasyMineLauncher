@@ -6,33 +6,28 @@
   --jar=MINECRAFT.JAR      Set the path to the minecraft.jar.
                            Either specify jar-dir or this.
   --lwjgl-dir=DIRECTORY    Set the directory for the jar files
-                           of lwjgl (lwjgl.jar, lwjgl_util.jar,
-                           and jinput.jar)
+                           of lwjgl (lwjgl.jar, lwjgl_util.jar, and jinput.jar)
   --mppass=MPPASS          Set the mppass variable.
-  --native-dir=DIRECTORY   Set the directory for the native files
-                           of lwjgl.
+  --native-dir=DIRECTORY   Set the directory for the native files of lwjgl.
   --additional-jar=JAR     Load the specified jars.
                            This might be needed by some mods.
-                           Specify multiple times or list separated
-                           with ','.
-  --parent-dir=DIRECTORY   Set the parent directory. This effectively
-                           changes the location of the .minecraft folder.
-  --port=PORT              Set the port of the server, if not set
-                           it will revert to 25565.
-  --texturepack=FILE       Set the texturepack to use, this takes
-                           only the filename (including extension).
+                           Specify multiple times or list separated with ','.
+  --parent-dir=DIRECTORY   Set the parent directory. This effectively changes
+                           the location of the .minecraft folder.
+  --port=PORT              Set the port of the server, if not set it will revert
+                           to 25565.
+  --texturepack=FILE       Set the texturepack to use, this takes only
+                           the filename (including extension).
                            Use 'Default' for default.
-  --server=SERVER          Set the address of the server which
-                           directly to connect to.
+  --server=SERVER          Set the address of the server which directly
+                           to connect to.
   --session-id=SESSIONID   Set the session id.
   --options-file=FILE      Copy the options.txt from this location.
-                           Please be aware that this overwrites the
-                           options.txt in the Minecraft directory.
+                           Please be aware that this overwrites the options.txt
+                           in the Minecraft directory.
   --set-option=NAME:VALUE  Set this option in the options.txt file.
   --username=USERNAME      Set the username to user.
-  --demo                   Trigger Demo-Mode. This might break
-                           other stuff (no Multiplayer f.e.).
-
+  --demo                   Trigger Demo-Mode. This might break other stuff.
 
   --title=TITLE            Replace the window title.
   --height=HEIGHT          The width of the window.
@@ -42,8 +37,7 @@
   --maximized              Maximize the window.
   --no-frame               Remove the border of the window.
   --always-on-top          Make the window stay above all others.
-  --fullscreen             Makes the window the same size as
-                           the whole desktop.
+  --fullscreen             Makes the window the same size as the whole desktop.
                            This is basically shorthand for
                              --width=SCREENWIDTH
                              --height=SCREENHEIGHT
@@ -51,5 +45,5 @@
                              --y=0
                              --no-frame
                              --always-on-top
-                           This might yield odd results in multi-
-                           monitor environments.
+                           This might yield odd results in multi-monitor
+                           environments.
