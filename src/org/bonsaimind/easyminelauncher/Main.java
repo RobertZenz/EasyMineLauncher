@@ -154,7 +154,7 @@ public class Main {
 		}
 		if (!parentDir.isEmpty()) {
 			System.setProperty("user.home", parentDir);
-			
+
 			// This is needed for the Forge ModLoader and maybe others.
 			System.setProperty("minecraft.applet.TargetDirectory", parentDir);
 		} else {
@@ -162,28 +162,20 @@ public class Main {
 		}
 		parentDir = new File(parentDir, ".minecraft").toString();
 
-		if(!optionsFileFrom.isEmpty()) {
+		if (!optionsFileFrom.isEmpty()) {
 			OptionsFile optionsFile = new OptionsFile(optionsFileFrom);
-			if(optionsFile.exists() && optionsFile.read()) {
+			if (optionsFile.exists() && optionsFile.read()) {
 				optionsFile.setPath(parentDir);
 				optionsFile.write();
 			} else {
 				System.out.println("Failed to read options.txt from \"" + optionsFile + "\" or it does not exist!");
 			}
 		}
-		
+
 		if (!texturepack.isEmpty()) {
 			OptionsFile optionsFile = new OptionsFile(parentDir);
 			if (optionsFile.exists() && optionsFile.read()) {
 				optionsFile.setTexturePack(texturepack);
-
-				// Set the options.
-				for (String option : options) {
-					int splitIdx = option.indexOf(":");
-					if (splitIdx > 0) { // we don't want not-named options either.
-						optionsFile.setOption(option.substring(0, splitIdx), option.substring(splitIdx + 1));
-					}
-				}
 
 				if (!optionsFile.write()) {
 					System.out.println("Failed to write options.txt!");
@@ -193,13 +185,29 @@ public class Main {
 			}
 		}
 
+		// Set the options.
+		if (!options.isEmpty()) {
+			OptionsFile optionsFile = new OptionsFile(optionsFileFrom);
+			if (optionsFile.exists() && optionsFile.read()) {
+				for (String option : options) {
+					int splitIdx = option.indexOf(":");
+					if (splitIdx > 0) { // we don't want not-named options either.
+						optionsFile.setOption(option.substring(0, splitIdx), option.substring(splitIdx + 1));
+					}
+				}
+				optionsFile.write();
+			} else {
+				System.out.println("Failed to read options.txt from \"" + optionsFile + "\" or it does not exist!");
+			}
+		}
+
 		if (height <= 0) {
 			height = 600;
 		}
 		if (width <= 0) {
 			width = 800;
 		}
-		
+
 		// Load the launcher
 		if (!additionalJars.isEmpty()) {
 			try {
@@ -225,7 +233,7 @@ public class Main {
 		// Let's tell the Forge ModLoader (and others) that it is supposed
 		// to load our applet and not that of the official launcher.
 		System.setProperty("minecraft.applet.WrapperClass", "org.bonsaimind.easyminelauncher.ContainerApplet");
-		
+
 		// Create the applet.
 		ContainerApplet container = new ContainerApplet();
 
