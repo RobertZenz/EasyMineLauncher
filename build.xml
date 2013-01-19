@@ -31,6 +31,8 @@
 	<target name="dist" depends="compile"
 		description="Creates the jar.">
 		<jar jarfile="${dist}/EasyMineLauncher.jar" basedir="${build}"
-			manifest="MANIFEST.MF" />
+			manifest="MANIFEST.MF">
+			<fileset dir="${src}" includes="org/bonsaimind/easyminelauncher/help.txt" />
+		</jar>
 	</target>
 </project>
