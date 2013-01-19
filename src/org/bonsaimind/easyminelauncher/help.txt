@@ -29,6 +29,7 @@
   --username=USERNAME      Set the username to user.
   --demo                   Trigger Demo-Mode. This might break other stuff.
 
+
   --title=TITLE            Replace the window title.
   --height=HEIGHT          The width of the window.
   --width=WIDTH            The height of the window.
