@@ -162,45 +162,44 @@ public class Main {
 		}
 		parentDir = new File(parentDir, ".minecraft").toString();
 
+
+		// Let's work with the options.txt, shall we?
+		OptionsFile optionsFile = new OptionsFile(parentDir);
 		if (!optionsFileFrom.isEmpty()) {
-			OptionsFile optionsFile = new OptionsFile(optionsFileFrom);
-			if (optionsFile.exists() && optionsFile.read()) {
-				optionsFile.setPath(parentDir);
-				optionsFile.write();
-			} else {
-				System.out.println("Failed to read options.txt from \"" + optionsFile + "\" or it does not exist!");
-			}
+			optionsFile.setPath(optionsFileFrom);
 		}
 
-		if (!texturepack.isEmpty()) {
-			OptionsFile optionsFile = new OptionsFile(parentDir);
-			if (optionsFile.exists() && optionsFile.read()) {
-				optionsFile.setTexturePack(texturepack);
+		if (!optionsFile.exists() || !optionsFile.read()) {
+			// Reset the path in case we used an external options.txt.
+			optionsFile.setPath(parentDir);
+		} else {
+			System.out.println("Failed to read options.txt from \"" + optionsFile + "\" or it does not exist!");
+		}
 
-				if (!optionsFile.write()) {
-					System.out.println("Failed to write options.txt!");
-				}
-			} else {
-				System.out.println("Failed to read options.txt or it does not exist!");
-			}
+		// Set the texturepack.
+		if (!texturepack.isEmpty() && optionsFile.isRead()) {
+			optionsFile.setTexturePack(texturepack);
 		}
 
 		// Set the options.
-		if (!options.isEmpty()) {
-			OptionsFile optionsFile = new OptionsFile(optionsFileFrom);
-			if (optionsFile.exists() && optionsFile.read()) {
-				for (String option : options) {
-					int splitIdx = option.indexOf(":");
-					if (splitIdx > 0) { // we don't want not-named options either.
-						optionsFile.setOption(option.substring(0, splitIdx), option.substring(splitIdx + 1));
-					}
+		if (!options.isEmpty() && optionsFile.isRead()) {
+			for (String option : options) {
+				int splitIdx = option.indexOf(":");
+				if (splitIdx > 0) { // we don't want not-named options either.
+					optionsFile.setOption(option.substring(0, splitIdx), option.substring(splitIdx + 1));
 				}
-				optionsFile.write();
-			} else {
-				System.out.println("Failed to read options.txt from \"" + optionsFile + "\" or it does not exist!");
 			}
 		}
 
+		// Now write back.
+		if (optionsFile.isRead()) {
+			if (!optionsFile.write()) {
+				System.out.println("Failed to write options.txt!");
+			}
+		}
+
+
+		// Some checks.
 		if (height <= 0) {
 			height = 600;
 		}
