@@ -163,17 +163,21 @@ Run `ant`.
 Examples
 --------
 
+Launch whatever is installed (same as hitting "Offline Mode" in the official launcher):
+
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar
+
 Launch the current version of Minecraft with a certain username:
 
-    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --username=MyAwesomeName
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --username=MyAwesomeName
 
-Launch the current version of Minecraft with an updated lwjgl version which lays in a different directory:
+Launch the current version of Minecraft with an updated lwjgl version which resides in a different directory:
 
-    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --lwjgl-dir=/home/user/updatedLWJGL/ --native-dir=/home/user/updatedLWJGL/native/ --username=MyNotSoAwesomeName --maximized
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --lwjgl-dir=/home/user/updatedLWJGL/ --native-dir=/home/user/updatedLWJGL/native/ --username=MyNotSoAwesomeName --maximized
     
 Launch the current version of Minecraft and directly connect to a server:
 
-    java -Xmx1536M -Xms1536M -jar EasyMineLauncher.jar --jar-dir=/home/user/.minecraft/bin/ --username=MyAwesomeName --server=myprivate.server.com
+    java -Xmx1536M -Xms1536M -jar EasyMineLauncher.jar --username=MyAwesomeName --server=myprivate.server.com
 
 Launch specific jar, with different lwjgl directory, connect to a server on a different port, maximize the window and rename it:
 
