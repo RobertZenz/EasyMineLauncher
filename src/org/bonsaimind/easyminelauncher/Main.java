@@ -35,13 +35,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +67,7 @@ public class Main {
 		String parentDir = "";
 		String port = null;
 		String server = null;
+		boolean authenticate = false;
 		String sessionId = "0";
 		String username = "Username";
 		String texturepack = "";
@@ -100,6 +103,8 @@ public class Main {
 				port = arg.substring(7);
 			} else if (arg.startsWith("--server=")) {
 				server = arg.substring(9);
+			} else if (arg.equals("--authenticate")) {
+				authenticate = true;
 			} else if (arg.startsWith("--session-id=")) {
 				sessionId = arg.substring(13);
 			} else if (arg.startsWith("--options-file=")) {
@@ -168,6 +173,15 @@ public class Main {
 		}
 		parentDir = new File(parentDir, ".minecraft").toString();
 
+		// Now try if we manage to login...
+		if (authenticate) {
+			try {
+				sessionId = authenticate(username, mppass);
+			} catch (AuthenticationException ex) {
+				System.out.println(ex);
+				return;
+			}
+		}
 
 		// Let's work with the options.txt, shall we?
 		OptionsFile optionsFile = new OptionsFile(parentDir);
@@ -288,11 +302,19 @@ public class Main {
 	}
 
 	private static String authenticate(String username, String password) throws AuthenticationException {
-		String response = httpRequest("https://login.minecraft.net", String.format("?username={0}&password={1}&version={2}", username, password, 67));
+		try {
+			username = URLEncoder.encode(username, "UTF-8");
+			password = URLEncoder.encode(password, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			throw new AuthenticationException("Failed to encode username or password!", ex);
+		}
+
+		String request = String.format("user=%s&password=%s&version=%d", username, password, 12);
+		String response = httpRequest("https://login.minecraft.net", request);
 		String[] splitted = response.split(":");
 
 		if (splitted.length < 5) {
-			throw new AuthenticationException("Response was not wellformed!");
+			throw new AuthenticationException(response);
 		}
 
 		return splitted[3];
@@ -336,6 +358,13 @@ public class Main {
 	}
 
 	private static String httpRequest(String url, String content) throws AuthenticationException {
+		byte[] contentBytes = null;
+		try {
+			contentBytes = content.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			throw new AuthenticationException("Failed to convert content!", ex);
+		}
+
 		URLConnection connection = null;
 		try {
 			connection = new URL(url).openConnection();
@@ -346,11 +375,13 @@ public class Main {
 		}
 		connection.setDoInput(true);
 		connection.setDoOutput(true);
+		connection.setRequestProperty("Accept-Charset", "UTF-8");
 		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		connection.setRequestProperty("Content-Length", Integer.toString(contentBytes.length));
 
 		try {
-			OutputStreamWriter requestStream = new OutputStreamWriter(connection.getOutputStream());
-			requestStream.write(content);
+			OutputStream requestStream = connection.getOutputStream();
+			requestStream.write(contentBytes, 0, contentBytes.length);
 			requestStream.close();
 		} catch (IOException ex) {
 			throw new AuthenticationException("Failed to read response!", ex);
@@ -359,7 +390,7 @@ public class Main {
 		String response = "";
 
 		try {
-			BufferedReader responseStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			BufferedReader responseStream = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
 			response = responseStream.readLine();
 			responseStream.close();
 		} catch (IOException ex) {
