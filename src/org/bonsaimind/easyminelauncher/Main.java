@@ -27,6 +27,7 @@
  */
 package org.bonsaimind.easyminelauncher;
 
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -68,6 +69,7 @@ public class Main {
 		String port = null;
 		String server = null;
 		boolean authenticate = false;
+		AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
 		String sessionId = "0";
 		String username = "Username";
 		String texturepack = "";
@@ -107,6 +109,8 @@ public class Main {
 				server = arg.substring(9);
 			} else if (arg.equals("--authenticate")) {
 				authenticate = true;
+			} else if (arg.startsWith("--authentication-failure=")) {
+				authenticationFailureBehavior = AuthenticationFailureBehavior.valueOf(arg.substring(23));
 			} else if (arg.startsWith("--session-id=")) {
 				sessionId = arg.substring(13);
 			} else if (arg.startsWith("--options-file=")) {
@@ -180,8 +184,21 @@ public class Main {
 			try {
 				sessionId = authenticate(username, password);
 			} catch (AuthenticationException ex) {
-				System.out.println(ex);
-				return;
+				System.err.println(ex);
+				if (ex.getCause() != null) {
+					System.err.println(ex.getCause());
+				}
+
+				// Alert the user
+				if (authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_BREAK
+						|| authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_CONTINUE) {
+					// TODO: Figure out how to alert the user.
+				}
+				// STOP!
+				if (authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_BREAK
+						|| authenticationFailureBehavior == AuthenticationFailureBehavior.SILENT_BREAK) {
+					return;
+				}
 			}
 		}
 
