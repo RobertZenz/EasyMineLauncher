@@ -57,7 +57,7 @@ public class Main {
 		String jarDir = "";
 		String jar = "";
 		String lwjglDir = "";
-		String mppass = "";
+		String password = "";
 		String nativeDir = "";
 		List<String> additionalJars = new ArrayList<String>();
 		boolean noFrame = false;
@@ -89,7 +89,9 @@ public class Main {
 			} else if (arg.startsWith("--lwjgl-dir=")) {
 				lwjglDir = arg.substring(12);
 			} else if (arg.startsWith("--mppass=")) {
-				mppass = arg.substring(9);
+				password = arg.substring(9);
+			} else if (arg.startsWith("--password=")) {
+				password = arg.substring(11);
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
 			} else if (arg.startsWith("--additional-jar=")) {
@@ -176,7 +178,7 @@ public class Main {
 		// Now try if we manage to login...
 		if (authenticate) {
 			try {
-				sessionId = authenticate(username, mppass);
+				sessionId = authenticate(username, password);
 			} catch (AuthenticationException ex) {
 				System.out.println(ex);
 				return;
@@ -262,7 +264,7 @@ public class Main {
 		if (server != null) {
 			container.setServer(server, port != null ? port : "25565");
 		}
-		container.setMpPass(mppass);
+		container.setMpPass(password);
 		container.setSessionId(sessionId);
 		// Create and set up the frame.
 		ContainerFrame frame = new ContainerFrame(title);
