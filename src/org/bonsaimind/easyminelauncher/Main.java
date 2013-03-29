@@ -35,11 +35,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -285,6 +287,17 @@ public class Main {
 		}
 	}
 
+	private static String authenticate(String username, String password) throws AuthenticationException {
+		String response = httpRequest("https://login.minecraft.net", String.format("?username={0}&password={1}&version={2}", username, password, 67));
+		String[] splitted = response.split(":");
+
+		if (splitted.length < 5) {
+			throw new AuthenticationException("Response was not wellformed!");
+		}
+
+		return splitted[3];
+	}
+
 	/**
 	 * This is mostly from here: http://stackoverflow.com/questions/252893/how-do-you-change-the-classpath-within-java
 	 * @param url
@@ -320,6 +333,44 @@ public class Main {
 		}
 
 		return false;
+	}
+
+	private static String httpRequest(String url, String content) throws AuthenticationException {
+		URLConnection connection = null;
+		try {
+			connection = new URL(url).openConnection();
+		} catch (MalformedURLException ex) {
+			throw new AuthenticationException("It wasn't me!", ex);
+		} catch (IOException ex) {
+			throw new AuthenticationException("Failed to connect to authentication server!", ex);
+		}
+		connection.setDoInput(true);
+		connection.setDoOutput(true);
+		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+		try {
+			OutputStreamWriter requestStream = new OutputStreamWriter(connection.getOutputStream());
+			requestStream.write(content);
+			requestStream.close();
+		} catch (IOException ex) {
+			throw new AuthenticationException("Failed to read response!", ex);
+		}
+
+		String response = "";
+
+		try {
+			BufferedReader responseStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			response = responseStream.readLine();
+			responseStream.close();
+		} catch (IOException ex) {
+			throw new AuthenticationException("Failed to read response!", ex);
+		}
+
+		return response;
+	}
+
+	private static void keepAlive(String username, String sessionId) throws AuthenticationException {
+		httpRequest("https://login.minecraft.net", String.format("?name={0}&session={1}", username, sessionId));
 	}
 
 	private static void printVersion() {
