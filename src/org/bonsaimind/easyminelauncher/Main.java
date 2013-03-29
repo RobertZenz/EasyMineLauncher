@@ -71,6 +71,7 @@ public class Main {
 		boolean authenticate = false;
 		AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
 		String sessionId = "0";
+		String launcherVersion = "381";
 		String username = "Username";
 		String texturepack = "";
 		String title = "Minecraft (" + name + ")";
@@ -113,6 +114,8 @@ public class Main {
 				authenticationFailureBehavior = AuthenticationFailureBehavior.valueOf(arg.substring(23));
 			} else if (arg.startsWith("--session-id=")) {
 				sessionId = arg.substring(13);
+			} else if (arg.startsWith("--launcher-version=")) {
+				launcherVersion = arg.substring(19);
 			} else if (arg.startsWith("--options-file=")) {
 				optionsFileFrom = arg.substring(15);
 			} else if (arg.startsWith("--set-option=")) {
@@ -182,7 +185,7 @@ public class Main {
 		// Now try if we manage to login...
 		if (authenticate) {
 			try {
-				sessionId = authenticate(username, password);
+				sessionId = authenticate(username, password, launcherVersion);
 			} catch (AuthenticationException ex) {
 				System.err.println(ex);
 				if (ex.getCause() != null) {
@@ -320,15 +323,16 @@ public class Main {
 		}
 	}
 
-	private static String authenticate(String username, String password) throws AuthenticationException {
+	private static String authenticate(String username, String password, String launcherVersion) throws AuthenticationException {
 		try {
 			username = URLEncoder.encode(username, "UTF-8");
 			password = URLEncoder.encode(password, "UTF-8");
+			launcherVersion = URLEncoder.encode(launcherVersion, "UTF-8");
 		} catch (UnsupportedEncodingException ex) {
-			throw new AuthenticationException("Failed to encode username or password!", ex);
+			throw new AuthenticationException("Failed to encode username, password or launcher version!", ex);
 		}
 
-		String request = String.format("user=%s&password=%s&version=%d", username, password, 12);
+		String request = String.format("user=%s&password=%s&version=%s", username, password, launcherVersion);
 		String response = httpRequest("https://login.minecraft.net", request);
 		String[] splitted = response.split(":");
 
