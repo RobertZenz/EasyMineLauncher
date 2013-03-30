@@ -24,7 +24,8 @@
                            to connect to.
   --authenticate           Use the given username and password to authenticate
                            at the Mojang server. This will override the given
-                           session id (if given).
+                           session id (if given) and the username with that
+                           returned from Mojang (case corrected).
   --authentication-failure=Set the behavior if the authentication fails,
                            following values are possible:
     SILENT_CONTINUE        Just continue, there will only be a notification
@@ -48,6 +49,8 @@
                            before --texturepack and --set-option.
   --set-option=NAME:VALUE  Set this option in the options.txt file.
   --username=USERNAME      Set the username to user.
+  --keep-username          Do not override the username with that returned from
+                           Mojang. Only applies when --authenticate is provided.
   --demo                   Trigger Demo-Mode. This might break other stuff.
 
 
