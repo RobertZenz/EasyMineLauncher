@@ -64,8 +64,26 @@ Here's the output from `--help`:
                              the filename (including extension).
                              Use 'Default' for default.
     --server=SERVER          Set the address of the server which directly
-                             to connect to.
+    --authenticate           Use the given username and password to authenticate
+                             at the Mojang server. This will override the given
+                             session id (if given).
+    --authentication-failure=Set the behavior if the authentication fails,
+                             following values are possible:
+      SILENT_CONTINUE        Just continue, there will only be a notification
+                             on the error output.
+      ALERT_CONTINUE         Display a dialog with the reason why it failed,
+                             but still continue on.
+      SILENT_BREAK           Stop execution and exit, there will only be
+                             a notification on the error output.
+      ALERT_BREAK            Stop execution and exit, and also display a dialog
+                             with the reason why authentication failed.
+                             This is the default behavior.
+    --keep-alive-tick=TICK   Set the interval (in seconds) in which the
+                             authentication at the Mojang server is renewed.
+                             Default is 300 seconds.
     --session-id=SESSIONID   Set the session id.
+    --launcher-version=VER   Report this launcher version when authenticating.
+                             Default is "381".
     --options-file=FILE      Copy the options.txt from this location.
                              Please be aware that this overwrites the options.txt
                              in the Minecraft directory. This will also be done
@@ -186,7 +204,15 @@ Launch specific jar, with different lwjgl directory, connect to a server on a di
 A simple portable launcher:
 
     java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --jar-dir=./bin/ --parent-dir=./
-    
+
+Authenticate at Mojang:
+
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --username=YourOfficialName --password=shutup --authenticate
+
+Some more authentication options:
+
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --username=YourUsername --password=shooooootu --authenticate --keep-alive=240 --authentication-failure=ALERT_CONTINUE
+
 
 Not so fast...
 --------------

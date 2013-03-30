@@ -7,7 +7,8 @@
                            Either specify jar-dir or this.
   --lwjgl-dir=DIRECTORY    Set the directory for the jar files
                            of lwjgl (lwjgl.jar, lwjgl_util.jar, and jinput.jar)
-  --mppass=MPPASS          Set the mppass variable.
+  --password=PASSWORD      Set the password.
+  --mppass=MPPASS          Same as --password=PASSWORD (backwards compatibility)
   --native-dir=DIRECTORY   Set the directory for the native files of lwjgl.
   --additional-jar=JAR     Load the specified jars.
                            This might be needed by some mods.
@@ -21,7 +22,26 @@
                            Use 'Default' for default.
   --server=SERVER          Set the address of the server which directly
                            to connect to.
+  --authenticate           Use the given username and password to authenticate
+                           at the Mojang server. This will override the given
+                           session id (if given).
+  --authentication-failure=Set the behavior if the authentication fails,
+                           following values are possible:
+    SILENT_CONTINUE        Just continue, there will only be a notification
+                           on the error output.
+    ALERT_CONTINUE         Display a dialog with the reason why it failed,
+                           but still continue on.
+    SILENT_BREAK           Stop execution and exit, there will only be
+                           a notification on the error output.
+    ALERT_BREAK            Stop execution and exit, and also display a dialog
+                           with the reason why authentication failed.
+                           This is the default behavior.
+  --keep-alive-tick=TICK   Set the interval (in seconds) in which the
+                           authentication at the Mojang server is renewed.
+                           Default is 300 seconds.
   --session-id=SESSIONID   Set the session id.
+  --launcher-version=VER   Report this launcher version when authenticating.
+                           Default is "381".
   --options-file=FILE      Copy the options.txt from this location.
                            Please be aware that this overwrites the options.txt
                            in the Minecraft directory. This will also be done
