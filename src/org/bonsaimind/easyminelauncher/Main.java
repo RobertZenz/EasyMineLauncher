@@ -195,12 +195,13 @@ public class Main {
 		if (authenticate) {
 			try {
 				AuthenticationResult result = authenticate(username, password, launcherVersion);
+				sessionId = result.getSessionId();
 
 				// Only launch the keep alive ticker if the login was successfull.
 				if (keepAliveTick > 0) {
 					Timer timer = new Timer("Authentication Keep Alive", true);
 					final String finalUsername = username;
-					final String finalSessionId = result.getSessionId();
+					final String finalSessionId = sessionId;
 					timer.scheduleAtFixedRate(new TimerTask() {
 
 						@Override
