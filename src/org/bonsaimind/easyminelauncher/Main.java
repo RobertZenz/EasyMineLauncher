@@ -48,6 +48,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 public class Main {
 
@@ -195,7 +197,7 @@ public class Main {
 				// Alert the user
 				if (authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_BREAK
 						|| authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_CONTINUE) {
-					// TODO: Figure out how to alert the user.
+					JOptionPane.showMessageDialog(new JInternalFrame(), ex.getMessage(), "Failed to authenticate...", JOptionPane.ERROR_MESSAGE);
 				}
 				// STOP!
 				if (authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_BREAK
