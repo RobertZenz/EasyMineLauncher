@@ -1,3 +1,13 @@
+0.13
+----
+
+ * Added Mojang Authentication with the following options:
+   * --authenticate
+   * --authentication-failure
+   * --keep-alive
+   * --launcher-version
+
+
 0.12
 ----
 
