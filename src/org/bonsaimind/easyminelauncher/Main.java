@@ -191,13 +191,13 @@ public class Main {
 		// Now try if we manage to login...
 		if (authenticate) {
 			try {
-				sessionId = authenticate(username, password, launcherVersion);
+				AuthenticationResult result = authenticate(username, password, launcherVersion);
 
 				// Only launch the keep alive ticker if the login was successfull.
 				if (keepAliveTick > 0) {
 					Timer timer = new Timer("Authentication Keep Alive", true);
 					final String finalUsername = username;
-					final String finalSessionId = sessionId;
+					final String finalSessionId = result.getSessionId();
 					timer.scheduleAtFixedRate(new TimerTask() {
 
 						@Override
@@ -212,6 +212,8 @@ public class Main {
 						}
 					}, keepAliveTick * 1000, keepAliveTick * 1000);
 				}
+
+				username = result.getUsername();
 			} catch (AuthenticationException ex) {
 				System.err.println(ex);
 				if (ex.getCause() != null) {
@@ -349,7 +351,7 @@ public class Main {
 		}
 	}
 
-	private static String authenticate(String username, String password, String launcherVersion) throws AuthenticationException {
+	private static AuthenticationResult authenticate(String username, String password, String launcherVersion) throws AuthenticationException {
 		try {
 			username = URLEncoder.encode(username, "UTF-8");
 			password = URLEncoder.encode(password, "UTF-8");
@@ -366,7 +368,7 @@ public class Main {
 			throw new AuthenticationException(response);
 		}
 
-		return splitted[3];
+		return new AuthenticationResult(splitted);
 	}
 
 	/**
