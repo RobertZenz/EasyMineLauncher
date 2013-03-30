@@ -460,7 +460,7 @@ public class Main {
 	}
 
 	private static void printHelp() {
-		System.out.println("Usage: " + name + ".jar [OPTION]");
+		System.out.println("Usage: " + name + ".jar [OPTIONS]");
 		System.out.println("Launch Minecraft directly.");
 		System.out.println("");
 
