@@ -48,6 +48,10 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
@@ -188,6 +192,23 @@ public class Main {
 		if (authenticate) {
 			try {
 				sessionId = authenticate(username, password, launcherVersion);
+
+				// Only launch the keep alive ticker if the login was successfull.
+				Timer timer = new Timer("Authentication Keep Alive", true);
+				final String finalUsername = username;
+				final String finalSessionId = sessionId;
+				timer.scheduleAtFixedRate(new TimerTask() {
+
+					@Override
+					public void run() {
+						try {
+							keepAlive(finalUsername, finalSessionId);
+						} catch (AuthenticationException ex) {
+							System.err.println("Authentication-Keep-Alive failed!");
+							System.err.println(ex);
+						}
+					}
+				}, 300 * 1000, 300 * 1000);
 			} catch (AuthenticationException ex) {
 				System.err.println(ex);
 				if (ex.getCause() != null) {
