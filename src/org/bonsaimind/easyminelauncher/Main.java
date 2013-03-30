@@ -77,6 +77,7 @@ public class Main {
 		String sessionId = "0";
 		String launcherVersion = "381";
 		String username = "Username";
+		boolean keepUsername = false;
 		String texturepack = "";
 		String title = "Minecraft (" + name + ")";
 		boolean maximized = false;
@@ -132,6 +133,8 @@ public class Main {
 				title = arg.substring(8);
 			} else if (arg.startsWith("--username=")) {
 				username = arg.substring(11);
+			} else if (arg.equals("--keep-username")) {
+				keepUsername = true;
 			} else if (arg.equals("--demo")) {
 				demo = true;
 			} else if (arg.equals("--version")) {
@@ -213,7 +216,9 @@ public class Main {
 					}, keepAliveTick * 1000, keepAliveTick * 1000);
 				}
 
-				username = result.getUsername();
+				if (!keepUsername) {
+					username = result.getUsername();
+				}
 			} catch (AuthenticationException ex) {
 				System.err.println(ex);
 				if (ex.getCause() != null) {
