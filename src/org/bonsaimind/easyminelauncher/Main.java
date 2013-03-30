@@ -73,6 +73,7 @@ public class Main {
 		String server = null;
 		boolean authenticate = false;
 		AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
+		int keepAliveTick = 300;
 		String sessionId = "0";
 		String launcherVersion = "381";
 		String username = "Username";
@@ -115,6 +116,8 @@ public class Main {
 				authenticate = true;
 			} else if (arg.startsWith("--authentication-failure=")) {
 				authenticationFailureBehavior = AuthenticationFailureBehavior.valueOf(arg.substring(23));
+			} else if (arg.startsWith("--keep-alive-tick=")) {
+				keepAliveTick = Integer.parseInt(arg.substring(18));
 			} else if (arg.startsWith("--session-id=")) {
 				sessionId = arg.substring(13);
 			} else if (arg.startsWith("--launcher-version=")) {
@@ -191,21 +194,24 @@ public class Main {
 				sessionId = authenticate(username, password, launcherVersion);
 
 				// Only launch the keep alive ticker if the login was successfull.
-				Timer timer = new Timer("Authentication Keep Alive", true);
-				final String finalUsername = username;
-				final String finalSessionId = sessionId;
-				timer.scheduleAtFixedRate(new TimerTask() {
+				if (keepAliveTick > 0) {
+					Timer timer = new Timer("Authentication Keep Alive", true);
+					final String finalUsername = username;
+					final String finalSessionId = sessionId;
+					timer.scheduleAtFixedRate(new TimerTask() {
 
-					@Override
-					public void run() {
-						try {
-							keepAlive(finalUsername, finalSessionId);
-						} catch (AuthenticationException ex) {
-							System.err.println("Authentication-Keep-Alive failed!");
-							System.err.println(ex);
+						@Override
+						public void run() {
+							System.out.println("Authentication Keep Alive.");
+							try {
+								keepAlive(finalUsername, finalSessionId);
+							} catch (AuthenticationException ex) {
+								System.err.println("Authentication-Keep-Alive failed!");
+								System.err.println(ex);
+							}
 						}
-					}
-				}, 300 * 1000, 300 * 1000);
+					}, keepAliveTick * 1000, keepAliveTick * 1000);
+				}
 			} catch (AuthenticationException ex) {
 				System.err.println(ex);
 				if (ex.getCause() != null) {
