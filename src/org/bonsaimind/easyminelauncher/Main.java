@@ -72,7 +72,7 @@ import javax.swing.JOptionPane;
 public class Main {
 
 	private static String name = "EasyMineLauncher";
-	private static String version = "0.14";
+	private static String version = "0.15";
 
 	public static void main(String[] args) {
 		String jarDir = "";
