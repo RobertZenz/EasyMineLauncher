@@ -116,7 +116,7 @@ public class Main {
 			} else if (arg.equals("--authenticate")) {
 				authenticate = true;
 			} else if (arg.startsWith("--authentication-failure=")) {
-				authenticationFailureBehavior = AuthenticationFailureBehavior.valueOf(arg.substring(23));
+				authenticationFailureBehavior = AuthenticationFailureBehavior.valueOf(arg.substring(25));
 			} else if (arg.startsWith("--keep-alive-tick=")) {
 				keepAliveTick = Integer.parseInt(arg.substring(18));
 			} else if (arg.startsWith("--session-id=")) {
