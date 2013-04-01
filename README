@@ -91,6 +91,13 @@ Here's the output from `--help`:
                              before --texturepack and --set-option.
     --set-option=NAME:VALUE  Set this option in the options.txt file.
     --username=USERNAME      Set the username to user.
+    --use-lastlogin          Read username and password from the lastlogin file
+                             within the parentdir. Overrides provided username and
+                             passwords.
+    --save-lastlogin         Writes back the username and password into
+                             the lastlogin file, but only after successfull
+                             authentication (therefor --authenticate must be
+                             provided, too).
     --keep-username          Do not override the username with that returned from
                              Mojang. Only applies when --authenticate is provided.
     --demo                   Trigger Demo-Mode. This might break other stuff.
@@ -211,6 +218,10 @@ A simple portable launcher:
 Authenticate at Mojang:
 
     java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --username=YourOfficialName --password=shutup --authenticate
+
+Or maybe like this:
+
+    java -Xmx1024M -Xms1024M -jar EasyMineLauncher.jar --use-lastlogin --authenticate
 
 Some more authentication options:
 
