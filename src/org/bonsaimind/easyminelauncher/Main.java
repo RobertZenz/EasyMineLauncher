@@ -32,9 +32,11 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -56,10 +58,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
-import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -94,6 +95,7 @@ public class Main {
 		String launcherVersion = "381";
 		String username = "Username";
 		boolean useLastLogin = false;
+		boolean saveLastLogin = false;
 		boolean keepUsername = false;
 		String texturepack = "";
 		String title = "Minecraft (" + name + ")";
@@ -150,8 +152,10 @@ public class Main {
 				title = arg.substring(8);
 			} else if (arg.startsWith("--username=")) {
 				username = arg.substring(11);
-			} else if (arg.equals("--lastlogin")) {
+			} else if (arg.equals("--use-lastlogin")) {
 				useLastLogin = true;
+			} else if (arg.equals("--save-lastlogin")) {
+				saveLastLogin = true;
 			} else if (arg.equals("--keep-username")) {
 				keepUsername = true;
 			} else if (arg.equals("--demo")) {
@@ -246,6 +250,10 @@ public class Main {
 							}
 						}
 					}, keepAliveTick * 1000, keepAliveTick * 1000);
+				}
+
+				if (saveLastLogin) {
+					setLastlogin(new File(parentDir), username, password);
 				}
 
 				if (!keepUsername) {
@@ -462,7 +470,7 @@ public class Main {
 		}
 
 		try {
-			DataInputStream stream = new DataInputStream(new CipherInputStream(new FileInputStream(from), getLastLoginCipher()));
+			DataInputStream stream = new DataInputStream(new CipherInputStream(new FileInputStream(from), getLastLoginCipher(Cipher.DECRYPT_MODE)));
 			return new String[]{stream.readUTF(), stream.readUTF()};
 		} catch (FileNotFoundException ex) {
 			System.err.println(ex);
@@ -473,7 +481,12 @@ public class Main {
 		}
 	}
 
-	private static Cipher getLastLoginCipher() {
+	/**
+	 * Initializes a cipher which can be used to decrypt the lastlogin file...or encrypt, that is.
+	 * @param cipherMode
+	 * @return
+	 */
+	private static Cipher getLastLoginCipher(int cipherMode) {
 		byte[] salt = {
 			(byte) 0x0c, (byte) 0x9d, (byte) 0x4a, (byte) 0xe4,
 			(byte) 0x1e, (byte) 0x83, (byte) 0x15, (byte) 0xfc
@@ -484,7 +497,7 @@ public class Main {
 			PBEParameterSpec parameter = new PBEParameterSpec(salt, 5);
 			SecretKey key = SecretKeyFactory.getInstance("PBEWithMD5AndDES").generateSecret(new PBEKeySpec(password.toCharArray()));
 			Cipher cipher = Cipher.getInstance("PBEWithMD5AndDES");
-			cipher.init(Cipher.DECRYPT_MODE, key, parameter);
+			cipher.init(cipherMode, key, parameter);
 			return cipher;
 		} catch (NoSuchAlgorithmException ex) {
 			System.err.println(ex);
@@ -571,6 +584,33 @@ public class Main {
 				System.out.println(line);
 			}
 			reader.close();
+		} catch (IOException ex) {
+			System.err.println(ex);
+		}
+	}
+
+	private static void setLastlogin(File to, String username, String password) {
+		if (to.isDirectory()) {
+			to = new File(to.getAbsolutePath(), "lastlogin");
+		}
+		to = to.getAbsoluteFile();
+
+		if (!to.exists()) {
+			try {
+				to.createNewFile();
+			} catch (IOException ex) {
+				System.err.println(ex);
+				return;
+			}
+		}
+
+		try {
+			DataOutputStream stream = new DataOutputStream(new CipherOutputStream(new FileOutputStream(to), getLastLoginCipher(Cipher.ENCRYPT_MODE)));
+			stream.writeUTF(username);
+			stream.writeUTF(password);
+			stream.close();
+		} catch (FileNotFoundException ex) {
+			System.err.println(ex);
 		} catch (IOException ex) {
 			System.err.println(ex);
 		}
