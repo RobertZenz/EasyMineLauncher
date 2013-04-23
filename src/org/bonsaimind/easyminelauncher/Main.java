@@ -30,6 +30,7 @@ package org.bonsaimind.easyminelauncher;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
+import java.awt.Window.Type;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -243,13 +244,14 @@ public class Main {
 					Timer timer = new Timer("Authentication Keep Alive", true);
 					final String finalUsername = username;
 					final String finalSessionId = sessionId;
+					final String finalAuthenticationAddress = authenticationAddress;
 					timer.scheduleAtFixedRate(new TimerTask() {
 
 						@Override
 						public void run() {
 							System.out.println("Authentication Keep Alive.");
 							try {
-								keepAlive(finalUsername, finalSessionId);
+								keepAlive(finalAuthenticationAddress, finalUsername, finalSessionId);
 							} catch (AuthenticationException ex) {
 								System.err.println("Authentication-Keep-Alive failed!");
 								System.err.println(ex);
@@ -574,8 +576,8 @@ public class Main {
 		return response;
 	}
 
-	private static void keepAlive(String username, String sessionId) throws AuthenticationException {
-		httpRequest("https://login.minecraft.net", String.format("?name={0}&session={1}", username, sessionId));
+	private static void keepAlive(String address, String username, String sessionId) throws AuthenticationException {
+		httpRequest(address, String.format("?name={0}&session={1}", username, sessionId));
 	}
 
 	private static void printVersion() {
