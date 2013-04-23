@@ -107,6 +107,7 @@ public class Main {
 		int y = -1;
 		boolean alwaysOnTop = false;
 		boolean fullscreen = false;
+		float opacity = 1f;
 
 		// Parse arguments
 		for (String arg : args) {
@@ -180,6 +181,8 @@ public class Main {
 				alwaysOnTop = true;
 			} else if (arg.equals("--fullscreen")) {
 				fullscreen = true;
+			} else if (arg.startsWith("--opacity=")) {
+				opacity = Float.parseFloat(arg.substring(10));
 			} else if (arg.equals("--help")) {
 				printHelp();
 				return;
@@ -384,6 +387,11 @@ public class Main {
 			if (maximized) {
 				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 			}
+		}
+		
+		if(opacity < 1) {
+			frame.setUndecorated(true);
+			frame.setOpacity(opacity);
 		}
 		
 		frame.setContainerApplet(container);

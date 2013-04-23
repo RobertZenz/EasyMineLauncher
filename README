@@ -123,7 +123,10 @@ Here's the output from `--help`:
                                --always-on-top
                              This might yield odd results in multi-monitor
                              environments.
-
+    --opacity=OPACITY        Sets the opacity of the window, were 1 is fully
+                             visible, 0 is invisble and 0.5 is half visible.
+                             This might or might not work depending on your WM and
+                             or compositor. This also forces --no-frame.
 
 You can also keep different versions around and launch them with ease, f.e. with such a directory/file-layout:
 
