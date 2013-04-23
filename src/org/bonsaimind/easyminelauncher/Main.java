@@ -93,6 +93,7 @@ public class Main {
 		int keepAliveTick = 300;
 		String sessionId = "0";
 		String launcherVersion = "381";
+		String authenticationAddress = "https://login.minecraft.net";
 		String username = "Username";
 		boolean useLastLogin = false;
 		boolean saveLastLogin = false;
@@ -142,6 +143,8 @@ public class Main {
 				sessionId = arg.substring(13);
 			} else if (arg.startsWith("--launcher-version=")) {
 				launcherVersion = arg.substring(19);
+			} else if (arg.startsWith("--auth-address=")) {
+				authenticationAddress = arg.substring(15);
 			} else if (arg.startsWith("--options-file=")) {
 				optionsFileFrom = arg.substring(15);
 			} else if (arg.startsWith("--set-option=")) {
@@ -229,7 +232,7 @@ public class Main {
 		// Now try if we manage to login...
 		if (authenticate) {
 			try {
-				AuthenticationResult result = authenticate(username, password, launcherVersion);
+				AuthenticationResult result = authenticate(authenticationAddress, username, password, launcherVersion);
 				sessionId = result.getSessionId();
 
 				// Only launch the keep alive ticker if the login was successfull.
@@ -396,7 +399,7 @@ public class Main {
 		}
 	}
 
-	private static AuthenticationResult authenticate(String username, String password, String launcherVersion) throws AuthenticationException {
+	private static AuthenticationResult authenticate(String address, String username, String password, String launcherVersion) throws AuthenticationException {
 		try {
 			username = URLEncoder.encode(username, "UTF-8");
 			password = URLEncoder.encode(password, "UTF-8");
@@ -406,7 +409,7 @@ public class Main {
 		}
 
 		String request = String.format("user=%s&password=%s&version=%s", username, password, launcherVersion);
-		String response = httpRequest("https://login.minecraft.net", request);
+		String response = httpRequest(address, request);
 		String[] splitted = response.split(":");
 
 		if (splitted.length < 5) {

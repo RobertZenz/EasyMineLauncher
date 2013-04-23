@@ -85,6 +85,8 @@ Here's the output from `--help`:
     --session-id=SESSIONID   Set the session id.
     --launcher-version=VER   Report this launcher version when authenticating.
                              Default is "381".
+    --auth-address=ADDRESS   Authenticate at this address instead of
+                             the Mojang server.
     --options-file=FILE      Copy the options.txt from this location.
                              Please be aware that this overwrites the options.txt
                              in the Minecraft directory. This will also be done
