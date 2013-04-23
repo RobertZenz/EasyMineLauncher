@@ -362,8 +362,10 @@ public class Main {
 		}
 		container.setMpPass(password);
 		container.setSessionId(sessionId);
+
 		// Create and set up the frame.
 		ContainerFrame frame = new ContainerFrame(title);
+
 		if (fullscreen) {
 			Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
 			frame.setAlwaysOnTop(true);
@@ -383,6 +385,7 @@ public class Main {
 				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 			}
 		}
+		
 		frame.setContainerApplet(container);
 		frame.setVisible(true);
 
