@@ -559,7 +559,7 @@ public class Main {
 			requestStream.write(contentBytes, 0, contentBytes.length);
 			requestStream.close();
 		} catch (IOException ex) {
-			throw new AuthenticationException("Failed to read response!", ex);
+			throw new AuthenticationException("Failed to write request!", ex);
 		}
 
 		String response = "";
