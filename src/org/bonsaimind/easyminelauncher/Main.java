@@ -71,8 +71,8 @@ import javax.swing.JOptionPane;
 
 public class Main {
 
-	private static String name = "EasyMineLauncher";
-	private static String version = "0.15";
+	private static final String name = "EasyMineLauncher";
+	private static final String version = "0.15";
 
 	public static void main(String[] args) {
 		String jarDir = "";
@@ -389,12 +389,12 @@ public class Main {
 				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 			}
 		}
-		
+
 		if(opacity < 1) {
 			frame.setUndecorated(true);
 			frame.setOpacity(opacity);
 		}
-		
+
 		frame.setContainerApplet(container);
 		frame.setVisible(true);
 
