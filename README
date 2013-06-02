@@ -1,15 +1,19 @@
 EasyMineLauncher
 ----------------
 
-An easy and lightweight launcher for Minecraft which takes some of the hassle away.
+An easy and lightweight launcher for Minecraft which takes some of the hassle
+away.
 
 
 What it does:
 -------------
 
- * Removes the need to login if you just want to play offline or on a private server
- * There's no check for an update, you're directly catapulted to the main menu or connected to a server
- * Additional parameters (f.e. start as maximized window or loading of certain versions from different directories)
+ * Removes the need to login if you just want to play offline or on
+   a private server
+ * There's no check for an update, you're directly catapulted to the main menu
+   or connected to a server
+ * Additional parameters (f.e. start as maximized window or loading of
+   certain versions from different directories)
 
 
 What it does not:
@@ -17,13 +21,17 @@ What it does not:
 
  * Remove the need to authenticate at servers if they demand it
  * Loading and applying updates
- * Lets you play Minecraft for free, you'll still need to get an account and download the binaries
+ * Lets you play Minecraft for free, you'll still need to get an account and
+   download the binaries
 
 
 How does it work?
 -----------------
 
-Basically this is just mimicking the behavior of the official launcher, except that it removes the online authentication and the update process. I figured most of that out with Trial & Error, that's why it's looking a little bit crude and has debugging output all over the place.
+Basically this is just mimicking the behavior of the official launcher,
+except that it removes the online authentication and the update process.
+I figured most of that out with Trial & Error, that's why it's looking
+a little bit crude and has debugging output all over the place.
 
 
 Where to get it?
@@ -128,7 +136,8 @@ Here's the output from `--help`:
                              This might or might not work depending on your WM and
                              or compositor. This also forces --no-frame.
 
-You can also keep different versions around and launch them with ease, f.e. with such a directory/file-layout:
+You can also keep different versions around and launch them with ease,
+f.e. with such a directory/file-layout:
 
     bin
      +- Beta 1.6.6.jar (renamed minecraft.jar)
@@ -149,7 +158,10 @@ Notes on the parameters
 
 ### --additional-jar=JAR
 
-This will allow you to load other jars into memory. Please be aware that this does nothing but load the jars so that they're available via reflection. There are some mods which need external jars or the official launcher...you can specify them with this.
+This will allow you to load other jars into memory. Please be aware that this
+does nothing but load the jars so that they're available via reflection. There
+are some mods which need external jars or the official launcher...you can
+specify them with this.
 
 You can specify this either multiple times:
 
@@ -159,11 +171,15 @@ Or you can specify a list, whatever suits your needs:
 
       --additional-jar=./first.jar,./second.jar,./third.jar
 
-There's also the possibility that this might not work, drop an Issue with the mod and I'll have a look.
+There's also the possibility that this might not work, drop an Issue with
+the mod and I'll have a look.
 
 ### --parent-dir=PARENTDIR
 
-This will allow you to change the location of the minecraft directory which is normally located in `~/`. Please be aware that this will only change the location of the `.minecraft` directory, f.e. `/mnt/data/Minecraft/Data/` becomes `/mnt/data/Minecraft/Data/.minecraft/`.
+This will allow you to change the location of the minecraft directory which
+is normally located in `~/`. Please be aware that this will only change
+the location of the `.minecraft` directory, f.e. `/mnt/data/Minecraft/Data/`
+becomes `/mnt/data/Minecraft/Data/.minecraft/`.
 
 
 Great...so how do I compile this?
@@ -238,7 +254,8 @@ Not so fast...
 
 ...okay, step by step.
 
-How do make your Minecraft portable, if you already have a `.minecraft` directory, skip to step 4:
+How do make your Minecraft portable, if you already have a `.minecraft`
+directory, skip to step 4:
 
  1. Start the official launcher, download the binaries
  2. Launch Minecraft one time to create the data directory and necessary files
@@ -257,7 +274,9 @@ How do make your Minecraft portable, if you already have a `.minecraft` director
  
  7. Make the script executable, done.
  
-Okay, now to something more sophisticated, let's extract and split the `.minecraft` directory so that we can have multiple versions with ease (assuming you already have different versions and a `.minecraft` dir):
+Okay, now to something more sophisticated, let's extract and split
+the `.minecraft` directory so that we can have multiple versions
+with ease (assuming you already have different versions and a `.minecraft` dir):
 
  1. Create a directory as target, e.g. `~/Minecraft/`
  2. Create the following sub-directories: `bin`, `data`, `lwjgl` and `natives`
@@ -294,4 +313,5 @@ Problems? Let's see...
 
 ### ClassNotFoundException
 
-If you're using a mod and you're getting a `ClassNotFoundException: net.minecraft.Launcher` error, you need to specify the original Minecraft-Launcher with the `--additional-jar` option.
+If you're using a mod and you're getting a `ClassNotFoundException: net.minecraft.Launcher` error,
+you need to specify the original Minecraft-Launcher with the `--additional-jar` option.
