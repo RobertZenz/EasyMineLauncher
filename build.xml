@@ -29,10 +29,21 @@
 	</target>
 	
 	<target name="dist" depends="compile"
-		description="Creates the jar.">
+		description="Creates the jar and a tar archive.">
 		<jar jarfile="${dist}/EasyMineLauncher.jar" basedir="${build}"
 			manifest="MANIFEST.MF">
 			<fileset dir="${src}" includes="org/bonsaimind/easyminelauncher/help.txt" />
 		</jar>
+		<tar destfile="${dist}/EasyMineLauncher.tar" basedir=".">
+			<include name="${src}/**" />
+			<include name="${dist}/EasyMineLauncher.jar" />
+			<include name="build.xml" />
+			<include name="CHANGES" />
+			<include name="CONTRIBUTE" />
+			<include name="LICENSE" />
+			<include name="README" />
+			<include name="THANKS" />
+		</tar>
+		<bzip2 src="${dist}/EasyMineLauncher.tar" destfile="${dist}/EasyMineLauncher.tar.bz2" />
 	</target>
 </project>
