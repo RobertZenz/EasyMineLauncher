@@ -315,3 +315,7 @@ Problems? Let's see...
 
 If you're using a mod and you're getting a `ClassNotFoundException: net.minecraft.Launcher` error,
 you need to specify the original Minecraft-Launcher with the `--additional-jar` option.
+
+### Dude, my achievements are gone!
+
+Oh yeah, should have told you before, somehow version hopping seems to mess up the achievements, so you might lose all of them.
