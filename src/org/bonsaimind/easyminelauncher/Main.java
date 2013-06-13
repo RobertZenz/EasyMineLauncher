@@ -109,6 +109,7 @@ public class Main {
 		boolean fullscreen = false;
 		float opacity = 1f;
 		boolean dump = false;
+		boolean noExit = false;
 
 		// Parse arguments
 		for (String arg : args) {
@@ -186,6 +187,8 @@ public class Main {
 				opacity = Float.parseFloat(arg.substring(10));
 			} else if (arg.equals("--dump")) {
 				dump = true;
+			} else if (arg.equals("--no-exit")) {
+				noExit = true;
 			} else if (arg.equals("--help")) {
 				printHelp();
 				return;
@@ -451,8 +454,12 @@ public class Main {
 		} else {
 			System.err.println("Failed to load Minecraft! Exiting.");
 
-			// Exit just to be sure.
-			System.exit(0);
+			if (noExit) {
+				return;
+			} else {
+				// Exit just to be sure.
+				System.exit(0);
+			}
 		}
 	}
 

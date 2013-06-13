@@ -87,3 +87,5 @@
                            or compositor. This also forces --no-frame.
   --dump                   Chickens out before doing anything and prints all
                            of the configuration values.
+  --no-exit                Does not exit on failure (if Minecraft could not be
+                           loaded), only returns.
