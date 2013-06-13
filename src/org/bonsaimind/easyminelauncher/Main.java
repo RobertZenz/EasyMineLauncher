@@ -86,7 +86,7 @@ public class Main {
 		List<String> options = new ArrayList<String>();
 		boolean demo = false;
 		String parentDir = "";
-		String port = null;
+		String port = "25565";
 		String server = null;
 		boolean authenticate = false;
 		AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
@@ -362,7 +362,7 @@ public class Main {
 		container.setDemo(demo);
 		container.setUsername(username);
 		if (server != null) {
-			container.setServer(server, port != null ? port : "25565");
+			container.setServer(server, port);
 		}
 		container.setMpPass(password);
 		container.setSessionId(sessionId);
