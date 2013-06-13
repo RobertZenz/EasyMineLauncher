@@ -108,6 +108,7 @@ public class Main {
 		boolean alwaysOnTop = false;
 		boolean fullscreen = false;
 		float opacity = 1f;
+		boolean dump = false;
 
 		// Parse arguments
 		for (String arg : args) {
@@ -183,6 +184,8 @@ public class Main {
 				fullscreen = true;
 			} else if (arg.startsWith("--opacity=")) {
 				opacity = Float.parseFloat(arg.substring(10));
+			} else if (arg.equals("--dump")) {
+				dump = true;
 			} else if (arg.equals("--help")) {
 				printHelp();
 				return;
@@ -230,6 +233,48 @@ public class Main {
 				username = lastLogin[0];
 				password = lastLogin[1];
 			}
+		}
+
+		if (dump) {
+			System.out.println("jarDir: " + jarDir);
+			System.out.println("jar: " + jar);
+			System.out.println("lwjglDir: " + lwjglDir);
+			System.out.println("password: " + password);
+			System.out.println("nativeDir: " + nativeDir);
+			System.out.println("additionalJars:");
+			for (String additionalJar : additionalJars) {
+				System.out.println("    " + additionalJar);
+			}
+			System.out.println("noFrame: " + noFrame);
+			System.out.println("optionsFileFrom: " + optionsFileFrom);
+			System.out.println("options:");
+			for (String option : options) {
+				System.out.println("    " + option);
+			}
+			System.out.println("demo: " + demo);
+			System.out.println("parentDir: " + parentDir);
+			System.out.println("port: " + port);
+			System.out.println("server: " + server);
+			System.out.println("authenticate: " + authenticate);
+			System.out.println("authenticationFailureBehavior: " + authenticationFailureBehavior);
+			System.out.println("keepAliveTick: " + keepAliveTick);
+			System.out.println("launcherVersion: " + launcherVersion);
+			System.out.println("authenticationAddress: " + authenticationAddress);
+			System.out.println("username: " + username);
+			System.out.println("useLastLogin: " + useLastLogin);
+			System.out.println("saveLastLogin: " + saveLastLogin);
+			System.out.println("keepUsername: " + keepUsername);
+			System.out.println("texturepack: " + texturepack);
+			System.out.println("maximized: " + maximized);
+			System.out.println("width: " + width);
+			System.out.println("height: " + height);
+			System.out.println("x: " + x);
+			System.out.println("y: " + y);
+			System.out.println("title: " + title);
+			System.out.println("alwaysOnTop: " + alwaysOnTop);
+			System.out.println("fullscreen: " + fullscreen);
+			System.out.println("opacity: " + opacity);
+			return;
 		}
 
 		// Now try if we manage to login...
@@ -390,7 +435,7 @@ public class Main {
 			}
 		}
 
-		if(opacity < 1) {
+		if (opacity < 1) {
 			frame.setUndecorated(true);
 			frame.setOpacity(opacity);
 		}
