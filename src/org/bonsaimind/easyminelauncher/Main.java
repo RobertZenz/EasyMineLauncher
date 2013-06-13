@@ -236,23 +236,23 @@ public class Main {
 		}
 
 		if (dump) {
-			System.out.println("jarDir: " + jarDir);
-			System.out.println("jar: " + jar);
-			System.out.println("lwjglDir: " + lwjglDir);
+			System.out.println("jarDir (exists: " + new File(jarDir).exists() + "): " + jarDir);
+			System.out.println("jar (exists: " + new File(jar).exists() + "): " + jar);
+			System.out.println("lwjglDir (exists: " + new File(lwjglDir).exists() + "): " + lwjglDir);
 			System.out.println("password: " + password);
-			System.out.println("nativeDir: " + nativeDir);
+			System.out.println("nativeDir (exists: " + new File(nativeDir).exists() + "): " + nativeDir);
 			System.out.println("additionalJars:");
 			for (String additionalJar : additionalJars) {
 				System.out.println("    " + additionalJar);
 			}
 			System.out.println("noFrame: " + noFrame);
-			System.out.println("optionsFileFrom: " + optionsFileFrom);
+			System.out.println("optionsFileFrom (exists: " + new File(optionsFileFrom).exists() + "): " + optionsFileFrom);
 			System.out.println("options:");
 			for (String option : options) {
 				System.out.println("    " + option);
 			}
 			System.out.println("demo: " + demo);
-			System.out.println("parentDir: " + parentDir);
+			System.out.println("parentDir (exists: " + new File(parentDir).exists() + "): " + parentDir);
 			System.out.println("port: " + port);
 			System.out.println("server: " + server);
 			System.out.println("authenticate: " + authenticate);
