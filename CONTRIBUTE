@@ -15,5 +15,5 @@ Formatting Rules
 ----------------
 
  * Tab-intended
- * K&R-Style indentation with function-opening braces on the same line (java default)
+ * K&R-Style indentation with function-opening braces on the same line (Java default)
  * Java Naming Conventions

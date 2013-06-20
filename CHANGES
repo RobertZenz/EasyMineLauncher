@@ -70,7 +70,7 @@ The following parameters are now correctly recognized:
  * Fixed hanging/not closable window
  * Fixed possible location issue with --fullscreen
 
-I've tested compatibility with versions through Beta, Alpha back to Index and
+I've tested compatibility with versions through Beta, Alpha back to Indev and
 was able to launch all versions I got a hold off.
 
 Also, if you don't specify any parameters with this version, it will fall back
