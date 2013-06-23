@@ -4,6 +4,8 @@ EasyMineLauncher
 An easy and lightweight launcher for Minecraft which takes some of the hassle
 away.
 
+Due to the way Minecraft is launched beginning with 1.5.x Beta series and the 1.6 release it is not possible to launch these versions with EasyMineLauncher.
+
 
 What it does:
 -------------
@@ -32,6 +34,20 @@ Basically this is just mimicking the behavior of the official launcher,
 except that it removes the online authentication and the update process.
 I figured most of that out with Trial & Error, that's why it's looking
 a little bit crude and has debugging output all over the place.
+
+
+Compatibility
+-------------
+
+This launcher is compatible with the following versions:
+
+ * Indev
+ * Infdev
+ * Alpha
+ * Beta
+ * 1.0 - 1.5
+
+This launcher does not work with the 1.5.x Beta series (snapshots), the 1.6 release or any later version.
 
 
 Where to get it?
