@@ -84,6 +84,17 @@ Here's the output from `--help`:
                              the location of the .minecraft folder.
     --applet=APPLET          The (full) name of the applet to load. Normally this
                              points to the Minecraft-Applet.
+    --blend-with=JAR         Blend the (found) minecraft.jar with JAR.
+                             That means that the content of JAR is copied into
+                             a temporary jar and then is supplemented with the
+                             missing files from minecraft.jar.
+                             Please be aware that this means that two archives are
+                             merged together at every start, that takes on my SSD
+                             a whooping 1.2 seconds.
+    --blend-jar-name=NAME    The NAME of the blended jar, defaults to
+                             minecraft_blended.jar.
+    --blend-keep-manifest    Copy the manifest from the given JAR to blend...that
+                             might not work.
     --port=PORT              Set the port of the server, if not set it will revert
                              to 25565.
     --texturepack=FILE       Set the texturepack to use, this takes only

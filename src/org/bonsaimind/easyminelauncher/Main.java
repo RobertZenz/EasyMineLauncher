@@ -55,9 +55,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -87,6 +92,9 @@ public class Main {
 		boolean demo = false;
 		String parentDir = "";
 		String appletToLoad = "net.minecraft.client.MinecraftApplet";
+		String blendWith = null;
+		String blendJarName = "minecraft_blended.jar";
+		boolean blendKeepManifest = false;
 		String port = "25565";
 		String server = null;
 		boolean authenticate = false;
@@ -135,6 +143,12 @@ public class Main {
 				parentDir = arg.substring(13);
 			} else if (arg.startsWith("--applet=")) {
 				appletToLoad = arg.substring(9);
+			} else if (arg.startsWith("--blend-with=")) {
+				blendWith = arg.substring(13);
+			} else if (arg.startsWith("--blend-jar-name=")) {
+				blendJarName = arg.substring(17);
+			} else if (arg.equals("--blend-keep-manifest")) {
+				blendKeepManifest = true;
 			} else if (arg.startsWith("--port=")) {
 				port = arg.substring(7);
 			} else if (arg.startsWith("--server=")) {
@@ -228,6 +242,9 @@ public class Main {
 			parentDir = System.getProperty("user.home");
 		}
 		parentDir = new File(parentDir, ".minecraft").toString();
+		if (blendWith != null) {
+			blendWith = new File(blendWith).getAbsolutePath();
+		}
 
 		// Shall we read from the lastlogin file?
 		if (useLastLogin) {
@@ -260,6 +277,13 @@ public class Main {
 			System.out.println("demo: " + demo);
 			System.out.println("parentDir (exists: " + new File(parentDir).exists() + "): " + parentDir);
 			System.out.println("applet: " + appletToLoad);
+			if (blendWith != null) {
+				System.out.println("blendWith (exists: " + new File(blendWith).exists() + "): " + blendWith);
+			} else {
+				System.out.println("blendWith: " + blendWith);
+			}
+			System.out.println("blendJarName: " + blendJarName);
+			System.out.println("blendKeepManifest: " + blendKeepManifest);
 			System.out.println("port: " + port);
 			System.out.println("server: " + server);
 			System.out.println("authenticate: " + authenticate);
@@ -282,6 +306,20 @@ public class Main {
 			System.out.println("fullscreen: " + fullscreen);
 			System.out.println("opacity: " + opacity);
 			return;
+		}
+
+		// Will it blend?
+		if (blendWith != null) {
+			try {
+				jar = blendJars(jar, blendWith, blendJarName, blendKeepManifest);
+			} catch (BlendException ex) {
+				System.err.println("Failed to blend files!");
+				System.err.println(ex);
+				if (ex.getCause() != null) {
+					System.err.println(ex.getCause());
+				}
+				return;
+			}
 		}
 
 		// Now try if we manage to login...
@@ -485,6 +523,86 @@ public class Main {
 		}
 
 		return new AuthenticationResult(splitted);
+	}
+
+	/**
+	 * Blends the given jars together. It actually just copies the contents of blendWith
+	 * into minecraftJar and saves it as blendJarName in the same directory as minecraftJar.
+	 * @param minecraftJar
+	 * @param blendWith
+	 * @param blendJarName
+	 * @return 
+	 */
+	private static String blendJars(String minecraftJar, String blendWith, String blendJarName, boolean keepManifest) throws BlendException {
+		// If we only got the directory, we'll help ourselfs.
+		if (new File(minecraftJar).isDirectory()) {
+			minecraftJar = new File(minecraftJar, "minecraft.jar").getAbsolutePath();
+		}
+		blendWith = new File(blendWith).getAbsolutePath();
+		// A little bit hacky, I admit.
+		blendJarName = new File(new File(minecraftJar).getParent(), blendJarName).getAbsolutePath();
+
+		if (new File(blendJarName).exists()) {
+			new File(blendJarName).delete();
+		}
+
+		ZipOutputStream blendedOutput = null;
+		try {
+			blendedOutput = new ZipOutputStream(new FileOutputStream(blendJarName));
+			copyToZip(blendedOutput, blendWith, keepManifest);
+			copyToZip(blendedOutput, minecraftJar, keepManifest);
+		} catch (FileNotFoundException ex) {
+			throw new BlendException("Could not find a file for blending...sorry.", ex);
+		} catch (IOException ex) {
+			throw new BlendException("Could not read or write during blending.", ex);
+		} finally {
+			try {
+				if (blendedOutput != null) {
+					blendedOutput.close();
+				}
+			} catch (IOException ex) {
+				throw new BlendException("Closing the blended jar failed.", ex);
+			}
+		}
+
+		return blendJarName;
+	}
+
+	/**
+	 * Copies the contents of "from" into "output".
+	 * Please be aware that this method is evil and swallows exceptions during
+	 * the creation of entries (because of duplicates).
+	 * @param output
+	 * @param from
+	 * @throws IOException 
+	 */
+	private static void copyToZip(ZipOutputStream output, String from, boolean keepManifest) throws IOException {
+		ZipFile input = new ZipFile(from);
+		Enumeration<? extends ZipEntry> entries = input.entries();
+		while (entries.hasMoreElements()) {
+			try {
+				ZipEntry entry = entries.nextElement();
+
+				if (!keepManifest && entry.getName().equals("META-INF/MANIFEST.MF")) {
+					// Continue with the next entry in case it is the manifest.
+					continue;
+				}
+
+				output.putNextEntry(entry);
+
+				InputStream inputStream = input.getInputStream(entry);
+				byte[] buffer = new byte[4096];
+				while (inputStream.available() > 0) {
+					output.write(buffer, 0, inputStream.read(buffer, 0, buffer.length));
+				}
+				inputStream.close();
+				output.closeEntry();
+			} catch (ZipException ex) {
+				// Assume that the erro is the warning about a dulicate and ignore it.
+				// I know that this is evil...
+			}
+		}
+		input.close();
 	}
 
 	/**
