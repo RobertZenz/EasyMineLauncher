@@ -15,6 +15,8 @@
                            Specify multiple times or list separated with ','.
   --parent-dir=DIRECTORY   Set the parent directory. This effectively changes
                            the location of the .minecraft folder.
+  --applet=APPLET          The (full) name of the applet to load. Normally this
+                           points to the Minecraft-Applet.
   --port=PORT              Set the port of the server, if not set it will revert
                            to 25565.
   --texturepack=FILE       Set the texturepack to use, this takes only

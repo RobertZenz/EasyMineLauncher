@@ -46,6 +46,7 @@ import java.util.Map;
 public class ContainerApplet extends Applet
 		implements AppletStub {
 
+	private String appletToLoad;
 	private Map<String, String> parameters = new HashMap<String, String>();
 	private Applet minecraftApplet;
 
@@ -53,9 +54,11 @@ public class ContainerApplet extends Applet
 	 * Create an instance.
 	 * @throws HeadlessException
 	 */
-	public ContainerApplet() throws HeadlessException {
+	public ContainerApplet(String appletToLoad) throws HeadlessException {
 		super();
 
+		this.appletToLoad = appletToLoad;
+		
 		setLayout(new BorderLayout());
 
 		parameters.put("fullscreen", "false");
@@ -159,7 +162,7 @@ public class ContainerApplet extends Applet
 			URLClassLoader loader = new URLClassLoader(urls);
 
 			// Create the MinecraftApplet
-			setMinecraftApplet((Applet) loader.loadClass("net.minecraft.client.MinecraftApplet").newInstance());
+			setMinecraftApplet((Applet) loader.loadClass(appletToLoad).newInstance());
 
 			return true;
 		} catch (ClassNotFoundException ex) {

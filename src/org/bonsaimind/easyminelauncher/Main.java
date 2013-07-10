@@ -86,6 +86,7 @@ public class Main {
 		List<String> options = new ArrayList<String>();
 		boolean demo = false;
 		String parentDir = "";
+		String appletToLoad = "net.minecraft.client.MinecraftApplet";
 		String port = "25565";
 		String server = null;
 		boolean authenticate = false;
@@ -132,6 +133,8 @@ public class Main {
 				noFrame = true;
 			} else if (arg.startsWith("--parent-dir=")) {
 				parentDir = arg.substring(13);
+			} else if (arg.startsWith("--applet=")) {
+				appletToLoad = arg.substring(9);
 			} else if (arg.startsWith("--port=")) {
 				port = arg.substring(7);
 			} else if (arg.startsWith("--server=")) {
@@ -256,6 +259,7 @@ public class Main {
 			}
 			System.out.println("demo: " + demo);
 			System.out.println("parentDir (exists: " + new File(parentDir).exists() + "): " + parentDir);
+			System.out.println("applet: " + appletToLoad);
 			System.out.println("port: " + port);
 			System.out.println("server: " + server);
 			System.out.println("authenticate: " + authenticate);
@@ -404,7 +408,7 @@ public class Main {
 		System.setProperty("minecraft.applet.WrapperClass", "org.bonsaimind.easyminelauncher.ContainerApplet");
 
 		// Create the applet.
-		ContainerApplet container = new ContainerApplet();
+		ContainerApplet container = new ContainerApplet(appletToLoad);
 
 		// Pass arguments to the applet.
 		container.setDemo(demo);
