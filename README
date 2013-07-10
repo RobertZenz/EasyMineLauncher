@@ -75,7 +75,8 @@ Here's the output from `--help`:
                              Either specify jar-dir or this.
     --lwjgl-dir=DIRECTORY    Set the directory for the jar files
                              of lwjgl (lwjgl.jar, lwjgl_util.jar, and jinput.jar)
-    --mppass=MPPASS          Set the mppass variable.
+    --password=PASSWORD      Set the password.
+    --mppass=MPPASS          Same as --password=PASSWORD (backwards compatibility)
     --native-dir=DIRECTORY   Set the directory for the native files of lwjgl.
     --additional-jar=JAR     Load the specified jars.
                              This might be needed by some mods.
@@ -101,6 +102,7 @@ Here's the output from `--help`:
                              the filename (including extension).
                              Use 'Default' for default.
     --server=SERVER          Set the address of the server which directly
+                             to connect to.
     --authenticate           Use the given username and password to authenticate
                              at the Mojang server. This will override the given
                              session id (if given) and the username with that
