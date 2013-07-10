@@ -3,3 +3,4 @@ jcc10, testing of compatibility with the ForgeModLoader.
 sadris, Lachlan Hopkins, Lucas Jones, for pushing me to include authentication.
 monowii, for testing authentication with migrated accounts and suggesting
          to read the last login from the config files.
+stephenmac7, for giving me the idea for the --blend* facility.
