@@ -1,3 +1,16 @@
+0.16
+----
+
+ * Fixed a misleading exception message
+ * Added options:
+   * --auth-address
+   * --opacity
+   * --dump
+   * --no-exit
+   * --applet
+   * --blend-with, --blend-jar-name, --blend-keep-manifest
+
+
 0.15
 ----
 
