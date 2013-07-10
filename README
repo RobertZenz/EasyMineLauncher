@@ -214,6 +214,11 @@ is normally located in `~/`. Please be aware that this will only change
 the location of the `.minecraft` directory, f.e. `/mnt/data/Minecraft/Data/`
 becomes `/mnt/data/Minecraft/Data/.minecraft/`.
 
+### --blend-with=JAR
+
+Please be aware that this option does merge two archives together. So depending
+in your machine, this may take between 1 and 10 seconds *every start*.
+
 
 Great...so how do I compile this?
 ---------------------------------
