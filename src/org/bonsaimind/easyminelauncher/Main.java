@@ -90,7 +90,7 @@ public class Main {
 		String optionsFileFrom = "";
 		List<String> options = new ArrayList<String>();
 		boolean demo = false;
-		String parentDir = "";
+		String parentDir = System.getProperty("user.home");
 		String appletToLoad = "net.minecraft.client.MinecraftApplet";
 		String blendWith = null;
 		String blendJarName = "minecraft_blended.jar";
@@ -216,32 +216,38 @@ public class Main {
 			}
 		}
 
-		// Check the arguments
+		// Check if we were provided with a path, otherwise fall back to the defaults.
 		if (jarDir.isEmpty() && jar.isEmpty()) {
-			jarDir = new File(new File(System.getProperty("user.home"), ".minecraft").toString(), "bin").toString();
+			jarDir = new File(new File(parentDir, ".minecraft").toString(), "bin").toString();
 		}
 
+		// This is some odd stuff...
 		if (jarDir.isEmpty()) {
 			jarDir = new File(jar).getParent();
 		} else {
 			jarDir = new File(jarDir).getAbsolutePath();
 			jar = jarDir;
 		}
+		
 		if (lwjglDir.isEmpty()) {
 			lwjglDir = jarDir;
 		}
+		
 		if (nativeDir.isEmpty()) {
 			nativeDir = new File(jarDir, "natives").getAbsolutePath();
 		}
-		if (!parentDir.isEmpty()) {
-			System.setProperty("user.home", parentDir);
+		
+		// Set the parentDir into the user.home variable.
+		// While this seems odd at first, the Minecraft-Applet does
+		// read that variable to determine where the .minecraft directory is.
+		System.setProperty("user.home", parentDir);
 
-			// This is needed for the Forge ModLoader and maybe others.
-			System.setProperty("minecraft.applet.TargetDirectory", parentDir);
-		} else {
-			parentDir = System.getProperty("user.home");
-		}
+		// This is needed for the Forge ModLoader and maybe others.
+		System.setProperty("minecraft.applet.TargetDirectory", parentDir);
+				
+		// Extend the parentDir for our own, personal use only.
 		parentDir = new File(parentDir, ".minecraft").toString();
+		
 		if (blendWith != null) {
 			blendWith = new File(blendWith).getAbsolutePath();
 		}
