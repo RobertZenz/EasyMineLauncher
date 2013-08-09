@@ -1,3 +1,10 @@
+0.16.1
+------
+
+ * Only providing --parent-dir should now work better.
+ * Recompiled jar to be compatible with Java 1.5 and up.
+
+
 0.16
 ----
 

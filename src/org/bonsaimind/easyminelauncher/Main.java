@@ -77,7 +77,7 @@ import javax.swing.JOptionPane;
 public class Main {
 
 	private static final String name = "EasyMineLauncher";
-	private static final String version = "0.16";
+	private static final String version = "0.16.1";
 
 	public static void main(String[] args) {
 		String jarDir = "";
@@ -488,7 +488,7 @@ public class Main {
 
 		if (opacity < 1) {
 			frame.setUndecorated(true);
-			frame.setOpacity(opacity);
+			//frame.setOpacity(opacity);
 		}
 
 		frame.setContainerApplet(container);
