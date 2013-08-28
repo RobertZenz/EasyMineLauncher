@@ -770,7 +770,7 @@ public class Main {
 		System.out.println("Launch Minecraft directly.");
 		System.out.println("");
 
-		InputStream stream = Main.class.getResourceAsStream("/org/bonsaimind/easyminelauncher/help.txt");
+		InputStream stream = Main.class.getResourceAsStream("/org/bonsaimind/easyminelauncher/help.text");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
 		String line;
