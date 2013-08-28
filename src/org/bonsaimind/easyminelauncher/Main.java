@@ -31,10 +31,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,10 +46,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -63,16 +56,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import org.bonsaimind.minecraftmiddleknife.Credentials;
+import org.bonsaimind.minecraftmiddleknife.LastLogin;
+import org.bonsaimind.minecraftmiddleknife.LastLoginException;
+import org.bonsaimind.minecraftmiddleknife.OptionsFile;
 
 public class Main {
 
@@ -254,13 +243,12 @@ public class Main {
 
 		// Shall we read from the lastlogin file?
 		if (useLastLogin) {
-			String[] lastLogin = getLastLogin(new File(parentDir));
-
-			if (lastLogin == null || lastLogin.length <= 1) {
-				System.err.println("Failed to read from the last login file!");
-			} else {
-				username = lastLogin[0];
-				password = lastLogin[1];
+			try {
+				Credentials lastLogin = LastLogin.getLastLogin(new File(parentDir));
+				username = lastLogin.getUsername();
+				password = lastLogin.getPassword();
+			} catch (LastLoginException ex) {
+				System.err.println(ex);
 			}
 		}
 
@@ -313,7 +301,7 @@ public class Main {
 			System.out.println("opacity: " + opacity);
 			return;
 		}
-
+		
 		// Will it blend?
 		if (blendWith != null) {
 			try {
@@ -356,7 +344,11 @@ public class Main {
 				}
 
 				if (saveLastLogin) {
-					setLastlogin(new File(parentDir), username, password);
+					try {
+						LastLogin.setLastlogin(new File(parentDir), username, password);
+					} catch (LastLoginException ex) {
+						System.err.println(ex);
+					}
 				}
 
 				if (!keepUsername) {
@@ -386,33 +378,31 @@ public class Main {
 		if (!optionsFileFrom.isEmpty()) {
 			optionsFile.setPath(optionsFileFrom);
 		}
-
-		if (optionsFile.exists() && optionsFile.read()) {
+		
+		try {
+			optionsFile.read();
 			// Reset the path in case we used an external options.txt.
 			optionsFile.setPath(parentDir);
-		} else {
-			System.out.println("Failed to read options.txt from \"" + optionsFile.getPath() + "\" or it does not exist!");
+		} catch (IOException ex) {
+			System.err.println(ex);
 		}
 
 		// Set the texturepack.
 		if (!texturepack.isEmpty() && optionsFile.isRead()) {
-			optionsFile.setTexturePack(texturepack);
+			optionsFile.setOption("skin", texturepack);
 		}
 
 		// Set the options.
 		if (!options.isEmpty() && optionsFile.isRead()) {
-			for (String option : options) {
-				int splitIdx = option.indexOf(":");
-				if (splitIdx > 0) { // we don't want not-named options either.
-					optionsFile.setOption(option.substring(0, splitIdx), option.substring(splitIdx + 1));
-				}
-			}
+			optionsFile.setOptions(options);
 		}
 
 		// Now write back.
 		if (optionsFile.isRead()) {
-			if (!optionsFile.write()) {
-				System.out.println("Failed to write options.txt!");
+			try {
+				optionsFile.write();
+			} catch (IOException ex) {
+				System.err.println(ex);
 			}
 		}
 
@@ -648,70 +638,6 @@ public class Main {
 		return false;
 	}
 
-	/**
-	 * Reads and decrypts the content of the lastlogin file.
-	 * @param from The lastlogin-file or the directory to which to read from.
-	 * @return A 2-dimensional String array which consists of username [0] and password [1].
-	 */
-	private static String[] getLastLogin(File from) {
-		if (from.isDirectory()) {
-			from = new File(from.getAbsolutePath(), "lastlogin");
-		}
-		from = from.getAbsoluteFile();
-
-		if (!from.exists()) {
-			System.err.println("File does not exist: " + from.getAbsolutePath());
-			return null;
-		}
-
-		try {
-			DataInputStream stream = new DataInputStream(new CipherInputStream(new FileInputStream(from), getLastLoginCipher(Cipher.DECRYPT_MODE)));
-			return new String[]{stream.readUTF(), stream.readUTF()};
-		} catch (FileNotFoundException ex) {
-			System.err.println(ex);
-			return null;
-		} catch (IOException ex) {
-			System.err.println(ex);
-			return null;
-		}
-	}
-
-	/**
-	 * Initializes a cipher which can be used to decrypt the lastlogin file...or encrypt, that is.
-	 * @param cipherMode
-	 * @return
-	 */
-	private static Cipher getLastLoginCipher(int cipherMode) {
-		byte[] salt = {
-			(byte) 0x0c, (byte) 0x9d, (byte) 0x4a, (byte) 0xe4,
-			(byte) 0x1e, (byte) 0x83, (byte) 0x15, (byte) 0xfc
-		};
-		String password = "passwordfile";
-
-		try {
-			PBEParameterSpec parameter = new PBEParameterSpec(salt, 5);
-			SecretKey key = SecretKeyFactory.getInstance("PBEWithMD5AndDES").generateSecret(new PBEKeySpec(password.toCharArray()));
-			Cipher cipher = Cipher.getInstance("PBEWithMD5AndDES");
-			cipher.init(cipherMode, key, parameter);
-			return cipher;
-		} catch (NoSuchAlgorithmException ex) {
-			System.err.println(ex);
-			return null;
-		} catch (InvalidKeySpecException ex) {
-			System.err.println(ex);
-			return null;
-		} catch (NoSuchPaddingException ex) {
-			System.err.println(ex);
-			return null;
-		} catch (InvalidKeyException ex) {
-			System.err.println(ex);
-			return null;
-		} catch (InvalidAlgorithmParameterException ex) {
-			System.err.println(ex);
-			return null;
-		}
-	}
-
 	private static String httpRequest(String url, String content) throws AuthenticationException {
 		byte[] contentBytes = null;
 		try {
@@ -779,33 +705,6 @@ public class Main {
 				System.out.println(line);
 			}
 			reader.close();
-		} catch (IOException ex) {
-			System.err.println(ex);
-		}
-	}
-
-	private static void setLastlogin(File to, String username, String password) {
-		if (to.isDirectory()) {
-			to = new File(to.getAbsolutePath(), "lastlogin");
-		}
-		to = to.getAbsoluteFile();
-
-		if (!to.exists()) {
-			try {
-				to.createNewFile();
-			} catch (IOException ex) {
-				System.err.println(ex);
-				return;
-			}
-		}
-
-		try {
-			DataOutputStream stream = new DataOutputStream(new CipherOutputStream(new FileOutputStream(to), getLastLoginCipher(Cipher.ENCRYPT_MODE)));
-			stream.writeUTF(username);
-			stream.writeUTF(password);
-			stream.close();
-		} catch (FileNotFoundException ex) {
-			System.err.println(ex);
 		} catch (IOException ex) {
 			System.err.println(ex);
 		}

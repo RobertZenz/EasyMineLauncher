@@ -4,6 +4,7 @@
 	</description>
 
 	<property name="src" value="src" />
+	<property name="mmk.src" value="MinecraftMiddleKnife/src" />
 	<property name="build" value="build" />
 	<property name="dist" value="dist" />
 
@@ -21,9 +22,8 @@
 	
 	<target name="compile" depends="init"
 		description="Compiles all source files.">
-		<javac srcdir="${src}" destdir="${build}"
-			includeantruntime="false"
-			source="1.5" />
+		<javac srcdir="${mmk.src}" destdir="${build}" includeantruntime="false" source="1.6" />
+		<javac srcdir="${src}" destdir="${build}" includeantruntime="false" source="1.6" />
 		<manifest file="MANIFEST.MF">
 			<attribute name="Main-Class" value="org.bonsaimind.easyminelauncher.Main" />
 		</manifest>
