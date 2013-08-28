@@ -45,7 +45,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -58,6 +57,9 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import org.bonsaimind.minecraftmiddleknife.Authentication;
+import org.bonsaimind.minecraftmiddleknife.AuthenticationException;
+import org.bonsaimind.minecraftmiddleknife.AuthenticationResult;
 import org.bonsaimind.minecraftmiddleknife.Credentials;
 import org.bonsaimind.minecraftmiddleknife.LastLogin;
 import org.bonsaimind.minecraftmiddleknife.LastLoginException;
@@ -90,8 +92,8 @@ public class Main {
 		AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
 		int keepAliveTick = 300;
 		String sessionId = "0";
-		String launcherVersion = "381";
-		String authenticationAddress = "https://login.minecraft.net";
+		String launcherVersion = Authentication.launcherVersion;
+		String authenticationAddress = Authentication.mojangServer;
 		String username = "Username";
 		boolean useLastLogin = false;
 		boolean saveLastLogin = false;
@@ -319,7 +321,7 @@ public class Main {
 		// Now try if we manage to login...
 		if (authenticate) {
 			try {
-				AuthenticationResult result = authenticate(authenticationAddress, username, password, launcherVersion);
+				AuthenticationResult result = Authentication.authenticate(authenticationAddress, username, password, launcherVersion);
 				sessionId = result.getSessionId();
 
 				// Only launch the keep alive ticker if the login was successfull.
@@ -334,7 +336,7 @@ public class Main {
 						public void run() {
 							System.out.println("Authentication Keep Alive.");
 							try {
-								keepAlive(finalAuthenticationAddress, finalUsername, finalSessionId);
+								Authentication.keepAlive(finalAuthenticationAddress, finalUsername, finalSessionId);
 							} catch (AuthenticationException ex) {
 								System.err.println("Authentication-Keep-Alive failed!");
 								System.err.println(ex);
@@ -501,26 +503,6 @@ public class Main {
 		}
 	}
 
-	private static AuthenticationResult authenticate(String address, String username, String password, String launcherVersion) throws AuthenticationException {
-		try {
-			username = URLEncoder.encode(username, "UTF-8");
-			password = URLEncoder.encode(password, "UTF-8");
-			launcherVersion = URLEncoder.encode(launcherVersion, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			throw new AuthenticationException("Failed to encode username, password or launcher version!", ex);
-		}
-
-		String request = String.format("user=%s&password=%s&version=%s", username, password, launcherVersion);
-		String response = httpRequest(address, request);
-		String[] splitted = response.split(":");
-
-		if (splitted.length < 5) {
-			throw new AuthenticationException(response);
-		}
-
-		return new AuthenticationResult(splitted);
-	}
-
 	/**
 	 * Blends the given jars together. It actually just copies the contents of blendWith
 	 * into minecraftJar and saves it as blendJarName in the same directory as minecraftJar.
@@ -636,53 +618,6 @@ public class Main {
 		}
 
 		return false;
-	}
-
-	private static String httpRequest(String url, String content) throws AuthenticationException {
-		byte[] contentBytes = null;
-		try {
-			contentBytes = content.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			throw new AuthenticationException("Failed to convert content!", ex);
-		}
-
-		URLConnection connection = null;
-		try {
-			connection = new URL(url).openConnection();
-		} catch (MalformedURLException ex) {
-			throw new AuthenticationException("It wasn't me!", ex);
-		} catch (IOException ex) {
-			throw new AuthenticationException("Failed to connect to authentication server!", ex);
-		}
-		connection.setDoInput(true);
-		connection.setDoOutput(true);
-		connection.setRequestProperty("Accept-Charset", "UTF-8");
-		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		connection.setRequestProperty("Content-Length", Integer.toString(contentBytes.length));
-
-		try {
-			OutputStream requestStream = connection.getOutputStream();
-			requestStream.write(contentBytes, 0, contentBytes.length);
-			requestStream.close();
-		} catch (IOException ex) {
-			throw new AuthenticationException("Failed to write request!", ex);
-		}
-
-		String response = "";
-
-		try {
-			BufferedReader responseStream = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-			response = responseStream.readLine();
-			responseStream.close();
-		} catch (IOException ex) {
-			throw new AuthenticationException("Failed to read response!", ex);
-		}
-
-		return response;
-	}
-
-	private static void keepAlive(String address, String username, String sessionId) throws AuthenticationException {
-		httpRequest(address, String.format("?name={0}&session={1}", username, sessionId));
 	}
 
 	private static void printVersion() {
