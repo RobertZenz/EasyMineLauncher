@@ -37,14 +37,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -219,15 +216,15 @@ public class Main {
 			jarDir = new File(jarDir).getAbsolutePath();
 			jar = jarDir;
 		}
-		
+
 		if (lwjglDir.isEmpty()) {
 			lwjglDir = jarDir;
 		}
-		
+
 		if (nativeDir.isEmpty()) {
 			nativeDir = new File(jarDir, "natives").getAbsolutePath();
 		}
-		
+
 		// Set the parentDir into the user.home variable.
 		// While this seems odd at first, the Minecraft-Applet does
 		// read that variable to determine where the .minecraft directory is.
@@ -235,10 +232,10 @@ public class Main {
 
 		// This is needed for the Forge ModLoader and maybe others.
 		System.setProperty("minecraft.applet.TargetDirectory", parentDir);
-				
+
 		// Extend the parentDir for our own, personal use only.
 		parentDir = new File(parentDir, ".minecraft").toString();
-		
+
 		if (blendWith != null) {
 			blendWith = new File(blendWith).getAbsolutePath();
 		}
@@ -303,7 +300,7 @@ public class Main {
 			System.out.println("opacity: " + opacity);
 			return;
 		}
-		
+
 		// Will it blend?
 		if (blendWith != null) {
 			try {
@@ -380,7 +377,7 @@ public class Main {
 		if (!optionsFileFrom.isEmpty()) {
 			optionsFile.setPath(optionsFileFrom);
 		}
-		
+
 		try {
 			optionsFile.read();
 			// Reset the path in case we used an external options.txt.
@@ -509,7 +506,7 @@ public class Main {
 	 * @param minecraftJar
 	 * @param blendWith
 	 * @param blendJarName
-	 * @return 
+	 * @return
 	 */
 	private static String blendJars(String minecraftJar, String blendWith, String blendJarName, boolean keepManifest) throws BlendException {
 		// If we only got the directory, we'll help ourselfs.
@@ -552,7 +549,7 @@ public class Main {
 	 * the creation of entries (because of duplicates).
 	 * @param output
 	 * @param from
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private static void copyToZip(ZipOutputStream output, String from, boolean keepManifest) throws IOException {
 		ZipFile input = new ZipFile(from);
