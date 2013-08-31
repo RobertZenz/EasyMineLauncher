@@ -64,8 +64,8 @@ import org.bonsaimind.minecraftmiddleknife.OptionsFile;
 
 public class Main {
 
-	private static final String name = "EasyMineLauncher";
-	private static final String version = "0.16.1";
+	private static final String NAME = "EasyMineLauncher";
+	private static final String VERSION = "0.16.1";
 
 	public static void main(String[] args) {
 		String jarDir = "";
@@ -96,7 +96,7 @@ public class Main {
 		boolean saveLastLogin = false;
 		boolean keepUsername = false;
 		String texturepack = "";
-		String title = "Minecraft (" + name + ")";
+		String title = "Minecraft (" + NAME + ")";
 		boolean maximized = false;
 		int width = 800;
 		int height = 600;
@@ -618,13 +618,13 @@ public class Main {
 	}
 
 	private static void printVersion() {
-		System.out.println(name + " " + version);
+		System.out.println(NAME + " " + VERSION);
 		System.out.println("Copyright 2012 Robert 'Bobby' Zenz. All rights reserved.");
 		System.out.println("Licensed under 2-clause-BSD.");
 	}
 
 	private static void printHelp() {
-		System.out.println("Usage: " + name + ".jar [OPTIONS]");
+		System.out.println("Usage: " + NAME + ".jar [OPTIONS]");
 		System.out.println("Launch Minecraft directly.");
 		System.out.println("");
 
