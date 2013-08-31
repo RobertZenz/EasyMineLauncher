@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -48,6 +49,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -55,15 +58,14 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.bonsaimind.minecraftmiddleknife.Authentication;
-import org.bonsaimind.minecraftmiddleknife.AuthenticationException;
-import org.bonsaimind.minecraftmiddleknife.AuthenticationResult;
-import org.bonsaimind.minecraftmiddleknife.Credentials;
+import org.bonsaimind.minecraftmiddleknife.AuthenticationResponse;
 import org.bonsaimind.minecraftmiddleknife.LastLogin;
-import org.bonsaimind.minecraftmiddleknife.LastLoginException;
+import org.bonsaimind.minecraftmiddleknife.LastLoginCipherException;
 import org.bonsaimind.minecraftmiddleknife.OptionsFile;
 
 public class Main {
 
+	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 	private static final String NAME = "EasyMineLauncher";
 	private static final String VERSION = "0.16.1";
 
@@ -89,8 +91,8 @@ public class Main {
 		AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
 		int keepAliveTick = 300;
 		String sessionId = "0";
-		String launcherVersion = Authentication.launcherVersion;
-		String authenticationAddress = Authentication.mojangServer;
+		String launcherVersion = Authentication.LAUNCHER_VERSION;
+		String authenticationAddress = Authentication.MOJANG_SERVER;
 		String username = "Username";
 		boolean useLastLogin = false;
 		boolean saveLastLogin = false;
@@ -242,12 +244,15 @@ public class Main {
 
 		// Shall we read from the lastlogin file?
 		if (useLastLogin) {
+			LastLogin lastLogin = new LastLogin();
 			try {
-				Credentials lastLogin = LastLogin.getLastLogin(new File(parentDir));
+				lastLogin.readFrom(parentDir);
 				username = lastLogin.getUsername();
 				password = lastLogin.getPassword();
-			} catch (LastLoginException ex) {
-				System.err.println(ex);
+			} catch (IOException ex) {
+				LOGGER.log(Level.SEVERE, "Reading the lastlogin-file failed!", ex);
+			} catch (LastLoginCipherException ex) {
+				LOGGER.log(Level.SEVERE, "Reading the lastlogin-file failed!", ex);
 			}
 		}
 
@@ -317,52 +322,58 @@ public class Main {
 
 		// Now try if we manage to login...
 		if (authenticate) {
+			final Authentication authentication = new Authentication(authenticationAddress, launcherVersion, username, password);
+			AuthenticationResponse response = AuthenticationResponse.UNKNOWN;
 			try {
-				AuthenticationResult result = Authentication.authenticate(authenticationAddress, username, password, launcherVersion);
-				sessionId = result.getSessionId();
+				response = authentication.authenticate();
+			} catch (UnsupportedEncodingException ex) {
+				LOGGER.log(Level.SEVERE, "Authentication failed!", ex);
+			} catch (MalformedURLException ex) {
+				LOGGER.log(Level.SEVERE, "Authentication failed!", ex);
+			} catch (IOException ex) {
+				LOGGER.log(Level.SEVERE, "Authentication failed!", ex);
+			}
+			if (response == AuthenticationResponse.SUCCESS) {
+				sessionId = authentication.getSessionId();
+				authentication.setKeepAliveUsesRealUsername(!keepUsername);
+
+				if (saveLastLogin) {
+					LastLogin lastLogin = new LastLogin(authentication);
+					try {
+						lastLogin.writeTo(parentDir);
+					} catch (IOException ex) {
+						LOGGER.log(Level.SEVERE, "Writing the lastlogin file failed!", ex);
+					} catch (LastLoginCipherException ex) {
+						LOGGER.log(Level.SEVERE, "Writing the lastlogin file failed!", ex);
+					}
+				}
 
 				// Only launch the keep alive ticker if the login was successfull.
 				if (keepAliveTick > 0) {
 					Timer timer = new Timer("Authentication Keep Alive", true);
-					final String finalUsername = username;
-					final String finalSessionId = sessionId;
-					final String finalAuthenticationAddress = authenticationAddress;
 					timer.scheduleAtFixedRate(new TimerTask() {
 
 						@Override
 						public void run() {
-							System.out.println("Authentication Keep Alive.");
 							try {
-								Authentication.keepAlive(finalAuthenticationAddress, finalUsername, finalSessionId);
-							} catch (AuthenticationException ex) {
-								System.err.println("Authentication-Keep-Alive failed!");
-								System.err.println(ex);
+								authentication.keepAlive();
+							} catch (UnsupportedEncodingException ex) {
+								LOGGER.log(Level.SEVERE, "Keep-Alive failed!", ex);
+							} catch (MalformedURLException ex) {
+								LOGGER.log(Level.SEVERE, "Keep-Alive failed!", ex);
+							} catch (IOException ex) {
+								LOGGER.log(Level.SEVERE, "Keep-Alive failed!", ex);
 							}
 						}
 					}, keepAliveTick * 1000, keepAliveTick * 1000);
 				}
-
-				if (saveLastLogin) {
-					try {
-						LastLogin.setLastlogin(new File(parentDir), username, password);
-					} catch (LastLoginException ex) {
-						System.err.println(ex);
-					}
-				}
-
-				if (!keepUsername) {
-					username = result.getUsername();
-				}
-			} catch (AuthenticationException ex) {
-				System.err.println(ex);
-				if (ex.getCause() != null) {
-					System.err.println(ex.getCause());
-				}
+			} else {
+				LOGGER.log(Level.SEVERE, "Authentication failed: {0}", response.getMessage());
 
 				// Alert the user
 				if (authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_BREAK
 						|| authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_CONTINUE) {
-					JOptionPane.showMessageDialog(new JInternalFrame(), ex.getMessage(), "Failed to authenticate...", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(new JInternalFrame(), response.getMessage(), "Failed to authenticate...", JOptionPane.ERROR_MESSAGE);
 				}
 				// STOP!
 				if (authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_BREAK
@@ -373,38 +384,29 @@ public class Main {
 		}
 
 		// Let's work with the options.txt, shall we?
-		OptionsFile optionsFile = new OptionsFile(parentDir);
-		if (!optionsFileFrom.isEmpty()) {
-			optionsFile.setPath(optionsFileFrom);
-		}
-
+		OptionsFile optionsFile = new OptionsFile();
 		try {
-			optionsFile.read();
-			// Reset the path in case we used an external options.txt.
-			optionsFile.setPath(parentDir);
+			optionsFile.read(optionsFileFrom);
 		} catch (IOException ex) {
-			System.err.println(ex);
+			LOGGER.log(Level.SEVERE, "Reading of the options-file failed!", ex);
 		}
 
-		// Set the texturepack.
-		if (!texturepack.isEmpty() && optionsFile.isRead()) {
-			optionsFile.setOption("skin", texturepack);
-		}
-
-		// Set the options.
-		if (!options.isEmpty() && optionsFile.isRead()) {
-			optionsFile.setOptions(options);
-		}
-
-		// Now write back.
 		if (optionsFile.isRead()) {
+			// Set the texturepack.
+			if (!texturepack.isEmpty() && optionsFile.isRead()) {
+				optionsFile.setOption("skin", texturepack);
+			}
+
+			// Set the options.
+			if (!options.isEmpty() && optionsFile.isRead()) {
+				optionsFile.setOptions(options);
+			}
 			try {
-				optionsFile.write();
+				optionsFile.write(parentDir);
 			} catch (IOException ex) {
-				System.err.println(ex);
+				LOGGER.log(Level.SEVERE, "Writing of the options-file failed!", ex);
 			}
 		}
-
 
 		// Some checks.
 		if (height <= 0) {
