@@ -393,12 +393,12 @@ public class Main {
 
 		if (optionsFile.isRead()) {
 			// Set the texturepack.
-			if (!texturepack.isEmpty() && optionsFile.isRead()) {
+			if (!texturepack.isEmpty()) {
 				optionsFile.setOption("skin", texturepack);
 			}
 
 			// Set the options.
-			if (!options.isEmpty() && optionsFile.isRead()) {
+			if (!options.isEmpty()) {
 				optionsFile.setOptions(options);
 			}
 			try {
