@@ -55,7 +55,7 @@ public class ContainerFrame extends Frame {
 					container.stop();
 					container.destroy();
 				}
-				
+
 				// Best way to get rid of a hanging window.
 				System.exit(0);
 			}

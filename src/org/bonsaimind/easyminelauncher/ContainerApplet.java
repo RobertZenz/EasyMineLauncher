@@ -58,7 +58,7 @@ public class ContainerApplet extends Applet
 		super();
 
 		this.appletToLoad = appletToLoad;
-		
+
 		setLayout(new BorderLayout());
 
 		parameters.put("fullscreen", "false");
@@ -206,7 +206,7 @@ public class ContainerApplet extends Applet
 	public void setDemo(boolean demo) {
 		parameters.put("demo", Boolean.toString(demo));
 	}
-	
+
 	/**
 	 * Set the mppass variable...not sure what it does.
 	 * @param pass
@@ -270,24 +270,24 @@ public class ContainerApplet extends Applet
 	 */
 	public void replace(Applet applet) {
 		setMinecraftApplet(applet);
-		
+
 		// Init the applet we just got.
 		minecraftApplet.init();
 	}
-	
+
 	/**
 	 * Replace the current MinecraftApplet with the given applet.
 	 * @param applet 
 	 */
 	private void setMinecraftApplet(Applet applet) {
 		// Let's make sure that we do not collide with something.
-		if(minecraftApplet != null) {
+		if (minecraftApplet != null) {
 			remove(minecraftApplet);
 			minecraftApplet.stop();
 			minecraftApplet.destroy();
 			minecraftApplet = null;
 		}
-		
+
 		minecraftApplet = applet;
 
 		// Set the size, otherwise LWJGL will fail to initialize the Display.
