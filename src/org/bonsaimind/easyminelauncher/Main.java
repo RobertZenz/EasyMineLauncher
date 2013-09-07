@@ -528,7 +528,7 @@ public class Main {
 			}
 			reader.close();
 		} catch (IOException ex) {
-			System.err.println(ex);
+			LOGGER.log(Level.SEVERE, "Failed to read the help-file!", ex);
 		}
 	}
 }
