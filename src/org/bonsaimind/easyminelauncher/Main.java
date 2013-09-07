@@ -33,7 +33,6 @@ import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,20 +44,16 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.bonsaimind.minecraftmiddleknife.Authentication;
 import org.bonsaimind.minecraftmiddleknife.AuthenticationResponse;
+import org.bonsaimind.minecraftmiddleknife.Blender;
 import org.bonsaimind.minecraftmiddleknife.LastLogin;
 import org.bonsaimind.minecraftmiddleknife.LastLoginCipherException;
 import org.bonsaimind.minecraftmiddleknife.OptionsFile;
@@ -308,15 +303,18 @@ public class Main {
 
 		// Will it blend?
 		if (blendWith != null) {
+			Blender blender = new Blender();
+			blender.setKeepManifest(blendKeepManifest);
+			blender.add(jar);
+			blender.add(blendWith);
+
 			try {
-				jar = blendJars(jar, blendWith, blendJarName, blendKeepManifest);
-			} catch (BlendException ex) {
-				System.err.println("Failed to blend files!");
-				System.err.println(ex);
-				if (ex.getCause() != null) {
-					System.err.println(ex.getCause());
-				}
-				return;
+				blender.blend(blendJarName);
+				jar = blendJarName;
+			} catch (FileNotFoundException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to blend jar!", ex);
+			} catch (IOException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to blend jar", ex);
 			}
 		}
 
@@ -500,86 +498,6 @@ public class Main {
 				System.exit(0);
 			}
 		}
-	}
-
-	/**
-	 * Blends the given jars together. It actually just copies the contents of blendWith
-	 * into minecraftJar and saves it as blendJarName in the same directory as minecraftJar.
-	 * @param minecraftJar
-	 * @param blendWith
-	 * @param blendJarName
-	 * @return
-	 */
-	private static String blendJars(String minecraftJar, String blendWith, String blendJarName, boolean keepManifest) throws BlendException {
-		// If we only got the directory, we'll help ourselfs.
-		if (new File(minecraftJar).isDirectory()) {
-			minecraftJar = new File(minecraftJar, "minecraft.jar").getAbsolutePath();
-		}
-		blendWith = new File(blendWith).getAbsolutePath();
-		// A little bit hacky, I admit.
-		blendJarName = new File(new File(minecraftJar).getParent(), blendJarName).getAbsolutePath();
-
-		if (new File(blendJarName).exists()) {
-			new File(blendJarName).delete();
-		}
-
-		ZipOutputStream blendedOutput = null;
-		try {
-			blendedOutput = new ZipOutputStream(new FileOutputStream(blendJarName));
-			copyToZip(blendedOutput, blendWith, keepManifest);
-			copyToZip(blendedOutput, minecraftJar, keepManifest);
-		} catch (FileNotFoundException ex) {
-			throw new BlendException("Could not find a file for blending...sorry.", ex);
-		} catch (IOException ex) {
-			throw new BlendException("Could not read or write during blending.", ex);
-		} finally {
-			try {
-				if (blendedOutput != null) {
-					blendedOutput.close();
-				}
-			} catch (IOException ex) {
-				throw new BlendException("Closing the blended jar failed.", ex);
-			}
-		}
-
-		return blendJarName;
-	}
-
-	/**
-	 * Copies the contents of "from" into "output".
-	 * Please be aware that this method is evil and swallows exceptions during
-	 * the creation of entries (because of duplicates).
-	 * @param output
-	 * @param from
-	 * @throws IOException
-	 */
-	private static void copyToZip(ZipOutputStream output, String from, boolean keepManifest) throws IOException {
-		ZipFile input = new ZipFile(from);
-		Enumeration<? extends ZipEntry> entries = input.entries();
-		while (entries.hasMoreElements()) {
-			try {
-				ZipEntry entry = entries.nextElement();
-
-				if (!keepManifest && entry.getName().equals("META-INF/MANIFEST.MF")) {
-					// Continue with the next entry in case it is the manifest.
-					continue;
-				}
-
-				output.putNextEntry(entry);
-
-				InputStream inputStream = input.getInputStream(entry);
-				byte[] buffer = new byte[4096];
-				while (inputStream.available() > 0) {
-					output.write(buffer, 0, inputStream.read(buffer, 0, buffer.length));
-				}
-				inputStream.close();
-				output.closeEntry();
-			} catch (ZipException ex) {
-				// Assume that the erro is the warning about a dulicate and ignore it.
-				// I know that this is evil...
-			}
-		}
-		input.close();
 	}
 
 	/**
