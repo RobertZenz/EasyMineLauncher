@@ -383,28 +383,30 @@ public class Main {
 			}
 		}
 
-		// Let's work with the options.txt, shall we?
-		OptionsFile optionsFile = new OptionsFile();
-		try {
-			optionsFile.read(optionsFileFrom);
-		} catch (IOException ex) {
-			LOGGER.log(Level.SEVERE, "Reading of the options-file failed!", ex);
-		}
-
-		if (optionsFile.isRead()) {
-			// Set the texturepack.
-			if (!texturepack.isEmpty()) {
-				optionsFile.setOption("skin", texturepack);
-			}
-
-			// Set the options.
-			if (!options.isEmpty()) {
-				optionsFile.setOptions(options);
-			}
+		if (!texturepack.isEmpty() || !options.isEmpty()) {
+			// Let's work with the options.txt, shall we?
+			OptionsFile optionsFile = new OptionsFile();
 			try {
-				optionsFile.write(parentDir);
+				optionsFile.read(optionsFileFrom);
 			} catch (IOException ex) {
-				LOGGER.log(Level.SEVERE, "Writing of the options-file failed!", ex);
+				LOGGER.log(Level.SEVERE, "Reading of the options-file failed!", ex);
+			}
+
+			if (optionsFile.isRead()) {
+				// Set the texturepack.
+				if (!texturepack.isEmpty()) {
+					optionsFile.setOption("skin", texturepack);
+				}
+
+				// Set the options.
+				if (!options.isEmpty()) {
+					optionsFile.setOptions(options);
+				}
+				try {
+					optionsFile.write(parentDir);
+				} catch (IOException ex) {
+					LOGGER.log(Level.SEVERE, "Writing of the options-file failed!", ex);
+				}
 			}
 		}
 
