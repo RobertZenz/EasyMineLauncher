@@ -24,6 +24,8 @@
                            Please be aware that this means that two archives are
                            merged together at every start, that takes on my SSD
                            a whooping 1.2 seconds.
+                           This can also be a comma-separated list or specified
+                           multiple times.
   --blend-jar-name=NAME    The NAME of the blended jar, defaults to
                            minecraft_blended.jar.
   --blend-keep-manifest    Copy the manifest from the given JAR to blend...that

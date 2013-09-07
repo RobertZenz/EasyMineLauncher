@@ -77,7 +77,7 @@ public class Main {
 		boolean demo = false;
 		String parentDir = System.getProperty("user.home");
 		String appletToLoad = "net.minecraft.client.MinecraftApplet";
-		String blendWith = null;
+		List<String> blendWith = new ArrayList<String>();
 		String blendJarName = "minecraft_blended.jar";
 		boolean blendKeepManifest = false;
 		String port = "25565";
@@ -120,8 +120,11 @@ public class Main {
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
 			} else if (arg.startsWith("--additional-jar=")) {
-				String param = arg.substring(17);
-				additionalJars.addAll(Arrays.asList(param.split(",")));
+				for (String additionalJar : arg.substring(17).split(",")) {
+					if (additionalJar.length() > 0) {
+						additionalJars.add(additionalJar);
+					}
+				}
 			} else if (arg.equals("--no-frame")) {
 				noFrame = true;
 			} else if (arg.startsWith("--parent-dir=")) {
@@ -129,7 +132,11 @@ public class Main {
 			} else if (arg.startsWith("--applet=")) {
 				appletToLoad = arg.substring(9);
 			} else if (arg.startsWith("--blend-with=")) {
-				blendWith = arg.substring(13);
+				for (String blendWithJar : arg.substring(13).split(",")) {
+					if (blendWithJar.length() > 0) {
+						blendWith.add(blendWithJar);
+					}
+				}
 			} else if (arg.startsWith("--blend-jar-name=")) {
 				blendJarName = arg.substring(17);
 			} else if (arg.equals("--blend-keep-manifest")) {
@@ -233,10 +240,6 @@ public class Main {
 		// Extend the parentDir for our own, personal use only.
 		parentDir = new File(parentDir, ".minecraft").toString();
 
-		if (blendWith != null) {
-			blendWith = new File(blendWith).getAbsolutePath();
-		}
-
 		// Shall we read from the lastlogin file?
 		if (useLastLogin) {
 			LastLogin lastLogin = new LastLogin();
@@ -270,10 +273,9 @@ public class Main {
 			System.out.println("demo: " + demo);
 			System.out.println("parentDir (exists: " + new File(parentDir).exists() + "): " + parentDir);
 			System.out.println("applet: " + appletToLoad);
-			if (blendWith != null) {
-				System.out.println("blendWith (exists: " + new File(blendWith).exists() + "): " + blendWith);
-			} else {
-				System.out.println("blendWith: " + blendWith);
+			System.out.println("blendWith: ");
+			for (String file : blendWith) {
+				System.out.println("	(exists: " + new File(file).exists() + "): " + file);
 			}
 			System.out.println("blendJarName: " + blendJarName);
 			System.out.println("blendKeepManifest: " + blendKeepManifest);
@@ -306,7 +308,9 @@ public class Main {
 			Blender blender = new Blender();
 			blender.setKeepManifest(blendKeepManifest);
 			blender.add(jar);
-			blender.add(blendWith);
+			for (String file : blendWith) {
+				blender.add(file);
+			}
 
 			try {
 				blender.blend(blendJarName);
