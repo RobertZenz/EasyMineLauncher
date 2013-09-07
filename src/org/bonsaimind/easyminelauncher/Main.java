@@ -496,7 +496,7 @@ public class Main {
 			container.init();
 			container.start();
 		} else {
-			System.err.println("Failed to load Minecraft! Exiting.");
+			LOGGER.log(Level.SEVERE, "Failed to load Minecraft! Exiting.");
 
 			if (noExit) {
 				return;
