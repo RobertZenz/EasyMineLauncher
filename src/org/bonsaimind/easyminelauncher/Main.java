@@ -383,7 +383,7 @@ public class Main {
 			}
 		}
 
-		if (!texturepack.isEmpty() || !options.isEmpty()) {
+		if (!texturepack.isEmpty() || !options.isEmpty() || !optionsFileFrom.isEmpty()) {
 			// Let's work with the options.txt, shall we?
 			OptionsFile optionsFile = new OptionsFile();
 			try {
