@@ -484,7 +484,7 @@ public class Main {
 
 		if (opacity < 1) {
 			frame.setUndecorated(true);
-			//frame.setOpacity(opacity);
+			frame.setOpacity(opacity);
 		}
 
 		frame.setContainerApplet(container);
