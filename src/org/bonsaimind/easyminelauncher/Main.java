@@ -53,6 +53,7 @@ import javax.swing.JOptionPane;
 import org.bonsaimind.minecraftmiddleknife.Authentication;
 import org.bonsaimind.minecraftmiddleknife.AuthenticationResponse;
 import org.bonsaimind.minecraftmiddleknife.Blender;
+import org.bonsaimind.minecraftmiddleknife.ClassLoaderExtender;
 import org.bonsaimind.minecraftmiddleknife.LastLogin;
 import org.bonsaimind.minecraftmiddleknife.LastLoginCipherException;
 import org.bonsaimind.minecraftmiddleknife.OptionsFile;
@@ -419,24 +420,29 @@ public class Main {
 
 		// Load the launcher
 		if (!additionalJars.isEmpty()) {
-			try {
-				// This might fix issues for Mods which assume that they
-				// are loaded via the real launcher...not sure, thought adding
-				// it would be a good idea.
-				List<URL> urls = new ArrayList<URL>();
-				for (String item : additionalJars) {
+			// This might fix issues for Mods which assume that they
+			// are loaded via the real launcher...not sure, thought adding
+			// it would be a good idea.
+			List<URL> urls = new ArrayList<URL>();
+			for (String item : additionalJars) {
+				try {
 					urls.add(new File(item).toURI().toURL());
+				} catch (MalformedURLException ex) {
+					LOGGER.log(Level.SEVERE, "Failed to convert to URL!", ex);
 				}
-				if (!extendClassLoaders(urls.toArray(new URL[urls.size() - 1]))) {
-					System.err.println("Failed to inject additional jars!");
-					return;
-				}
-			} catch (MalformedURLException ex) {
-				System.err.println("Failed to load additional jars!");
-				System.err.println(ex);
-				return;
 			}
 
+			try {
+				ClassLoaderExtender.extend(urls.toArray(new URL[urls.size() - 1]));
+			} catch (NoSuchMethodException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
+			} catch (IllegalAccessException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
+			} catch (IllegalArgumentException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
+			} catch (InvocationTargetException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
+			}
 		}
 
 		// Let's tell the Forge ModLoader (and others) that it is supposed
@@ -501,43 +507,6 @@ public class Main {
 				System.exit(0);
 			}
 		}
-	}
-
-	/**
-	 * This is mostly from here: http://stackoverflow.com/questions/252893/how-do-you-change-the-classpath-within-java
-	 * @param url
-	 * @return
-	 */
-	private static boolean extendClassLoaders(URL[] urls) {
-		// Extend the ClassLoader of the current thread.
-		URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
-		Thread.currentThread().setContextClassLoader(loader);
-
-		// Extend the SystemClassLoader...this is needed for mods which will
-		// use the WhatEver.getClass().getClassLoader() method to retrieve
-		// a ClassLoader.
-		URLClassLoader systemLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-
-		try {
-			Method addURLMethod = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
-			addURLMethod.setAccessible(true);
-
-			for (URL url : urls) {
-				addURLMethod.invoke(systemLoader, url);
-			}
-
-			return true;
-		} catch (NoSuchMethodException ex) {
-			System.err.println(ex);
-		} catch (SecurityException ex) {
-			System.err.println(ex);
-		} catch (IllegalAccessException ex) {
-			System.err.println(ex);
-		} catch (InvocationTargetException ex) {
-			System.err.println(ex);
-		}
-
-		return false;
 	}
 
 	private static void printVersion() {
