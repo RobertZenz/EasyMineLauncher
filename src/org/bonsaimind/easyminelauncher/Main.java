@@ -303,7 +303,7 @@ public class Main {
 		}
 
 		// Will it blend?
-		if (blendWith != null) {
+		if (!blendWith.isEmpty()) {
 			Blender blender = new Blender();
 			blender.setKeepManifest(blendKeepManifest);
 			blender.add(jar);
