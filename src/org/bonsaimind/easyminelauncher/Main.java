@@ -33,32 +33,25 @@ import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.bonsaimind.minecraftmiddleknife.Authentication;
 import org.bonsaimind.minecraftmiddleknife.AuthenticationResponse;
+import org.bonsaimind.minecraftmiddleknife.Blender;
+import org.bonsaimind.minecraftmiddleknife.ClassLoaderExtender;
 import org.bonsaimind.minecraftmiddleknife.LastLogin;
 import org.bonsaimind.minecraftmiddleknife.LastLoginCipherException;
 import org.bonsaimind.minecraftmiddleknife.OptionsFile;
@@ -82,7 +75,7 @@ public class Main {
 		boolean demo = false;
 		String parentDir = System.getProperty("user.home");
 		String appletToLoad = "net.minecraft.client.MinecraftApplet";
-		String blendWith = null;
+		List<String> blendWith = new ArrayList<String>();
 		String blendJarName = "minecraft_blended.jar";
 		boolean blendKeepManifest = false;
 		String port = "25565";
@@ -125,8 +118,11 @@ public class Main {
 			} else if (arg.startsWith("--native-dir=")) {
 				nativeDir = arg.substring(13);
 			} else if (arg.startsWith("--additional-jar=")) {
-				String param = arg.substring(17);
-				additionalJars.addAll(Arrays.asList(param.split(",")));
+				for (String additionalJar : arg.substring(17).split(",")) {
+					if (additionalJar.length() > 0) {
+						additionalJars.add(additionalJar);
+					}
+				}
 			} else if (arg.equals("--no-frame")) {
 				noFrame = true;
 			} else if (arg.startsWith("--parent-dir=")) {
@@ -134,7 +130,11 @@ public class Main {
 			} else if (arg.startsWith("--applet=")) {
 				appletToLoad = arg.substring(9);
 			} else if (arg.startsWith("--blend-with=")) {
-				blendWith = arg.substring(13);
+				for (String blendWithJar : arg.substring(13).split(",")) {
+					if (blendWithJar.length() > 0) {
+						blendWith.add(blendWithJar);
+					}
+				}
 			} else if (arg.startsWith("--blend-jar-name=")) {
 				blendJarName = arg.substring(17);
 			} else if (arg.equals("--blend-keep-manifest")) {
@@ -238,10 +238,6 @@ public class Main {
 		// Extend the parentDir for our own, personal use only.
 		parentDir = new File(parentDir, ".minecraft").toString();
 
-		if (blendWith != null) {
-			blendWith = new File(blendWith).getAbsolutePath();
-		}
-
 		// Shall we read from the lastlogin file?
 		if (useLastLogin) {
 			LastLogin lastLogin = new LastLogin();
@@ -275,10 +271,9 @@ public class Main {
 			System.out.println("demo: " + demo);
 			System.out.println("parentDir (exists: " + new File(parentDir).exists() + "): " + parentDir);
 			System.out.println("applet: " + appletToLoad);
-			if (blendWith != null) {
-				System.out.println("blendWith (exists: " + new File(blendWith).exists() + "): " + blendWith);
-			} else {
-				System.out.println("blendWith: " + blendWith);
+			System.out.println("blendWith: ");
+			for (String file : blendWith) {
+				System.out.println("	(exists: " + new File(file).exists() + "): " + file);
 			}
 			System.out.println("blendJarName: " + blendJarName);
 			System.out.println("blendKeepManifest: " + blendKeepManifest);
@@ -307,16 +302,21 @@ public class Main {
 		}
 
 		// Will it blend?
-		if (blendWith != null) {
+		if (!blendWith.isEmpty()) {
+			Blender blender = new Blender();
+			blender.setKeepManifest(blendKeepManifest);
+			blender.add(jar);
+			for (String file : blendWith) {
+				blender.add(file);
+			}
+
 			try {
-				jar = blendJars(jar, blendWith, blendJarName, blendKeepManifest);
-			} catch (BlendException ex) {
-				System.err.println("Failed to blend files!");
-				System.err.println(ex);
-				if (ex.getCause() != null) {
-					System.err.println(ex.getCause());
-				}
-				return;
+				blender.blend(blendJarName);
+				jar = blendJarName;
+			} catch (FileNotFoundException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to blend jar!", ex);
+			} catch (IOException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to blend jar", ex);
 			}
 		}
 
@@ -383,28 +383,30 @@ public class Main {
 			}
 		}
 
-		// Let's work with the options.txt, shall we?
-		OptionsFile optionsFile = new OptionsFile();
-		try {
-			optionsFile.read(optionsFileFrom);
-		} catch (IOException ex) {
-			LOGGER.log(Level.SEVERE, "Reading of the options-file failed!", ex);
-		}
-
-		if (optionsFile.isRead()) {
-			// Set the texturepack.
-			if (!texturepack.isEmpty()) {
-				optionsFile.setOption("skin", texturepack);
-			}
-
-			// Set the options.
-			if (!options.isEmpty()) {
-				optionsFile.setOptions(options);
-			}
+		if (!texturepack.isEmpty() || !options.isEmpty() || !optionsFileFrom.isEmpty()) {
+			// Let's work with the options.txt, shall we?
+			OptionsFile optionsFile = new OptionsFile();
 			try {
-				optionsFile.write(parentDir);
+				optionsFile.read(optionsFileFrom);
 			} catch (IOException ex) {
-				LOGGER.log(Level.SEVERE, "Writing of the options-file failed!", ex);
+				LOGGER.log(Level.SEVERE, "Reading of the options-file failed!", ex);
+			}
+
+			if (optionsFile.isRead()) {
+				// Set the texturepack.
+				if (!texturepack.isEmpty()) {
+					optionsFile.setOption("skin", texturepack);
+				}
+
+				// Set the options.
+				if (!options.isEmpty()) {
+					optionsFile.setOptions(options);
+				}
+				try {
+					optionsFile.write(parentDir);
+				} catch (IOException ex) {
+					LOGGER.log(Level.SEVERE, "Writing of the options-file failed!", ex);
+				}
 			}
 		}
 
@@ -418,24 +420,29 @@ public class Main {
 
 		// Load the launcher
 		if (!additionalJars.isEmpty()) {
-			try {
-				// This might fix issues for Mods which assume that they
-				// are loaded via the real launcher...not sure, thought adding
-				// it would be a good idea.
-				List<URL> urls = new ArrayList<URL>();
-				for (String item : additionalJars) {
+			// This might fix issues for Mods which assume that they
+			// are loaded via the real launcher...not sure, thought adding
+			// it would be a good idea.
+			List<URL> urls = new ArrayList<URL>();
+			for (String item : additionalJars) {
+				try {
 					urls.add(new File(item).toURI().toURL());
+				} catch (MalformedURLException ex) {
+					LOGGER.log(Level.SEVERE, "Failed to convert to URL!", ex);
 				}
-				if (!extendClassLoaders(urls.toArray(new URL[urls.size() - 1]))) {
-					System.err.println("Failed to inject additional jars!");
-					return;
-				}
-			} catch (MalformedURLException ex) {
-				System.err.println("Failed to load additional jars!");
-				System.err.println(ex);
-				return;
 			}
 
+			try {
+				ClassLoaderExtender.extend(urls.toArray(new URL[urls.size() - 1]));
+			} catch (NoSuchMethodException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
+			} catch (IllegalAccessException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
+			} catch (IllegalArgumentException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
+			} catch (InvocationTargetException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
+			}
 		}
 
 		// Let's tell the Forge ModLoader (and others) that it is supposed
@@ -479,7 +486,7 @@ public class Main {
 
 		if (opacity < 1) {
 			frame.setUndecorated(true);
-			//frame.setOpacity(opacity);
+			frame.setOpacity(opacity);
 		}
 
 		frame.setContainerApplet(container);
@@ -491,7 +498,7 @@ public class Main {
 			container.init();
 			container.start();
 		} else {
-			System.err.println("Failed to load Minecraft! Exiting.");
+			LOGGER.log(Level.SEVERE, "Failed to load Minecraft! Exiting.");
 
 			if (noExit) {
 				return;
@@ -500,123 +507,6 @@ public class Main {
 				System.exit(0);
 			}
 		}
-	}
-
-	/**
-	 * Blends the given jars together. It actually just copies the contents of blendWith
-	 * into minecraftJar and saves it as blendJarName in the same directory as minecraftJar.
-	 * @param minecraftJar
-	 * @param blendWith
-	 * @param blendJarName
-	 * @return
-	 */
-	private static String blendJars(String minecraftJar, String blendWith, String blendJarName, boolean keepManifest) throws BlendException {
-		// If we only got the directory, we'll help ourselfs.
-		if (new File(minecraftJar).isDirectory()) {
-			minecraftJar = new File(minecraftJar, "minecraft.jar").getAbsolutePath();
-		}
-		blendWith = new File(blendWith).getAbsolutePath();
-		// A little bit hacky, I admit.
-		blendJarName = new File(new File(minecraftJar).getParent(), blendJarName).getAbsolutePath();
-
-		if (new File(blendJarName).exists()) {
-			new File(blendJarName).delete();
-		}
-
-		ZipOutputStream blendedOutput = null;
-		try {
-			blendedOutput = new ZipOutputStream(new FileOutputStream(blendJarName));
-			copyToZip(blendedOutput, blendWith, keepManifest);
-			copyToZip(blendedOutput, minecraftJar, keepManifest);
-		} catch (FileNotFoundException ex) {
-			throw new BlendException("Could not find a file for blending...sorry.", ex);
-		} catch (IOException ex) {
-			throw new BlendException("Could not read or write during blending.", ex);
-		} finally {
-			try {
-				if (blendedOutput != null) {
-					blendedOutput.close();
-				}
-			} catch (IOException ex) {
-				throw new BlendException("Closing the blended jar failed.", ex);
-			}
-		}
-
-		return blendJarName;
-	}
-
-	/**
-	 * Copies the contents of "from" into "output".
-	 * Please be aware that this method is evil and swallows exceptions during
-	 * the creation of entries (because of duplicates).
-	 * @param output
-	 * @param from
-	 * @throws IOException
-	 */
-	private static void copyToZip(ZipOutputStream output, String from, boolean keepManifest) throws IOException {
-		ZipFile input = new ZipFile(from);
-		Enumeration<? extends ZipEntry> entries = input.entries();
-		while (entries.hasMoreElements()) {
-			try {
-				ZipEntry entry = entries.nextElement();
-
-				if (!keepManifest && entry.getName().equals("META-INF/MANIFEST.MF")) {
-					// Continue with the next entry in case it is the manifest.
-					continue;
-				}
-
-				output.putNextEntry(entry);
-
-				InputStream inputStream = input.getInputStream(entry);
-				byte[] buffer = new byte[4096];
-				while (inputStream.available() > 0) {
-					output.write(buffer, 0, inputStream.read(buffer, 0, buffer.length));
-				}
-				inputStream.close();
-				output.closeEntry();
-			} catch (ZipException ex) {
-				// Assume that the erro is the warning about a dulicate and ignore it.
-				// I know that this is evil...
-			}
-		}
-		input.close();
-	}
-
-	/**
-	 * This is mostly from here: http://stackoverflow.com/questions/252893/how-do-you-change-the-classpath-within-java
-	 * @param url
-	 * @return
-	 */
-	private static boolean extendClassLoaders(URL[] urls) {
-		// Extend the ClassLoader of the current thread.
-		URLClassLoader loader = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
-		Thread.currentThread().setContextClassLoader(loader);
-
-		// Extend the SystemClassLoader...this is needed for mods which will
-		// use the WhatEver.getClass().getClassLoader() method to retrieve
-		// a ClassLoader.
-		URLClassLoader systemLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-
-		try {
-			Method addURLMethod = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
-			addURLMethod.setAccessible(true);
-
-			for (URL url : urls) {
-				addURLMethod.invoke(systemLoader, url);
-			}
-
-			return true;
-		} catch (NoSuchMethodException ex) {
-			System.err.println(ex);
-		} catch (SecurityException ex) {
-			System.err.println(ex);
-		} catch (IllegalAccessException ex) {
-			System.err.println(ex);
-		} catch (InvocationTargetException ex) {
-			System.err.println(ex);
-		}
-
-		return false;
 	}
 
 	private static void printVersion() {
@@ -640,7 +530,7 @@ public class Main {
 			}
 			reader.close();
 		} catch (IOException ex) {
-			System.err.println(ex);
+			LOGGER.log(Level.SEVERE, "Failed to read the help-file!", ex);
 		}
 	}
 }
