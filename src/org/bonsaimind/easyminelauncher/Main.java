@@ -48,13 +48,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import org.bonsaimind.minecraftmiddleknife.Authentication;
-import org.bonsaimind.minecraftmiddleknife.AuthenticationResponse;
 import org.bonsaimind.minecraftmiddleknife.Blender;
 import org.bonsaimind.minecraftmiddleknife.ClassLoaderExtender;
 import org.bonsaimind.minecraftmiddleknife.LastLogin;
 import org.bonsaimind.minecraftmiddleknife.LastLoginCipherException;
 import org.bonsaimind.minecraftmiddleknife.OptionsFile;
+import org.bonsaimind.minecraftmiddleknife.pre16.AppletLoadException;
+import org.bonsaimind.minecraftmiddleknife.pre16.Authentication;
+import org.bonsaimind.minecraftmiddleknife.pre16.AuthenticationResponse;
+import org.bonsaimind.minecraftmiddleknife.pre16.ContainerApplet;
+import org.bonsaimind.minecraftmiddleknife.pre16.ContainerFrame;
 
 public class Main {
 
@@ -453,17 +456,21 @@ public class Main {
 		ContainerApplet container = new ContainerApplet(appletToLoad);
 
 		// Pass arguments to the applet.
-		container.setDemo(demo);
-		container.setUsername(username);
+		container.setParameter(ContainerApplet.PARAMETER_DEMO, Boolean.toString(demo));
+		container.setParameter(ContainerApplet.PARAMETER_USERNAME, username);
+		container.setParameter(ContainerApplet.PARAMETER_LOADMAP_USER, username);
 		if (server != null) {
-			container.setServer(server, port);
+			container.setParameter(ContainerApplet.PARAMETER_SERVER, server);
+			container.setParameter(ContainerApplet.PARAMETER_PORT, port);
 		}
-		container.setMpPass(password);
-		container.setSessionId(sessionId);
+		container.setParameter(ContainerApplet.PARAMETER_MPPASS, password);
+		container.setParameter(ContainerApplet.PARAMETER_SESSION_ID, sessionId);
 
 		// Create and set up the frame.
 		ContainerFrame frame = new ContainerFrame(title);
 
+		frame.setExitOnClose(!noExit);
+		
 		if (fullscreen) {
 			Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
 			frame.setAlwaysOnTop(true);
@@ -479,6 +486,7 @@ public class Main {
 			frame.setLocation(
 					x == -1 ? frame.getX() : x,
 					y == -1 ? frame.getY() : y);
+
 			if (maximized) {
 				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 			}
@@ -494,11 +502,12 @@ public class Main {
 
 		// Load
 		container.loadNatives(nativeDir);
-		if (container.loadJarsAndApplet(jar, lwjglDir)) {
+		try {
+			container.loadJarsAndApplet(jar, lwjglDir);
 			container.init();
 			container.start();
-		} else {
-			LOGGER.log(Level.SEVERE, "Failed to load Minecraft! Exiting.");
+		} catch (AppletLoadException ex) {
+			LOGGER.log(Level.SEVERE, "Failed to load Minecraft!", ex);
 
 			if (noExit) {
 				return;
