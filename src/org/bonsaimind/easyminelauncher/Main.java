@@ -387,6 +387,10 @@ public class Main {
 		}
 
 		if (!texturepack.isEmpty() || !options.isEmpty() || !optionsFileFrom.isEmpty()) {
+			if (optionsFileFrom.isEmpty()) {
+				optionsFileFrom = new File(parentDir, "options.txt").getAbsolutePath();
+			}
+
 			// Let's work with the options.txt, shall we?
 			OptionsFile optionsFile = new OptionsFile();
 			try {
@@ -470,7 +474,7 @@ public class Main {
 		ContainerFrame frame = new ContainerFrame(title);
 
 		frame.setExitOnClose(!noExit);
-		
+
 		if (fullscreen) {
 			Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
 			frame.setAlwaysOnTop(true);
