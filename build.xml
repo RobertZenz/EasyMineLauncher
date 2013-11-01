@@ -33,7 +33,7 @@
 		description="Creates the jar and a tar archive.">
 		<jar jarfile="${dist}/EasyMineLauncher.jar" basedir="${build}"
 			manifest="MANIFEST.MF">
-			<fileset dir="${src}" includes="org/bonsaimind/easyminelauncher/help.txt" />
+			<fileset dir="${src}" includes="org/bonsaimind/easyminelauncher/help.text" />
 		</jar>
 		<tar destfile="${dist}/EasyMineLauncher.tar" basedir=".">
 			<include name="${src}/**" />
