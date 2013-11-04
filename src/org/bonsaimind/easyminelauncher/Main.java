@@ -50,6 +50,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.bonsaimind.minecraftmiddleknife.Blender;
 import org.bonsaimind.minecraftmiddleknife.ClassLoaderExtender;
+import org.bonsaimind.minecraftmiddleknife.ClassLoaderExtensionException;
 import org.bonsaimind.minecraftmiddleknife.LastLogin;
 import org.bonsaimind.minecraftmiddleknife.LastLoginCipherException;
 import org.bonsaimind.minecraftmiddleknife.OptionsFile;
@@ -441,13 +442,7 @@ public class Main {
 
 			try {
 				ClassLoaderExtender.extend(urls.toArray(new URL[urls.size() - 1]));
-			} catch (NoSuchMethodException ex) {
-				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
-			} catch (IllegalAccessException ex) {
-				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
-			} catch (IllegalArgumentException ex) {
-				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
-			} catch (InvocationTargetException ex) {
+			} catch (ClassLoaderExtensionException ex) {
 				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
 			}
 		}
