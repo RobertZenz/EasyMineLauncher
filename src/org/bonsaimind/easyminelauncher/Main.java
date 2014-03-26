@@ -67,12 +67,12 @@ public class Main {
 
 	public static void main(String[] args) {
 		Arguments arguments = new Arguments(args);
-		
+
 		if (arguments.isPrintHelp()) {
 			printHelp();
 			return;
 		}
-		
+
 		if (arguments.isPrintVersion()) {
 			printVersion();
 			return;
@@ -91,16 +91,7 @@ public class Main {
 
 		// Shall we read from the lastlogin file?
 		if (arguments.isUseLastLogin()) {
-			LastLogin lastLogin = new LastLogin();
-			try {
-				lastLogin.readFrom(arguments.getParentDir());
-				arguments.setUsername(lastLogin.getUsername());
-				arguments.setPassword(lastLogin.getPassword());
-			} catch (IOException ex) {
-				LOGGER.log(Level.SEVERE, "Reading the lastlogin-file failed!", ex);
-			} catch (LastLoginCipherException ex) {
-				LOGGER.log(Level.SEVERE, "Reading the lastlogin-file failed!", ex);
-			}
+			arguments = readLastLogin(arguments);
 		}
 
 		if (arguments.isDump()) {
@@ -110,21 +101,7 @@ public class Main {
 
 		// Will it blend?
 		if (!arguments.getBlendWith().isEmpty()) {
-			Blender blender = new Blender();
-			blender.setKeepManifest(arguments.isBlendKeepManifest());
-			blender.add(arguments.getJar());
-			for (String file : arguments.getBlendWith()) {
-				blender.add(file);
-			}
-
-			try {
-				blender.blend(arguments.getBlendJarName());
-				arguments.setJar(arguments.getBlendJarName());
-			} catch (FileNotFoundException ex) {
-				LOGGER.log(Level.SEVERE, "Failed to blend jar!", ex);
-			} catch (IOException ex) {
-				LOGGER.log(Level.SEVERE, "Failed to blend jar", ex);
-			}
+			arguments = blendJar(arguments);
 		}
 
 		// Now try if we manage to login...
@@ -195,74 +172,58 @@ public class Main {
 				arguments.setOptionsFileFrom(new File(arguments.getParentDir(), "options.txt").getAbsolutePath());
 			}
 
-			// Let's work with the options.txt, shall we?
-			OptionsFile optionsFile = new OptionsFile();
-			try {
-				optionsFile.read(arguments.getOptionsFileFrom());
-			} catch (IOException ex) {
-				LOGGER.log(Level.SEVERE, "Reading of the options-file failed!", ex);
-			}
-
-			if (optionsFile.isRead()) {
-				// Set the texturepack.
-				if (!arguments.getTexturepack().isEmpty()) {
-					optionsFile.setOption("skin", arguments.getTexturepack());
-				}
-
-				// Set the options.
-				if (!arguments.getOptions().isEmpty()) {
-					optionsFile.setOptions(arguments.getOptions());
-				}
-				try {
-					optionsFile.write(arguments.getParentDir());
-				} catch (IOException ex) {
-					LOGGER.log(Level.SEVERE, "Writing of the options-file failed!", ex);
-				}
-			}
+			setOptions(arguments);
 		}
 
 		// Load the launcher
 		if (!arguments.getAdditionalJars().isEmpty()) {
-			// This might fix issues for Mods which assume that they
-			// are loaded via the real launcher...not sure, thought adding
-			// it would be a good idea.
-			List<URL> urls = new ArrayList<URL>();
-			for (String item : arguments.getAdditionalJars()) {
-				try {
-					urls.add(new File(item).toURI().toURL());
-				} catch (MalformedURLException ex) {
-					LOGGER.log(Level.SEVERE, "Failed to convert to URL!", ex);
-				}
-			}
-
-			try {
-				ClassLoaderExtender.extend(urls.toArray(new URL[urls.size() - 1]));
-			} catch (ClassLoaderExtensionException ex) {
-				LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
-			}
+			loadAdditionalJars(arguments);
 		}
 
 		// Let's tell the Forge ModLoader (and others) that it is supposed
 		// to load our applet and not that of the official launcher.
 		System.setProperty("minecraft.applet.WrapperClass", "org.bonsaimind.easyminelauncher.ContainerApplet");
 
-		// Create the applet.
-		ContainerApplet container = new ContainerApplet(arguments.getAppletToLoad());
+		ContainerFrame frame = createFrame(arguments);
+		ContainerApplet applet = createApplet(arguments);
 
-		// Pass arguments to the applet.
-		container.setParameter(ContainerApplet.PARAMETER_DEMO, Boolean.toString(arguments.isDemo()));
-		container.setParameter(ContainerApplet.PARAMETER_USERNAME, arguments.getUsername());
-		container.setParameter(ContainerApplet.PARAMETER_LOADMAP_USER, arguments.getUsername());
-		if (arguments.getServer() != null) {
-			container.setParameter(ContainerApplet.PARAMETER_SERVER, arguments.getServer());
-			container.setParameter(ContainerApplet.PARAMETER_PORT, arguments.getPort());
+		frame.setContainerApplet(applet);
+		frame.setVisible(true);
+
+		// Load
+		applet.loadNatives(arguments.getNativeDir());
+		try {
+			applet.loadJarsAndApplet(arguments.getJar(), arguments.getLwjglDir());
+			applet.init();
+			applet.start();
+		} catch (AppletLoadException ex) {
+			LOGGER.log(Level.SEVERE, "Failed to load Minecraft!", ex);
+
+			if (arguments.isNoExit()) {
+				return;
+			} else {
+				// Exit just to be sure.
+				System.exit(0);
+			}
 		}
-		container.setParameter(ContainerApplet.PARAMETER_MPPASS, arguments.getPassword());
-		container.setParameter(ContainerApplet.PARAMETER_SESSION_ID, arguments.getSessionId());
+	}
 
-		// Create and set up the frame.
+	private static ContainerApplet createApplet(Arguments arguments) {
+		ContainerApplet applet = new ContainerApplet(arguments.getAppletToLoad());
+		applet.setParameter(ContainerApplet.PARAMETER_DEMO, Boolean.toString(arguments.isDemo()));
+		applet.setParameter(ContainerApplet.PARAMETER_USERNAME, arguments.getUsername());
+		applet.setParameter(ContainerApplet.PARAMETER_LOADMAP_USER, arguments.getUsername());
+		if (arguments.getServer() != null) {
+			applet.setParameter(ContainerApplet.PARAMETER_SERVER, arguments.getServer());
+			applet.setParameter(ContainerApplet.PARAMETER_PORT, arguments.getPort());
+		}
+		applet.setParameter(ContainerApplet.PARAMETER_MPPASS, arguments.getPassword());
+		applet.setParameter(ContainerApplet.PARAMETER_SESSION_ID, arguments.getSessionId());
+		return applet;
+	}
+
+	private static ContainerFrame createFrame(Arguments arguments) {
 		ContainerFrame frame = new ContainerFrame(arguments.getTitle());
-
 		frame.setExitOnClose(!arguments.isNoExit());
 
 		if (arguments.isFullscreen()) {
@@ -291,25 +252,7 @@ public class Main {
 			frame.setOpacity(arguments.getOpacity());
 		}
 
-		frame.setContainerApplet(container);
-		frame.setVisible(true);
-
-		// Load
-		container.loadNatives(arguments.getNativeDir());
-		try {
-			container.loadJarsAndApplet(arguments.getJar(), arguments.getLwjglDir());
-			container.init();
-			container.start();
-		} catch (AppletLoadException ex) {
-			LOGGER.log(Level.SEVERE, "Failed to load Minecraft!", ex);
-
-			if (arguments.isNoExit()) {
-				return;
-			} else {
-				// Exit just to be sure.
-				System.exit(0);
-			}
-		}
+		return frame;
 	}
 
 	private static void printVersion() {
@@ -334,6 +277,87 @@ public class Main {
 			reader.close();
 		} catch (IOException ex) {
 			LOGGER.log(Level.SEVERE, "Failed to read the help-file!", ex);
+		}
+	}
+
+	private static Arguments blendJar(Arguments arguments) {
+		Blender blender = new Blender();
+		blender.setKeepManifest(arguments.isBlendKeepManifest());
+		blender.add(arguments.getJar());
+		for (String file : arguments.getBlendWith()) {
+			blender.add(file);
+		}
+
+		try {
+			blender.blend(arguments.getBlendJarName());
+			arguments.setJar(arguments.getBlendJarName());
+		} catch (FileNotFoundException ex) {
+			LOGGER.log(Level.SEVERE, "Failed to blend jar!", ex);
+		} catch (IOException ex) {
+			LOGGER.log(Level.SEVERE, "Failed to blend jar", ex);
+		}
+
+		return arguments;
+	}
+
+	private static void loadAdditionalJars(Arguments arguments) {
+		// This might fix issues for Mods which assume that they
+		// are loaded via the real launcher...not sure, thought adding
+		// it would be a good idea.
+		List<URL> urls = new ArrayList<URL>();
+		for (String item : arguments.getAdditionalJars()) {
+			try {
+				urls.add(new File(item).toURI().toURL());
+			} catch (MalformedURLException ex) {
+				LOGGER.log(Level.SEVERE, "Failed to convert to URL!", ex);
+			}
+		}
+
+		try {
+			ClassLoaderExtender.extend(urls.toArray(new URL[urls.size() - 1]));
+		} catch (ClassLoaderExtensionException ex) {
+			LOGGER.log(Level.SEVERE, "Failed to extend ClassLoader!", ex);
+		}
+	}
+
+	private static Arguments readLastLogin(Arguments arguments) {
+		LastLogin lastLogin = new LastLogin();
+		try {
+			lastLogin.readFrom(arguments.getParentDir());
+			arguments.setUsername(lastLogin.getUsername());
+			arguments.setPassword(lastLogin.getPassword());
+		} catch (IOException ex) {
+			LOGGER.log(Level.SEVERE, "Reading the lastlogin-file failed!", ex);
+		} catch (LastLoginCipherException ex) {
+			LOGGER.log(Level.SEVERE, "Reading the lastlogin-file failed!", ex);
+		}
+
+		return arguments;
+	}
+
+	private static void setOptions(Arguments arguments) {
+		OptionsFile optionsFile = new OptionsFile();
+		try {
+			optionsFile.read(arguments.getOptionsFileFrom());
+		} catch (IOException ex) {
+			LOGGER.log(Level.SEVERE, "Reading of the options-file failed!", ex);
+		}
+
+		if (optionsFile.isRead()) {
+			// Set the texturepack.
+			if (!arguments.getTexturepack().isEmpty()) {
+				optionsFile.setOption("skin", arguments.getTexturepack());
+			}
+
+			// Set the options.
+			if (!arguments.getOptions().isEmpty()) {
+				optionsFile.setOptions(arguments.getOptions());
+			}
+			try {
+				optionsFile.write(arguments.getParentDir());
+			} catch (IOException ex) {
+				LOGGER.log(Level.SEVERE, "Writing of the options-file failed!", ex);
+			}
 		}
 	}
 }
