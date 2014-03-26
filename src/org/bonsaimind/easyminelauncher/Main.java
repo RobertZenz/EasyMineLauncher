@@ -94,7 +94,7 @@ public class Main {
 			arguments = readLastLogin(arguments);
 		}
 
-		if (arguments.isDump()) {
+		if (arguments.isPrintDump()) {
 			System.out.println(arguments.toString());
 			return;
 		}

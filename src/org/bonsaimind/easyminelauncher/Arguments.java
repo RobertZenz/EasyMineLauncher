@@ -74,7 +74,7 @@ public class Arguments {
 	private boolean alwaysOnTop = false;
 	private boolean fullscreen = false;
 	private float opacity = 1f;
-	private boolean dump = false;
+	private boolean printDump = false;
 	private boolean noExit = false;
 	private boolean printVersion = false;
 	private boolean printHelp = false;
@@ -168,7 +168,7 @@ public class Arguments {
 			} else if (arg.startsWith("--opacity=")) {
 				opacity = Float.parseFloat(arg.substring(10));
 			} else if (arg.equals("--dump")) {
-				dump = true;
+				printDump = true;
 			} else if (arg.equals("--no-exit")) {
 				noExit = true;
 			} else if (arg.equals("--help")) {
@@ -248,8 +248,8 @@ public class Arguments {
 		return demo;
 	}
 
-	public boolean isDump() {
-		return dump;
+	public boolean isPrintDump() {
+		return printDump;
 	}
 
 	public boolean isFullscreen() {
