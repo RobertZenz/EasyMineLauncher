@@ -66,188 +66,36 @@ public class Main {
 	private static final String VERSION = "0.16.1";
 
 	public static void main(String[] args) {
-		String jarDir = "";
-		String jar = "";
-		String lwjglDir = "";
-		String password = "";
-		String nativeDir = "";
-		List<String> additionalJars = new ArrayList<String>();
-		boolean noFrame = false;
-		String optionsFileFrom = "";
-		List<String> options = new ArrayList<String>();
-		boolean demo = false;
-		String parentDir = System.getProperty("user.home");
-		String appletToLoad = "net.minecraft.client.MinecraftApplet";
-		List<String> blendWith = new ArrayList<String>();
-		String blendJarName = "minecraft_blended.jar";
-		boolean blendKeepManifest = false;
-		String port = "25565";
-		String server = null;
-		boolean authenticate = false;
-		AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
-		int keepAliveTick = 300;
-		String sessionId = "0";
-		String launcherVersion = Authentication.LAUNCHER_VERSION;
-		String authenticationAddress = Authentication.MOJANG_SERVER;
-		String username = "Username";
-		boolean useLastLogin = false;
-		boolean saveLastLogin = false;
-		boolean keepUsername = false;
-		String texturepack = "";
-		String title = "Minecraft (" + NAME + ")";
-		boolean maximized = false;
-		int width = 800;
-		int height = 600;
-		int x = -1;
-		int y = -1;
-		boolean alwaysOnTop = false;
-		boolean fullscreen = false;
-		float opacity = 1f;
-		boolean dump = false;
-		boolean noExit = false;
-
-		// Parse arguments
-		for (String arg : args) {
-			if (arg.startsWith("--jar-dir=")) {
-				jarDir = arg.substring(10);
-			} else if (arg.startsWith("--jar=")) {
-				jar = arg.substring(6);
-			} else if (arg.startsWith("--lwjgl-dir=")) {
-				lwjglDir = arg.substring(12);
-			} else if (arg.startsWith("--mppass=")) {
-				password = arg.substring(9);
-			} else if (arg.startsWith("--password=")) {
-				password = arg.substring(11);
-			} else if (arg.startsWith("--native-dir=")) {
-				nativeDir = arg.substring(13);
-			} else if (arg.startsWith("--additional-jar=")) {
-				for (String additionalJar : arg.substring(17).split(",")) {
-					if (additionalJar.length() > 0) {
-						additionalJars.add(additionalJar);
-					}
-				}
-			} else if (arg.equals("--no-frame")) {
-				noFrame = true;
-			} else if (arg.startsWith("--parent-dir=")) {
-				parentDir = arg.substring(13);
-			} else if (arg.startsWith("--applet=")) {
-				appletToLoad = arg.substring(9);
-			} else if (arg.startsWith("--blend-with=")) {
-				for (String blendWithJar : arg.substring(13).split(",")) {
-					if (blendWithJar.length() > 0) {
-						blendWith.add(blendWithJar);
-					}
-				}
-			} else if (arg.startsWith("--blend-jar-name=")) {
-				blendJarName = arg.substring(17);
-			} else if (arg.equals("--blend-keep-manifest")) {
-				blendKeepManifest = true;
-			} else if (arg.startsWith("--port=")) {
-				port = arg.substring(7);
-			} else if (arg.startsWith("--server=")) {
-				server = arg.substring(9);
-			} else if (arg.equals("--authenticate")) {
-				authenticate = true;
-			} else if (arg.startsWith("--authentication-failure=")) {
-				authenticationFailureBehavior = AuthenticationFailureBehavior.valueOf(arg.substring(25));
-			} else if (arg.startsWith("--keep-alive-tick=")) {
-				keepAliveTick = Integer.parseInt(arg.substring(18));
-			} else if (arg.startsWith("--session-id=")) {
-				sessionId = arg.substring(13);
-			} else if (arg.startsWith("--launcher-version=")) {
-				launcherVersion = arg.substring(19);
-			} else if (arg.startsWith("--auth-address=")) {
-				authenticationAddress = arg.substring(15);
-			} else if (arg.startsWith("--options-file=")) {
-				optionsFileFrom = arg.substring(15);
-			} else if (arg.startsWith("--set-option=")) {
-				options.add(arg.substring(13));
-			} else if (arg.startsWith("--texturepack=")) {
-				texturepack = arg.substring(14);
-			} else if (arg.startsWith("--title=")) {
-				title = arg.substring(8);
-			} else if (arg.startsWith("--username=")) {
-				username = arg.substring(11);
-			} else if (arg.equals("--use-lastlogin")) {
-				useLastLogin = true;
-			} else if (arg.equals("--save-lastlogin")) {
-				saveLastLogin = true;
-			} else if (arg.equals("--keep-username")) {
-				keepUsername = true;
-			} else if (arg.equals("--demo")) {
-				demo = true;
-			} else if (arg.equals("--version")) {
-				printVersion();
-				return;
-			} else if (arg.startsWith("--width=")) {
-				width = Integer.parseInt(arg.substring(8));
-			} else if (arg.startsWith("--height=")) {
-				height = Integer.parseInt(arg.substring(9));
-			} else if (arg.startsWith("--x=")) {
-				x = Integer.parseInt(arg.substring(4));
-			} else if (arg.startsWith("--y=")) {
-				y = Integer.parseInt(arg.substring(4));
-			} else if (arg.equals("--maximized")) {
-				maximized = true;
-			} else if (arg.equals("--always-on-top")) {
-				alwaysOnTop = true;
-			} else if (arg.equals("--fullscreen")) {
-				fullscreen = true;
-			} else if (arg.startsWith("--opacity=")) {
-				opacity = Float.parseFloat(arg.substring(10));
-			} else if (arg.equals("--dump")) {
-				dump = true;
-			} else if (arg.equals("--no-exit")) {
-				noExit = true;
-			} else if (arg.equals("--help")) {
-				printHelp();
-				return;
-			} else {
-				System.err.println("Unknown parameter: " + arg);
-				printHelp();
-				return;
-			}
+		Arguments arguments = new Arguments(args);
+		
+		if (arguments.isPrintHelp()) {
+			printHelp();
+			return;
 		}
-
-		// Check if we were provided with a path, otherwise fall back to the defaults.
-		if (jarDir.isEmpty() && jar.isEmpty()) {
-			jarDir = new File(new File(parentDir, ".minecraft").toString(), "bin").toString();
-		}
-
-		// This is some odd stuff...
-		if (jarDir.isEmpty()) {
-			jarDir = new File(jar).getParent();
-		} else {
-			jarDir = new File(jarDir).getAbsolutePath();
-			jar = jarDir;
-		}
-
-		if (lwjglDir.isEmpty()) {
-			lwjglDir = jarDir;
-		}
-
-		if (nativeDir.isEmpty()) {
-			nativeDir = new File(jarDir, "natives").getAbsolutePath();
+		
+		if (arguments.isPrintVersion()) {
+			printVersion();
+			return;
 		}
 
 		// Set the parentDir into the user.home variable.
 		// While this seems odd at first, the Minecraft-Applet does
 		// read that variable to determine where the .minecraft directory is.
-		System.setProperty("user.home", parentDir);
+		System.setProperty("user.home", arguments.getParentDir());
 
 		// This is needed for the Forge ModLoader and maybe others.
-		System.setProperty("minecraft.applet.TargetDirectory", parentDir);
+		System.setProperty("minecraft.applet.TargetDirectory", arguments.getParentDir());
 
 		// Extend the parentDir for our own, personal use only.
-		parentDir = new File(parentDir, ".minecraft").toString();
+		arguments.setParentDir(new File(arguments.getParentDir(), ".minecraft").toString());
 
 		// Shall we read from the lastlogin file?
-		if (useLastLogin) {
+		if (arguments.isUseLastLogin()) {
 			LastLogin lastLogin = new LastLogin();
 			try {
-				lastLogin.readFrom(parentDir);
-				username = lastLogin.getUsername();
-				password = lastLogin.getPassword();
+				lastLogin.readFrom(arguments.getParentDir());
+				arguments.setUsername(lastLogin.getUsername());
+				arguments.setPassword(lastLogin.getPassword());
 			} catch (IOException ex) {
 				LOGGER.log(Level.SEVERE, "Reading the lastlogin-file failed!", ex);
 			} catch (LastLoginCipherException ex) {
@@ -255,67 +103,23 @@ public class Main {
 			}
 		}
 
-		if (dump) {
-			System.out.println("jarDir (exists: " + new File(jarDir).exists() + "): " + jarDir);
-			System.out.println("jar (exists: " + new File(jar).exists() + "): " + jar);
-			System.out.println("lwjglDir (exists: " + new File(lwjglDir).exists() + "): " + lwjglDir);
-			System.out.println("password: " + password);
-			System.out.println("nativeDir (exists: " + new File(nativeDir).exists() + "): " + nativeDir);
-			System.out.println("additionalJars:");
-			for (String additionalJar : additionalJars) {
-				System.out.println("    " + additionalJar);
-			}
-			System.out.println("noFrame: " + noFrame);
-			System.out.println("optionsFileFrom (exists: " + new File(optionsFileFrom).exists() + "): " + optionsFileFrom);
-			System.out.println("options:");
-			for (String option : options) {
-				System.out.println("    " + option);
-			}
-			System.out.println("demo: " + demo);
-			System.out.println("parentDir (exists: " + new File(parentDir).exists() + "): " + parentDir);
-			System.out.println("applet: " + appletToLoad);
-			System.out.println("blendWith: ");
-			for (String file : blendWith) {
-				System.out.println("	(exists: " + new File(file).exists() + "): " + file);
-			}
-			System.out.println("blendJarName: " + blendJarName);
-			System.out.println("blendKeepManifest: " + blendKeepManifest);
-			System.out.println("port: " + port);
-			System.out.println("server: " + server);
-			System.out.println("authenticate: " + authenticate);
-			System.out.println("authenticationFailureBehavior: " + authenticationFailureBehavior);
-			System.out.println("keepAliveTick: " + keepAliveTick);
-			System.out.println("launcherVersion: " + launcherVersion);
-			System.out.println("authenticationAddress: " + authenticationAddress);
-			System.out.println("username: " + username);
-			System.out.println("useLastLogin: " + useLastLogin);
-			System.out.println("saveLastLogin: " + saveLastLogin);
-			System.out.println("keepUsername: " + keepUsername);
-			System.out.println("texturepack: " + texturepack);
-			System.out.println("maximized: " + maximized);
-			System.out.println("width: " + width);
-			System.out.println("height: " + height);
-			System.out.println("x: " + x);
-			System.out.println("y: " + y);
-			System.out.println("title: " + title);
-			System.out.println("alwaysOnTop: " + alwaysOnTop);
-			System.out.println("fullscreen: " + fullscreen);
-			System.out.println("opacity: " + opacity);
+		if (arguments.isDump()) {
+			System.out.println(arguments.toString());
 			return;
 		}
 
 		// Will it blend?
-		if (!blendWith.isEmpty()) {
+		if (!arguments.getBlendWith().isEmpty()) {
 			Blender blender = new Blender();
-			blender.setKeepManifest(blendKeepManifest);
-			blender.add(jar);
-			for (String file : blendWith) {
+			blender.setKeepManifest(arguments.isBlendKeepManifest());
+			blender.add(arguments.getJar());
+			for (String file : arguments.getBlendWith()) {
 				blender.add(file);
 			}
 
 			try {
-				blender.blend(blendJarName);
-				jar = blendJarName;
+				blender.blend(arguments.getBlendJarName());
+				arguments.setJar(arguments.getBlendJarName());
 			} catch (FileNotFoundException ex) {
 				LOGGER.log(Level.SEVERE, "Failed to blend jar!", ex);
 			} catch (IOException ex) {
@@ -324,8 +128,8 @@ public class Main {
 		}
 
 		// Now try if we manage to login...
-		if (authenticate) {
-			final Authentication authentication = new Authentication(authenticationAddress, launcherVersion, username, password);
+		if (arguments.isAuthenticate()) {
+			final Authentication authentication = new Authentication(arguments.getAuthenticationAddress(), arguments.getLauncherVersion(), arguments.getUsername(), arguments.getPassword());
 			AuthenticationResponse response = AuthenticationResponse.UNKNOWN;
 			try {
 				response = authentication.authenticate();
@@ -337,13 +141,13 @@ public class Main {
 				LOGGER.log(Level.SEVERE, "Authentication failed!", ex);
 			}
 			if (response == AuthenticationResponse.SUCCESS) {
-				sessionId = authentication.getSessionId();
-				authentication.setKeepAliveUsesRealUsername(!keepUsername);
+				arguments.setSessionId(authentication.getSessionId());
+				authentication.setKeepAliveUsesRealUsername(!arguments.isKeepUsername());
 
-				if (saveLastLogin) {
+				if (arguments.isSaveLastLogin()) {
 					LastLogin lastLogin = new LastLogin(authentication);
 					try {
-						lastLogin.writeTo(parentDir);
+						lastLogin.writeTo(arguments.getParentDir());
 					} catch (IOException ex) {
 						LOGGER.log(Level.SEVERE, "Writing the lastlogin file failed!", ex);
 					} catch (LastLoginCipherException ex) {
@@ -352,7 +156,7 @@ public class Main {
 				}
 
 				// Only launch the keep alive ticker if the login was successfull.
-				if (keepAliveTick > 0) {
+				if (arguments.getKeepAliveTick() > 0) {
 					Timer timer = new Timer("Authentication Keep Alive", true);
 					timer.scheduleAtFixedRate(new TimerTask() {
 
@@ -368,70 +172,62 @@ public class Main {
 								LOGGER.log(Level.SEVERE, "Keep-Alive failed!", ex);
 							}
 						}
-					}, keepAliveTick * 1000, keepAliveTick * 1000);
+					}, arguments.getKeepAliveTick() * 1000, arguments.getKeepAliveTick() * 1000);
 				}
 			} else {
 				LOGGER.log(Level.SEVERE, "Authentication failed: {0}", response.getMessage());
 
 				// Alert the user
-				if (authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_BREAK
-						|| authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_CONTINUE) {
+				if (arguments.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_BREAK
+						|| arguments.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_CONTINUE) {
 					JOptionPane.showMessageDialog(new JInternalFrame(), response.getMessage(), "Failed to authenticate...", JOptionPane.ERROR_MESSAGE);
 				}
 				// STOP!
-				if (authenticationFailureBehavior == AuthenticationFailureBehavior.ALERT_BREAK
-						|| authenticationFailureBehavior == AuthenticationFailureBehavior.SILENT_BREAK) {
+				if (arguments.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_BREAK
+						|| arguments.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.SILENT_BREAK) {
 					return;
 				}
 			}
 		}
 
-		if (!texturepack.isEmpty() || !options.isEmpty() || !optionsFileFrom.isEmpty()) {
-			if (optionsFileFrom.isEmpty()) {
-				optionsFileFrom = new File(parentDir, "options.txt").getAbsolutePath();
+		if (!arguments.getTexturepack().isEmpty() || !arguments.getOptions().isEmpty() || !arguments.getOptionsFileFrom().isEmpty()) {
+			if (arguments.getOptionsFileFrom().isEmpty()) {
+				arguments.setOptionsFileFrom(new File(arguments.getParentDir(), "options.txt").getAbsolutePath());
 			}
 
 			// Let's work with the options.txt, shall we?
 			OptionsFile optionsFile = new OptionsFile();
 			try {
-				optionsFile.read(optionsFileFrom);
+				optionsFile.read(arguments.getOptionsFileFrom());
 			} catch (IOException ex) {
 				LOGGER.log(Level.SEVERE, "Reading of the options-file failed!", ex);
 			}
 
 			if (optionsFile.isRead()) {
 				// Set the texturepack.
-				if (!texturepack.isEmpty()) {
-					optionsFile.setOption("skin", texturepack);
+				if (!arguments.getTexturepack().isEmpty()) {
+					optionsFile.setOption("skin", arguments.getTexturepack());
 				}
 
 				// Set the options.
-				if (!options.isEmpty()) {
-					optionsFile.setOptions(options);
+				if (!arguments.getOptions().isEmpty()) {
+					optionsFile.setOptions(arguments.getOptions());
 				}
 				try {
-					optionsFile.write(parentDir);
+					optionsFile.write(arguments.getParentDir());
 				} catch (IOException ex) {
 					LOGGER.log(Level.SEVERE, "Writing of the options-file failed!", ex);
 				}
 			}
 		}
 
-		// Some checks.
-		if (height <= 0) {
-			height = 600;
-		}
-		if (width <= 0) {
-			width = 800;
-		}
-
 		// Load the launcher
-		if (!additionalJars.isEmpty()) {
+		if (!arguments.getAdditionalJars().isEmpty()) {
 			// This might fix issues for Mods which assume that they
 			// are loaded via the real launcher...not sure, thought adding
 			// it would be a good idea.
 			List<URL> urls = new ArrayList<URL>();
-			for (String item : additionalJars) {
+			for (String item : arguments.getAdditionalJars()) {
 				try {
 					urls.add(new File(item).toURI().toURL());
 				} catch (MalformedURLException ex) {
@@ -451,63 +247,63 @@ public class Main {
 		System.setProperty("minecraft.applet.WrapperClass", "org.bonsaimind.easyminelauncher.ContainerApplet");
 
 		// Create the applet.
-		ContainerApplet container = new ContainerApplet(appletToLoad);
+		ContainerApplet container = new ContainerApplet(arguments.getAppletToLoad());
 
 		// Pass arguments to the applet.
-		container.setParameter(ContainerApplet.PARAMETER_DEMO, Boolean.toString(demo));
-		container.setParameter(ContainerApplet.PARAMETER_USERNAME, username);
-		container.setParameter(ContainerApplet.PARAMETER_LOADMAP_USER, username);
-		if (server != null) {
-			container.setParameter(ContainerApplet.PARAMETER_SERVER, server);
-			container.setParameter(ContainerApplet.PARAMETER_PORT, port);
+		container.setParameter(ContainerApplet.PARAMETER_DEMO, Boolean.toString(arguments.isDemo()));
+		container.setParameter(ContainerApplet.PARAMETER_USERNAME, arguments.getUsername());
+		container.setParameter(ContainerApplet.PARAMETER_LOADMAP_USER, arguments.getUsername());
+		if (arguments.getServer() != null) {
+			container.setParameter(ContainerApplet.PARAMETER_SERVER, arguments.getServer());
+			container.setParameter(ContainerApplet.PARAMETER_PORT, arguments.getPort());
 		}
-		container.setParameter(ContainerApplet.PARAMETER_MPPASS, password);
-		container.setParameter(ContainerApplet.PARAMETER_SESSION_ID, sessionId);
+		container.setParameter(ContainerApplet.PARAMETER_MPPASS, arguments.getPassword());
+		container.setParameter(ContainerApplet.PARAMETER_SESSION_ID, arguments.getSessionId());
 
 		// Create and set up the frame.
-		ContainerFrame frame = new ContainerFrame(title);
+		ContainerFrame frame = new ContainerFrame(arguments.getTitle());
 
-		frame.setExitOnClose(!noExit);
+		frame.setExitOnClose(!arguments.isNoExit());
 
-		if (fullscreen) {
+		if (arguments.isFullscreen()) {
 			Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
 			frame.setAlwaysOnTop(true);
 			frame.setUndecorated(true);
 			frame.setSize(dimensions.width, dimensions.height);
 			frame.setLocation(0, 0);
 		} else {
-			frame.setAlwaysOnTop(alwaysOnTop);
-			frame.setUndecorated(noFrame);
-			frame.setSize(width, height);
+			frame.setAlwaysOnTop(arguments.isAlwaysOnTop());
+			frame.setUndecorated(arguments.isNoFrame());
+			frame.setSize(arguments.getWidth(), arguments.getHeight());
 
 			// It is more likely that no location is set...I think.
 			frame.setLocation(
-					x == -1 ? frame.getX() : x,
-					y == -1 ? frame.getY() : y);
+					arguments.getX() == -1 ? frame.getX() : arguments.getX(),
+					arguments.getY() == -1 ? frame.getY() : arguments.getY());
 
-			if (maximized) {
+			if (arguments.isMaximized()) {
 				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 			}
 		}
 
-		if (opacity < 1) {
+		if (arguments.getOpacity() < 1) {
 			frame.setUndecorated(true);
-			frame.setOpacity(opacity);
+			frame.setOpacity(arguments.getOpacity());
 		}
 
 		frame.setContainerApplet(container);
 		frame.setVisible(true);
 
 		// Load
-		container.loadNatives(nativeDir);
+		container.loadNatives(arguments.getNativeDir());
 		try {
-			container.loadJarsAndApplet(jar, lwjglDir);
+			container.loadJarsAndApplet(arguments.getJar(), arguments.getLwjglDir());
 			container.init();
 			container.start();
 		} catch (AppletLoadException ex) {
 			LOGGER.log(Level.SEVERE, "Failed to load Minecraft!", ex);
 
-			if (noExit) {
+			if (arguments.isNoExit()) {
 				return;
 			} else {
 				// Exit just to be sure.
