@@ -155,13 +155,11 @@ public class Main {
 				LOGGER.log(Level.SEVERE, "Authentication failed: {0}", response.getMessage());
 
 				// Alert the user
-				if (parameters.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_BREAK
-						|| parameters.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_CONTINUE) {
+				if (parameters.getAuthenticationFailureBehavior().isAlert()) {
 					JOptionPane.showMessageDialog(new JInternalFrame(), response.getMessage(), "Failed to authenticate...", JOptionPane.ERROR_MESSAGE);
 				}
 				// STOP!
-				if (parameters.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_BREAK
-						|| parameters.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.SILENT_BREAK) {
+				if (parameters.getAuthenticationFailureBehavior().isBreak()) {
 					return;
 				}
 			}
