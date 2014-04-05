@@ -66,14 +66,14 @@ public class Main {
 	private static final String VERSION = "0.16.1";
 
 	public static void main(String[] args) {
-		Arguments arguments = new Arguments(args);
+		Parameters parameters = new Parameters(args);
 
-		if (arguments.isPrintHelp()) {
+		if (parameters.isPrintHelp()) {
 			printHelp();
 			return;
 		}
 
-		if (arguments.isPrintVersion()) {
+		if (parameters.isPrintVersion()) {
 			printVersion();
 			return;
 		}
@@ -81,32 +81,32 @@ public class Main {
 		// Set the parentDir into the user.home variable.
 		// While this seems odd at first, the Minecraft-Applet does
 		// read that variable to determine where the .minecraft directory is.
-		System.setProperty("user.home", arguments.getParentDir());
+		System.setProperty("user.home", parameters.getParentDir());
 
 		// This is needed for the Forge ModLoader and maybe others.
-		System.setProperty("minecraft.applet.TargetDirectory", arguments.getParentDir());
+		System.setProperty("minecraft.applet.TargetDirectory", parameters.getParentDir());
 
 		// Extend the parentDir for our own, personal use only.
-		arguments.setParentDir(new File(arguments.getParentDir(), ".minecraft").toString());
+		parameters.setParentDir(new File(parameters.getParentDir(), ".minecraft").toString());
 
 		// Shall we read from the lastlogin file?
-		if (arguments.isUseLastLogin()) {
-			arguments = readLastLogin(arguments);
+		if (parameters.isUseLastLogin()) {
+			parameters = readLastLogin(parameters);
 		}
 
-		if (arguments.isPrintDump()) {
-			System.out.println(arguments.toString());
+		if (parameters.isPrintDump()) {
+			System.out.println(parameters.toString());
 			return;
 		}
 
 		// Will it blend?
-		if (!arguments.getBlendWith().isEmpty()) {
-			arguments = blendJar(arguments);
+		if (!parameters.getBlendWith().isEmpty()) {
+			parameters = blendJar(parameters);
 		}
 
 		// Now try if we manage to login...
-		if (arguments.isAuthenticate()) {
-			final Authentication authentication = new Authentication(arguments.getAuthenticationAddress(), arguments.getLauncherVersion(), arguments.getUsername(), arguments.getPassword());
+		if (parameters.isAuthenticate()) {
+			final Authentication authentication = new Authentication(parameters.getAuthenticationAddress(), parameters.getLauncherVersion(), parameters.getUsername(), parameters.getPassword());
 			AuthenticationResponse response = AuthenticationResponse.UNKNOWN;
 			try {
 				response = authentication.authenticate();
@@ -118,13 +118,13 @@ public class Main {
 				LOGGER.log(Level.SEVERE, "Authentication failed!", ex);
 			}
 			if (response == AuthenticationResponse.SUCCESS) {
-				arguments.setSessionId(authentication.getSessionId());
-				authentication.setKeepAliveUsesRealUsername(!arguments.isKeepUsername());
+				parameters.setSessionId(authentication.getSessionId());
+				authentication.setKeepAliveUsesRealUsername(!parameters.isKeepUsername());
 
-				if (arguments.isSaveLastLogin()) {
+				if (parameters.isSaveLastLogin()) {
 					LastLogin lastLogin = new LastLogin(authentication);
 					try {
-						lastLogin.writeTo(arguments.getParentDir());
+						lastLogin.writeTo(parameters.getParentDir());
 					} catch (IOException ex) {
 						LOGGER.log(Level.SEVERE, "Writing the lastlogin file failed!", ex);
 					} catch (LastLoginCipherException ex) {
@@ -133,7 +133,7 @@ public class Main {
 				}
 
 				// Only launch the keep alive ticker if the login was successfull.
-				if (arguments.getKeepAliveTick() > 0) {
+				if (parameters.getKeepAliveTick() > 0) {
 					Timer timer = new Timer("Authentication Keep Alive", true);
 					timer.scheduleAtFixedRate(new TimerTask() {
 
@@ -149,57 +149,57 @@ public class Main {
 								LOGGER.log(Level.SEVERE, "Keep-Alive failed!", ex);
 							}
 						}
-					}, arguments.getKeepAliveTick() * 1000, arguments.getKeepAliveTick() * 1000);
+					}, parameters.getKeepAliveTick() * 1000, parameters.getKeepAliveTick() * 1000);
 				}
 			} else {
 				LOGGER.log(Level.SEVERE, "Authentication failed: {0}", response.getMessage());
 
 				// Alert the user
-				if (arguments.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_BREAK
-						|| arguments.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_CONTINUE) {
+				if (parameters.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_BREAK
+						|| parameters.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_CONTINUE) {
 					JOptionPane.showMessageDialog(new JInternalFrame(), response.getMessage(), "Failed to authenticate...", JOptionPane.ERROR_MESSAGE);
 				}
 				// STOP!
-				if (arguments.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_BREAK
-						|| arguments.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.SILENT_BREAK) {
+				if (parameters.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.ALERT_BREAK
+						|| parameters.getAuthenticationFailureBehavior() == AuthenticationFailureBehavior.SILENT_BREAK) {
 					return;
 				}
 			}
 		}
 
-		if (!arguments.getTexturepack().isEmpty() || !arguments.getOptions().isEmpty() || !arguments.getOptionsFileFrom().isEmpty()) {
-			if (arguments.getOptionsFileFrom().isEmpty()) {
-				arguments.setOptionsFileFrom(new File(arguments.getParentDir(), "options.txt").getAbsolutePath());
+		if (!parameters.getTexturepack().isEmpty() || !parameters.getOptions().isEmpty() || !parameters.getOptionsFileFrom().isEmpty()) {
+			if (parameters.getOptionsFileFrom().isEmpty()) {
+				parameters.setOptionsFileFrom(new File(parameters.getParentDir(), "options.txt").getAbsolutePath());
 			}
 
-			setOptions(arguments);
+			setOptions(parameters);
 		}
 
 		// Load the launcher
-		if (!arguments.getAdditionalJars().isEmpty()) {
-			loadAdditionalJars(arguments);
+		if (!parameters.getAdditionalJars().isEmpty()) {
+			loadAdditionalJars(parameters);
 		}
 
 		// Let's tell the Forge ModLoader (and others) that it is supposed
 		// to load our applet and not that of the official launcher.
 		System.setProperty("minecraft.applet.WrapperClass", "org.bonsaimind.easyminelauncher.ContainerApplet");
 
-		ContainerFrame frame = createFrame(arguments);
-		ContainerApplet applet = createApplet(arguments);
+		ContainerFrame frame = createFrame(parameters);
+		ContainerApplet applet = createApplet(parameters);
 
 		frame.setContainerApplet(applet);
 		frame.setVisible(true);
 
 		// Load
-		applet.loadNatives(arguments.getNativeDir());
+		applet.loadNatives(parameters.getNativeDir());
 		try {
-			applet.loadJarsAndApplet(arguments.getJar(), arguments.getLwjglDir());
+			applet.loadJarsAndApplet(parameters.getJar(), parameters.getLwjglDir());
 			applet.init();
 			applet.start();
 		} catch (AppletLoadException ex) {
 			LOGGER.log(Level.SEVERE, "Failed to load Minecraft!", ex);
 
-			if (arguments.isNoExit()) {
+			if (parameters.isNoExit()) {
 				return;
 			} else {
 				// Exit just to be sure.
@@ -208,7 +208,7 @@ public class Main {
 		}
 	}
 
-	private static ContainerApplet createApplet(Arguments arguments) {
+	private static ContainerApplet createApplet(Parameters arguments) {
 		ContainerApplet applet = new ContainerApplet(arguments.getAppletToLoad());
 		applet.setParameter(ContainerApplet.PARAMETER_DEMO, Boolean.toString(arguments.isDemo()));
 		applet.setParameter(ContainerApplet.PARAMETER_USERNAME, arguments.getUsername());
@@ -222,7 +222,7 @@ public class Main {
 		return applet;
 	}
 
-	private static ContainerFrame createFrame(Arguments arguments) {
+	private static ContainerFrame createFrame(Parameters arguments) {
 		ContainerFrame frame = new ContainerFrame(arguments.getTitle());
 		frame.setExitOnClose(!arguments.isNoExit());
 
@@ -280,7 +280,7 @@ public class Main {
 		}
 	}
 
-	private static Arguments blendJar(Arguments arguments) {
+	private static Parameters blendJar(Parameters arguments) {
 		Blender blender = new Blender();
 		blender.setKeepManifest(arguments.isBlendKeepManifest());
 		blender.add(arguments.getJar());
@@ -300,7 +300,7 @@ public class Main {
 		return arguments;
 	}
 
-	private static void loadAdditionalJars(Arguments arguments) {
+	private static void loadAdditionalJars(Parameters arguments) {
 		// This might fix issues for Mods which assume that they
 		// are loaded via the real launcher...not sure, thought adding
 		// it would be a good idea.
@@ -320,7 +320,7 @@ public class Main {
 		}
 	}
 
-	private static Arguments readLastLogin(Arguments arguments) {
+	private static Parameters readLastLogin(Parameters arguments) {
 		LastLogin lastLogin = new LastLogin();
 		try {
 			lastLogin.readFrom(arguments.getParentDir());
@@ -335,7 +335,7 @@ public class Main {
 		return arguments;
 	}
 
-	private static void setOptions(Arguments arguments) {
+	private static void setOptions(Parameters arguments) {
 		OptionsFile optionsFile = new OptionsFile();
 		try {
 			optionsFile.read(arguments.getOptionsFileFrom());

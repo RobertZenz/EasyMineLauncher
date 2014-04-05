@@ -35,7 +35,7 @@ import org.bonsaimind.minecraftmiddleknife.pre16.Authentication;
 /**
  * A simple helper class to deal with the commandline arguments.
  */
-public class Arguments {
+public class Parameters {
 
 	private String jarDir = "";
 	private String jar = "";
@@ -79,7 +79,7 @@ public class Arguments {
 	private boolean printVersion = false;
 	private boolean printHelp = false;
 
-	public Arguments(String[] arguments) {
+	public Parameters(String[] arguments) {
 		for (String arg : arguments) {
 			if (arg.startsWith("--jar-dir=")) {
 				jarDir = arg.substring(10);
