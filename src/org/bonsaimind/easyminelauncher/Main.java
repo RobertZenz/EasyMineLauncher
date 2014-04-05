@@ -182,7 +182,7 @@ public class Main {
 
 		// Let's tell the Forge ModLoader (and others) that it is supposed
 		// to load our applet and not that of the official launcher.
-		System.setProperty("minecraft.applet.WrapperClass", "org.bonsaimind.easyminelauncher.ContainerApplet");
+		System.setProperty("minecraft.applet.WrapperClass", ContainerApplet.class.getCanonicalName());
 
 		ContainerFrame frame = createFrame(parameters);
 		ContainerApplet applet = createApplet(parameters);
