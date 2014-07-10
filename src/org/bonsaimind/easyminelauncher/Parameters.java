@@ -30,13 +30,14 @@ package org.bonsaimind.easyminelauncher;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.bonsaimind.minecraftmiddleknife.pre16.Authentication;
+
+import org.bonsaimind.minecraftmiddleknife.pre16.Authenticator;
 
 /**
  * A simple helper class to deal with the commandline arguments.
  */
 public class Parameters {
-
+	
 	private String jarDir = "";
 	private String jar = "";
 	private String lwjglDir = "";
@@ -58,8 +59,8 @@ public class Parameters {
 	private AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
 	private int keepAliveTick = 300;
 	private String sessionId = "0";
-	private String launcherVersion = Authentication.LAUNCHER_VERSION;
-	private String authenticationAddress = Authentication.MOJANG_SERVER;
+	private String launcherVersion = Authenticator.DEFAULT_LAUNCHER_VERSION;
+	private String authenticationAddress = Authenticator.MOJANG_SERVER;
 	private String username = "Username";
 	private boolean useLastLogin = false;
 	private boolean saveLastLogin = false;
@@ -78,7 +79,7 @@ public class Parameters {
 	private boolean noExit = false;
 	private boolean printVersion = false;
 	private boolean printHelp = false;
-
+	
 	public Parameters(String[] arguments) {
 		for (String arg : arguments) {
 			if (arg.startsWith("--jar-dir=")) {
@@ -177,12 +178,13 @@ public class Parameters {
 				printHelp = true;
 			}
 		}
-
-		// Check if we were provided with a path, otherwise fall back to the defaults.
+		
+		// Check if we were provided with a path, otherwise fall back to the
+		// defaults.
 		if (jarDir.isEmpty() && jar.isEmpty()) {
 			jarDir = new File(new File(parentDir, ".minecraft").toString(), "bin").toString();
 		}
-
+		
 		// This is some odd stuff...
 		if (jarDir.isEmpty()) {
 			jarDir = new File(jar).getParent();
@@ -190,15 +192,15 @@ public class Parameters {
 			jarDir = new File(jarDir).getAbsolutePath();
 			jar = jarDir;
 		}
-
+		
 		if (lwjglDir.isEmpty()) {
 			lwjglDir = jarDir;
 		}
-
+		
 		if (nativeDir.isEmpty()) {
 			nativeDir = new File(jarDir, "natives").getAbsolutePath();
 		}
-
+		
 		// Sanity checks
 		if (height <= 0) {
 			height = 600;
@@ -207,195 +209,195 @@ public class Parameters {
 			width = 800;
 		}
 	}
-
+	
 	public List<String> getAdditionalJars() {
 		return additionalJars;
 	}
-
+	
 	public boolean isAlwaysOnTop() {
 		return alwaysOnTop;
 	}
-
+	
 	public String getAppletToLoad() {
 		return appletToLoad;
 	}
-
+	
 	public boolean isAuthenticate() {
 		return authenticate;
 	}
-
+	
 	public String getAuthenticationAddress() {
 		return authenticationAddress;
 	}
-
+	
 	public AuthenticationFailureBehavior getAuthenticationFailureBehavior() {
 		return authenticationFailureBehavior;
 	}
-
+	
 	public String getBlendJarName() {
 		return blendJarName;
 	}
-
+	
 	public boolean isBlendKeepManifest() {
 		return blendKeepManifest;
 	}
-
+	
 	public List<String> getBlendWith() {
 		return blendWith;
 	}
-
+	
 	public boolean isDemo() {
 		return demo;
 	}
-
+	
 	public boolean isPrintDump() {
 		return printDump;
 	}
-
+	
 	public boolean isFullscreen() {
 		return fullscreen;
 	}
-
+	
 	public int getHeight() {
 		return height;
 	}
-
+	
 	public String getJar() {
 		return jar;
 	}
-
+	
 	public String getJarDir() {
 		return jarDir;
 	}
-
+	
 	public int getKeepAliveTick() {
 		return keepAliveTick;
 	}
-
+	
 	public boolean isKeepUsername() {
 		return keepUsername;
 	}
-
+	
 	public String getLauncherVersion() {
 		return launcherVersion;
 	}
-
+	
 	public String getLwjglDir() {
 		return lwjglDir;
 	}
-
+	
 	public boolean isMaximized() {
 		return maximized;
 	}
-
+	
 	public String getNativeDir() {
 		return nativeDir;
 	}
-
+	
 	public boolean isNoExit() {
 		return noExit;
 	}
-
+	
 	public boolean isNoFrame() {
 		return noFrame;
 	}
-
+	
 	public float getOpacity() {
 		return opacity;
 	}
-
+	
 	public List<String> getOptions() {
 		return options;
 	}
-
+	
 	public String getOptionsFileFrom() {
 		return optionsFileFrom;
 	}
-
+	
 	public String getParentDir() {
 		return parentDir;
 	}
-
+	
 	public String getPassword() {
 		return password;
 	}
-
+	
 	public String getPort() {
 		return port;
 	}
-
+	
 	public boolean isPrintHelp() {
 		return printHelp;
 	}
-
+	
 	public boolean isPrintVersion() {
 		return printVersion;
 	}
-
+	
 	public boolean isSaveLastLogin() {
 		return saveLastLogin;
 	}
-
+	
 	public String getServer() {
 		return server;
 	}
-
+	
 	public String getSessionId() {
 		return sessionId;
 	}
-
+	
 	public String getTexturepack() {
 		return texturepack;
 	}
-
+	
 	public String getTitle() {
 		return title;
 	}
-
+	
 	public boolean isUseLastLogin() {
 		return useLastLogin;
 	}
-
+	
 	public String getUsername() {
 		return username;
 	}
-
+	
 	public int getWidth() {
 		return width;
 	}
-
+	
 	public int getX() {
 		return x;
 	}
-
+	
 	public int getY() {
 		return y;
 	}
-
+	
 	public void setJar(String jar) {
 		this.jar = jar;
 	}
-
+	
 	public void setOptionsFileFrom(String optionsFileFrom) {
 		this.optionsFileFrom = optionsFileFrom;
 	}
-
+	
 	public void setParentDir(String parentDir) {
 		this.parentDir = parentDir;
 	}
-
+	
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 	}
-
+	
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder value = new StringBuilder();
