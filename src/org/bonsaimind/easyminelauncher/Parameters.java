@@ -38,47 +38,48 @@ import org.bonsaimind.minecraftmiddleknife.pre16.Authenticator;
  */
 public class Parameters {
 	
-	private String jarDir = "";
-	private String jar = "";
-	private String lwjglDir = "";
-	private String password = "";
-	private String nativeDir = "";
 	private List<String> additionalJars = new ArrayList<String>();
-	private boolean noFrame = false;
-	private String optionsFileFrom = "";
-	private List<String> options = new ArrayList<String>();
-	private boolean demo = false;
-	private String parentDir = System.getProperty("user.home");
+	private boolean alwaysOnTop = false;
 	private String appletToLoad = "net.minecraft.client.MinecraftApplet";
-	private List<String> blendWith = new ArrayList<String>();
+	private boolean authenticate = false;
+	private String authenticationAddress = Authenticator.MOJANG_SERVER;
+	private AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
 	private String blendJarName = "minecraft_blended.jar";
 	private boolean blendKeepManifest = false;
-	private String port = "25565";
-	private String server = null;
-	private boolean authenticate = false;
-	private AuthenticationFailureBehavior authenticationFailureBehavior = AuthenticationFailureBehavior.ALERT_BREAK;
+	private List<String> blendWith = new ArrayList<String>();
+	private boolean demo = false;
+	private boolean exitRequested = false;
+	private boolean fullscreen = false;
+	private int height = 600;
+	private String jar = "";
+	private String jarDir = "";
 	private int keepAliveTick = 300;
-	private String sessionId = "0";
-	private String launcherVersion = Authenticator.DEFAULT_LAUNCHER_VERSION;
-	private String authenticationAddress = Authenticator.MOJANG_SERVER;
-	private String username = "Username";
-	private boolean useLastLogin = false;
-	private boolean saveLastLogin = false;
 	private boolean keepUsername = false;
+	private String launcherVersion = Authenticator.DEFAULT_LAUNCHER_VERSION;
+	private String lwjglDir = "";
+	private boolean maximized = false;
+	private String nativeDir = "";
+	private boolean noExit = false;
+	private boolean noFrame = false;
+	private float opacity = 1f;
+	private List<String> options = new ArrayList<String>();
+	private String optionsFileFrom = "";
+	private String parentDir = System.getProperty("user.home");
+	private String password = "";
+	private String port = "25565";
+	private boolean printDump = false;
+	private boolean printHelp = false;
+	private boolean printVersion = false;
+	private boolean saveLastLogin = false;
+	private String server = null;
+	private String sessionId = "0";
 	private String texturepack = "";
 	private String title = "Minecraft";
-	private boolean maximized = false;
+	private boolean useLastLogin = false;
+	private String username = "Username";
 	private int width = 800;
-	private int height = 600;
 	private int x = -1;
 	private int y = -1;
-	private boolean alwaysOnTop = false;
-	private boolean fullscreen = false;
-	private float opacity = 1f;
-	private boolean printDump = false;
-	private boolean noExit = false;
-	private boolean printVersion = false;
-	private boolean printHelp = false;
 	
 	public Parameters(String[] arguments) {
 		for (String arg : arguments) {
@@ -214,16 +215,8 @@ public class Parameters {
 		return additionalJars;
 	}
 	
-	public boolean isAlwaysOnTop() {
-		return alwaysOnTop;
-	}
-	
 	public String getAppletToLoad() {
 		return appletToLoad;
-	}
-	
-	public boolean isAuthenticate() {
-		return authenticate;
 	}
 	
 	public String getAuthenticationAddress() {
@@ -238,24 +231,8 @@ public class Parameters {
 		return blendJarName;
 	}
 	
-	public boolean isBlendKeepManifest() {
-		return blendKeepManifest;
-	}
-	
 	public List<String> getBlendWith() {
 		return blendWith;
-	}
-	
-	public boolean isDemo() {
-		return demo;
-	}
-	
-	public boolean isPrintDump() {
-		return printDump;
-	}
-	
-	public boolean isFullscreen() {
-		return fullscreen;
 	}
 	
 	public int getHeight() {
@@ -274,10 +251,6 @@ public class Parameters {
 		return keepAliveTick;
 	}
 	
-	public boolean isKeepUsername() {
-		return keepUsername;
-	}
-	
 	public String getLauncherVersion() {
 		return launcherVersion;
 	}
@@ -286,20 +259,8 @@ public class Parameters {
 		return lwjglDir;
 	}
 	
-	public boolean isMaximized() {
-		return maximized;
-	}
-	
 	public String getNativeDir() {
 		return nativeDir;
-	}
-	
-	public boolean isNoExit() {
-		return noExit;
-	}
-	
-	public boolean isNoFrame() {
-		return noFrame;
 	}
 	
 	public float getOpacity() {
@@ -326,18 +287,6 @@ public class Parameters {
 		return port;
 	}
 	
-	public boolean isPrintHelp() {
-		return printHelp;
-	}
-	
-	public boolean isPrintVersion() {
-		return printVersion;
-	}
-	
-	public boolean isSaveLastLogin() {
-		return saveLastLogin;
-	}
-	
 	public String getServer() {
 		return server;
 	}
@@ -354,10 +303,6 @@ public class Parameters {
 		return title;
 	}
 	
-	public boolean isUseLastLogin() {
-		return useLastLogin;
-	}
-	
 	public String getUsername() {
 		return username;
 	}
@@ -372,6 +317,70 @@ public class Parameters {
 	
 	public int getY() {
 		return y;
+	}
+	
+	public boolean isAlwaysOnTop() {
+		return alwaysOnTop;
+	}
+	
+	public boolean isAuthenticate() {
+		return authenticate;
+	}
+	
+	public boolean isBlendKeepManifest() {
+		return blendKeepManifest;
+	}
+	
+	public boolean isDemo() {
+		return demo;
+	}
+	
+	public boolean isExitRequested() {
+		return exitRequested;
+	}
+	
+	public boolean isFullscreen() {
+		return fullscreen;
+	}
+	
+	public boolean isKeepUsername() {
+		return keepUsername;
+	}
+	
+	public boolean isMaximized() {
+		return maximized;
+	}
+	
+	public boolean isNoExit() {
+		return noExit;
+	}
+	
+	public boolean isNoFrame() {
+		return noFrame;
+	}
+	
+	public boolean isPrintDump() {
+		return printDump;
+	}
+	
+	public boolean isPrintHelp() {
+		return printHelp;
+	}
+	
+	public boolean isPrintVersion() {
+		return printVersion;
+	}
+	
+	public boolean isSaveLastLogin() {
+		return saveLastLogin;
+	}
+	
+	public boolean isUseLastLogin() {
+		return useLastLogin;
+	}
+	
+	public void setExitRequested(boolean exitRequested) {
+		this.exitRequested = exitRequested;
 	}
 	
 	public void setJar(String jar) {

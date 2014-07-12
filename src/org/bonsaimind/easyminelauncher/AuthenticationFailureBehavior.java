@@ -31,64 +31,67 @@ package org.bonsaimind.easyminelauncher;
  * Defines the behavior what happens if authentication failed.
  */
 public enum AuthenticationFailureBehavior {
-
-	SILENT_CONTINUE {
-
-		@Override
-		public boolean isAlert() {
-			return false;
-		}
-
-		@Override
-		public boolean isBreak() {
-			return false;
-		}
-	},
-	ALERT_CONTINUE {
-
+	
+	ALERT_BREAK {
+		
 		@Override
 		public boolean isAlert() {
 			return true;
 		}
-
+		
+		@Override
+		public boolean isBreak() {
+			return true;
+		}
+	},
+	ALERT_CONTINUE {
+		
+		@Override
+		public boolean isAlert() {
+			return true;
+		}
+		
 		@Override
 		public boolean isBreak() {
 			return false;
 		}
 	},
 	SILENT_BREAK {
-
+		
 		@Override
 		public boolean isAlert() {
 			return false;
 		}
-
+		
 		@Override
 		public boolean isBreak() {
 			return true;
 		}
 	},
-	ALERT_BREAK {
-
+	SILENT_CONTINUE {
+		
 		@Override
 		public boolean isAlert() {
-			return true;
+			return false;
 		}
-
+		
 		@Override
 		public boolean isBreak() {
-			return true;
+			return false;
 		}
 	};
-
+	
 	/**
 	 * Returns true if the current value includes alerting the user.
+	 * 
 	 * @return true if we should alert the user
 	 */
 	public abstract boolean isAlert();
-
+	
 	/**
-	 * Returns true if the current value includes stopping whatever we were doing.
+	 * Returns true if the current value includes stopping whatever we were
+	 * doing.
+	 * 
 	 * @return true if we should break
 	 */
 	public abstract boolean isBreak();

@@ -105,6 +105,9 @@ public class Main {
 		// Now try if we manage to login...
 		if (parameters.isAuthenticate()) {
 			parameters = doAuthentication(parameters);
+			if (parameters.isExitRequested()) {
+				return;
+			}
 		}
 		
 		if (!parameters.getTexturepack().isEmpty() || !parameters.getOptions().isEmpty() || !parameters.getOptionsFileFrom().isEmpty()) {
@@ -247,8 +250,7 @@ public class Main {
 			
 			// STOP!
 			if (parameters.getAuthenticationFailureBehavior().isBreak()) {
-				// TODO halt execution here.
-				return parameters;
+				parameters.setExitRequested(true);
 			}
 			
 			return parameters;
