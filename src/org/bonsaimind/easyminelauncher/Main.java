@@ -36,11 +36,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,7 +51,6 @@ import org.bonsaimind.minecraftmiddleknife.LastLogin;
 import org.bonsaimind.minecraftmiddleknife.LastLoginCipherException;
 import org.bonsaimind.minecraftmiddleknife.NativeLoader;
 import org.bonsaimind.minecraftmiddleknife.OptionsFile;
-import org.bonsaimind.minecraftmiddleknife.post16.yggdrasil.AuthenticationResponse;
 import org.bonsaimind.minecraftmiddleknife.pre16.AppletLoadException;
 import org.bonsaimind.minecraftmiddleknife.pre16.AuthenticatedSession;
 import org.bonsaimind.minecraftmiddleknife.pre16.Authenticator;
@@ -149,37 +145,37 @@ public class Main {
 		}
 	}
 	
-	private static Parameters blendJar(Parameters arguments) {
+	private static Parameters blendJar(Parameters parameters) {
 		Blender blender = new Blender();
-		blender.setKeepManifest(arguments.isBlendKeepManifest());
-		blender.add(arguments.getJar());
-		for (String file : arguments.getBlendWith()) {
+		blender.setKeepManifest(parameters.isBlendKeepManifest());
+		blender.add(parameters.getJar());
+		for (String file : parameters.getBlendWith()) {
 			blender.add(file);
 		}
 		
 		try {
-			blender.blend(arguments.getBlendJarName());
-			arguments.setJar(arguments.getBlendJarName());
+			blender.blend(parameters.getBlendJarName());
+			parameters.setJar(parameters.getBlendJarName());
 		} catch (FileNotFoundException e) {
 			LOGGER.log(Level.SEVERE, "Failed to blend jar!", e);
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to blend jar", e);
 		}
 		
-		return arguments;
+		return parameters;
 	}
 	
-	private static ContainerApplet createApplet(Parameters arguments) {
-		ContainerApplet applet = new ContainerApplet(arguments.getAppletToLoad(), createClassLoader(arguments));
-		applet.setParameter(ContainerApplet.PARAMETER_DEMO, Boolean.toString(arguments.isDemo()));
-		applet.setParameter(ContainerApplet.PARAMETER_USERNAME, arguments.getUsername());
-		applet.setParameter(ContainerApplet.PARAMETER_LOADMAP_USER, arguments.getUsername());
-		if (arguments.getServer() != null) {
-			applet.setParameter(ContainerApplet.PARAMETER_SERVER, arguments.getServer());
-			applet.setParameter(ContainerApplet.PARAMETER_PORT, arguments.getPort());
+	private static ContainerApplet createApplet(Parameters parameters) {
+		ContainerApplet applet = new ContainerApplet(parameters.getAppletToLoad(), createClassLoader(parameters));
+		applet.setParameter(ContainerApplet.PARAMETER_DEMO, Boolean.toString(parameters.isDemo()));
+		applet.setParameter(ContainerApplet.PARAMETER_USERNAME, parameters.getUsername());
+		applet.setParameter(ContainerApplet.PARAMETER_LOADMAP_USER, parameters.getUsername());
+		if (parameters.getServer() != null) {
+			applet.setParameter(ContainerApplet.PARAMETER_SERVER, parameters.getServer());
+			applet.setParameter(ContainerApplet.PARAMETER_PORT, parameters.getPort());
 		}
-		applet.setParameter(ContainerApplet.PARAMETER_MPPASS, arguments.getPassword());
-		applet.setParameter(ContainerApplet.PARAMETER_SESSION_ID, arguments.getSessionId());
+		applet.setParameter(ContainerApplet.PARAMETER_MPPASS, parameters.getPassword());
+		applet.setParameter(ContainerApplet.PARAMETER_SESSION_ID, parameters.getSessionId());
 		return applet;
 	}
 	
@@ -187,14 +183,14 @@ public class Main {
 		ClassLoaderCreator creator = new ClassLoaderCreator();
 		
 		try {
-			creator.addJar(arguments.getJar());
+			creator.add(arguments.getJar());
 		} catch (MalformedURLException e) {
 			LOGGER.log(Level.SEVERE, "Failed to convert to URL!", e);
 		}
 		
 		for (String jar : arguments.getAdditionalJars()) {
 			try {
-				creator.addJar(jar);
+				creator.add(jar);
 			} catch (MalformedURLException e) {
 				LOGGER.log(Level.SEVERE, "Failed to convert to URL!", e);
 			}
@@ -203,32 +199,32 @@ public class Main {
 		return creator.createClassLoader();
 	}
 	
-	private static ContainerFrame createFrame(Parameters arguments) {
-		ContainerFrame frame = new ContainerFrame(arguments.getTitle());
-		frame.setExitOnClose(!arguments.isNoExit());
+	private static ContainerFrame createFrame(Parameters parameters) {
+		ContainerFrame frame = new ContainerFrame(parameters.getTitle());
+		frame.setExitOnClose(!parameters.isNoExit());
 		
-		if (arguments.isFullscreen()) {
+		if (parameters.isFullscreen()) {
 			Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
 			frame.setAlwaysOnTop(true);
 			frame.setUndecorated(true);
 			frame.setSize(dimensions.width, dimensions.height);
 			frame.setLocation(0, 0);
 		} else {
-			frame.setAlwaysOnTop(arguments.isAlwaysOnTop());
-			frame.setUndecorated(arguments.isNoFrame());
-			frame.setSize(arguments.getWidth(), arguments.getHeight());
+			frame.setAlwaysOnTop(parameters.isAlwaysOnTop());
+			frame.setUndecorated(parameters.isNoFrame());
+			frame.setSize(parameters.getWidth(), parameters.getHeight());
 			
 			// It is more likely that no location is set...I think.
-			frame.setLocation(arguments.getX() == -1 ? frame.getX() : arguments.getX(), arguments.getY() == -1 ? frame.getY() : arguments.getY());
+			frame.setLocation(parameters.getX() == -1 ? frame.getX() : parameters.getX(), parameters.getY() == -1 ? frame.getY() : parameters.getY());
 			
-			if (arguments.isMaximized()) {
+			if (parameters.isMaximized()) {
 				frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 			}
 		}
 		
-		if (arguments.getOpacity() < 1) {
+		if (parameters.getOpacity() < 1) {
 			frame.setUndecorated(true);
-			frame.setOpacity(arguments.getOpacity());
+			frame.setOpacity(parameters.getOpacity());
 		}
 		
 		return frame;
@@ -236,79 +232,37 @@ public class Main {
 	
 	private static Parameters doAuthentication(Parameters parameters) {
 		Credentials credentials = new Credentials(parameters.getUsername(), parameters.getPassword());
-		final URL authenticationUrl = new URL(parameters.getAuthenticationAddress());
-		final AuthenticatedSession session = Authenticator.authenticate(authenticationUrl, parameters.getLauncherVersion(), credentials);
+		AuthenticatedSession session = null;
 		
-		// TODO overwrite username in case that parameters.isKeepusername is
-		// set.
-		
-		parameters.setSessionId(session.getSessionId());
-		
-		if (parameters.getKeepAliveTick() > 0) {
-			Timer timer = new Timer("Authentication Keep Alive", true);
-			timer.scheduleAtFixedRate(new TimerTask() {
-				
-				@Override
-				public void run() {
-					Authenticator.keepAlive(authenticationUrl, session);
-				}
-			}, parameters.getKeepAliveTick() * 1000, parameters.getKeepAliveTick() * 1000);
-		}
-		
-		authentication.setKeepAliveUsesRealUsername(!parameters.isKeepUsername());
-		
-		if (parameters.isSaveLastLogin()) {
-			LastLogin lastLogin = new LastLogin();
-			lastLogin.writeCredentials(parameters.getParentDir(), credentials);
-		}
-		
-		final Authentication authentication = new Authentication(parameters.getAuthenticationAddress(), parameters.getLauncherVersion(),
-				parameters.getUsername(), parameters.getPassword());
-		AuthenticationResponse response = AuthenticationResponse.UNKNOWN;
 		try {
-			response = authentication.authenticate();
-		} catch (UnsupportedEncodingException e) {
-			LOGGER.log(Level.SEVERE, "Authentication failed!", e);
-		} catch (MalformedURLException e) {
-			LOGGER.log(Level.SEVERE, "Authentication failed!", e);
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Authentication failed!", e);
-		}
-		if (response == AuthenticationResponse.SUCCESS) {
-			parameters.setSessionId(authentication.getSessionId());
-			authentication.setKeepAliveUsesRealUsername(!parameters.isKeepUsername());
-			
-			// Only launch the keep alive ticker if the login was
-			// successfull.
-			if (parameters.getKeepAliveTick() > 0) {
-				Timer timer = new Timer("Authentication Keep Alive", true);
-				timer.scheduleAtFixedRate(new TimerTask() {
-					
-					@Override
-					public void run() {
-						try {
-							authentication.keepAlive();
-						} catch (UnsupportedEncodingException e) {
-							LOGGER.log(Level.SEVERE, "Keep-Alive failed!", e);
-						} catch (MalformedURLException e) {
-							LOGGER.log(Level.SEVERE, "Keep-Alive failed!", e);
-						} catch (IOException e) {
-							LOGGER.log(Level.SEVERE, "Keep-Alive failed!", e);
-						}
-					}
-				}, parameters.getKeepAliveTick() * 1000, parameters.getKeepAliveTick() * 1000);
-			}
-		} else {
-			LOGGER.log(Level.SEVERE, "Authentication failed: {0}", response.getMessage());
+			URL authenticationUrl = new URL(parameters.getAuthenticationAddress());
+			session = Authenticator.authenticate(authenticationUrl, parameters.getLauncherVersion(), credentials);
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, "Failed to authenticate.", e);
 			
 			// Alert the user
 			if (parameters.getAuthenticationFailureBehavior().isAlert()) {
-				JOptionPane.showMessageDialog(new JInternalFrame(), response.getMessage(), "Failed to authenticate...", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(new JInternalFrame(), e.getMessage(), "Failed to authenticate...", JOptionPane.ERROR_MESSAGE);
 			}
+			
 			// STOP!
 			if (parameters.getAuthenticationFailureBehavior().isBreak()) {
-				return;
+				// TODO halt execution here.
+				return parameters;
 			}
+			
+			return parameters;
+		}
+		
+		parameters.setSessionId(session.getSessionId());
+		
+		if (parameters.isKeepUsername()) {
+			session.setUsernameOverwrite(parameters.getUsername());
+		}
+		
+		if (parameters.getKeepAliveTick() > 0) {
+			long tick = parameters.getKeepAliveTick() * 1000;
+			Authenticator.scheduleKeepAlive(session, tick, tick);
 		}
 		
 		return parameters;
@@ -339,37 +293,37 @@ public class Main {
 		System.out.println("Licensed under 2-clause-BSD.");
 	}
 	
-	private static Parameters readLastLogin(Parameters arguments) {
+	private static Parameters readLastLogin(Parameters parameters) {
 		LastLogin lastLogin = new LastLogin();
 		try {
-			Credentials credentials = lastLogin.readCredentials(arguments.getParentDir());
-			arguments.setUsername(credentials.getUsername());
-			arguments.setPassword(credentials.getPassword());
+			Credentials credentials = lastLogin.readCredentials(parameters.getParentDir());
+			parameters.setUsername(credentials.getUsername());
+			parameters.setPassword(credentials.getPassword());
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Reading the lastlogin-file failed!", e);
 		} catch (LastLoginCipherException e) {
 			LOGGER.log(Level.SEVERE, "Reading the lastlogin-file failed!", e);
 		}
 		
-		return arguments;
+		return parameters;
 	}
 	
-	private static void setOptions(Parameters arguments) {
+	private static void setOptions(Parameters parameters) {
 		OptionsFile optionsFile = new OptionsFile();
 		try {
-			optionsFile.read(arguments.getOptionsFileFrom());
+			optionsFile.read(parameters.getOptionsFileFrom());
 			
 			// Set the texturepack.
-			if (!arguments.getTexturepack().isEmpty()) {
-				optionsFile.setOption("skin", arguments.getTexturepack());
+			if (!parameters.getTexturepack().isEmpty()) {
+				optionsFile.setOption("skin", parameters.getTexturepack());
 			}
 			
 			// Set the options.
-			if (!arguments.getOptions().isEmpty()) {
-				optionsFile.setOptions(arguments.getOptions());
+			if (!parameters.getOptions().isEmpty()) {
+				optionsFile.setOptions(parameters.getOptions());
 			}
 			
-			optionsFile.write(arguments.getParentDir());
+			optionsFile.write(parameters.getParentDir());
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Reading of the options-file failed!", e);
 		}
