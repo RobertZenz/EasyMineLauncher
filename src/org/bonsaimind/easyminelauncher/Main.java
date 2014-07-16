@@ -182,16 +182,16 @@ public class Main {
 		return applet;
 	}
 	
-	private static ClassLoader createClassLoader(Parameters arguments) {
+	private static ClassLoader createClassLoader(Parameters parameters) {
 		ClassLoaderCreator creator = new ClassLoaderCreator();
 		
 		try {
-			creator.add(arguments.getJar());
+			creator.add(parameters.getJar());
 		} catch (MalformedURLException e) {
 			LOGGER.log(Level.SEVERE, "Failed to convert to URL!", e);
 		}
 		
-		for (String jar : arguments.getAdditionalJars()) {
+		for (String jar : parameters.getAdditionalJars()) {
 			try {
 				creator.add(jar);
 			} catch (MalformedURLException e) {
