@@ -1,3 +1,10 @@
+1.0
+---
+
+ * Replaced internals with MinecraftMiddleKnife
+ * As a side effect, it is now easily possible to replace specific lwjgl jars.
+
+
 0.16.1
 ------
 

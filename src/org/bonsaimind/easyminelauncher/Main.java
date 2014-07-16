@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Robert 'Bobby' Zenz. All rights reserved.
+ * Copyright 2014 Robert 'Bobby' Zenz. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -61,7 +61,7 @@ public class Main {
 	
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 	private static final String NAME = "EasyMineLauncher";
-	private static final String VERSION = "0.16.1";
+	private static final String VERSION = "1.0";
 	
 	public static void main(String[] args) {
 		Parameters parameters = new Parameters(args);
@@ -291,7 +291,7 @@ public class Main {
 	
 	private static void printVersion() {
 		System.out.println(NAME + " " + VERSION);
-		System.out.println("Copyright 2012 Robert 'Bobby' Zenz. All rights reserved.");
+		System.out.println("Copyright 2014 Robert 'Bobby' Zenz. All rights reserved.");
 		System.out.println("Licensed under 2-clause-BSD.");
 	}
 	
