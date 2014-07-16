@@ -410,51 +410,51 @@ public class Parameters {
 	@Override
 	public String toString() {
 		StringBuilder value = new StringBuilder();
-		value.append("jarDir (exists: ").append(new File(jarDir).exists()).append("): ").append(jarDir);
-		value.append("jar (exists: ").append(new File(jar).exists()).append("): ").append(jar);
-		value.append("lwjglDir (exists: ").append(new File(lwjglDir).exists()).append("): ").append(lwjglDir);
-		value.append("password: ").append(password);
-		value.append("nativeDir (exists: ").append(new File(nativeDir).exists()).append("): ").append(nativeDir);
-		value.append("additionalJars:");
+		value.append("jarDir (exists: ").append(new File(jarDir).exists()).append("): ").append(jarDir).append("\n");
+		value.append("jar (exists: ").append(new File(jar).exists()).append("): ").append(jar).append("\n");
+		value.append("lwjglDir (exists: ").append(new File(lwjglDir).exists()).append("): ").append(lwjglDir).append("\n");
+		value.append("password: ").append(password).append("\n");
+		value.append("nativeDir (exists: ").append(new File(nativeDir).exists()).append("): ").append(nativeDir).append("\n");
+		value.append("additionalJars:").append("\n");
 		for (String additionalJar : additionalJars) {
-			value.append("    ").append(additionalJar);
+			value.append("    ").append(additionalJar).append("\n");
 		}
-		value.append("noFrame: ").append(noFrame);
-		value.append("optionsFileFrom (exists: ").append(new File(optionsFileFrom).exists()).append("): ").append(optionsFileFrom);
-		value.append("options:");
+		value.append("noFrame: ").append(noFrame).append("\n");
+		value.append("optionsFileFrom (exists: ").append(new File(optionsFileFrom).exists()).append("): ").append(optionsFileFrom).append("\n");
+		value.append("options:").append("\n");
 		for (String option : options) {
-			value.append("    ").append(option);
+			value.append("    ").append(option).append("\n");
 		}
-		value.append("demo: ").append(demo);
-		value.append("parentDir (exists: ").append(new File(parentDir).exists()).append("): ").append(parentDir);
-		value.append("applet: ").append(appletToLoad);
-		value.append("blendWith: ");
+		value.append("demo: ").append(demo).append("\n");
+		value.append("parentDir (exists: ").append(new File(parentDir).exists()).append("): ").append(parentDir).append("\n");
+		value.append("applet: ").append(appletToLoad).append("\n");
+		value.append("blendWith: ").append("\n");
 		for (String file : blendWith) {
-			value.append("	(exists: ").append(new File(file).exists()).append("): ").append(file);
+			value.append("	(exists: ").append(new File(file).exists()).append("): ").append(file).append("\n");
 		}
-		value.append("blendJarName: ").append(blendJarName);
-		value.append("blendKeepManifest: ").append(blendKeepManifest);
-		value.append("port: ").append(port);
-		value.append("server: ").append(server);
-		value.append("authenticate: ").append(authenticate);
-		value.append("authenticationFailureBehavior: ").append(authenticationFailureBehavior);
-		value.append("keepAliveTick: ").append(keepAliveTick);
-		value.append("launcherVersion: ").append(launcherVersion);
-		value.append("authenticationAddress: ").append(authenticationAddress);
-		value.append("username: ").append(username);
-		value.append("useLastLogin: ").append(useLastLogin);
-		value.append("saveLastLogin: ").append(saveLastLogin);
-		value.append("keepUsername: ").append(keepUsername);
-		value.append("texturepack: ").append(texturepack);
-		value.append("maximized: ").append(maximized);
-		value.append("width: ").append(width);
-		value.append("height: ").append(height);
-		value.append("x: ").append(x);
-		value.append("y: ").append(y);
-		value.append("title: ").append(title);
-		value.append("alwaysOnTop: ").append(alwaysOnTop);
-		value.append("fullscreen: ").append(fullscreen);
-		value.append("opacity: ").append(opacity);
+		value.append("blendJarName: ").append(blendJarName).append("\n");
+		value.append("blendKeepManifest: ").append(blendKeepManifest).append("\n");
+		value.append("port: ").append(port).append("\n");
+		value.append("server: ").append(server).append("\n");
+		value.append("authenticate: ").append(authenticate).append("\n");
+		value.append("authenticationFailureBehavior: ").append(authenticationFailureBehavior).append("\n");
+		value.append("keepAliveTick: ").append(keepAliveTick).append("\n");
+		value.append("launcherVersion: ").append(launcherVersion).append("\n");
+		value.append("authenticationAddress: ").append(authenticationAddress).append("\n");
+		value.append("username: ").append(username).append("\n");
+		value.append("useLastLogin: ").append(useLastLogin).append("\n");
+		value.append("saveLastLogin: ").append(saveLastLogin).append("\n");
+		value.append("keepUsername: ").append(keepUsername).append("\n");
+		value.append("texturepack: ").append(texturepack).append("\n");
+		value.append("maximized: ").append(maximized).append("\n");
+		value.append("width: ").append(width).append("\n");
+		value.append("height: ").append(height).append("\n");
+		value.append("x: ").append(x).append("\n");
+		value.append("y: ").append(y).append("\n");
+		value.append("title: ").append(title).append("\n");
+		value.append("alwaysOnTop: ").append(alwaysOnTop).append("\n");
+		value.append("fullscreen: ").append(fullscreen).append("\n");
+		value.append("opacity: ").append(opacity).append("\n");
 		return value.toString();
 	}
 }
