@@ -183,15 +183,10 @@ public class Parameters {
 		// Check if we were provided with a path, otherwise fall back to the
 		// defaults.
 		if (jarDir.isEmpty() && jar.isEmpty()) {
-			jarDir = new File(new File(parentDir, ".minecraft").toString(), "bin").toString();
-		}
-		
-		// This is some odd stuff...
-		if (jarDir.isEmpty()) {
+			jarDir = new File(new File(parentDir, ".minecraft").toString(), "bin").getAbsolutePath();
+			jar = new File(jarDir, "minecraft.jar").getAbsolutePath();
+		} else if (jarDir.isEmpty()) {
 			jarDir = new File(jar).getParent();
-		} else {
-			jarDir = new File(jarDir).getAbsolutePath();
-			jar = jarDir;
 		}
 		
 		if (lwjglDir.isEmpty()) {
@@ -201,6 +196,11 @@ public class Parameters {
 		if (nativeDir.isEmpty()) {
 			nativeDir = new File(jarDir, "natives").getAbsolutePath();
 		}
+		
+		// Required additional jars.
+		extendAdditionalJars(new File(lwjglDir, "jinput.jar").getAbsolutePath());
+		extendAdditionalJars(new File(lwjglDir, "lwjgl.jar").getAbsolutePath());
+		extendAdditionalJars(new File(lwjglDir, "lwjgl_util.jar").getAbsolutePath());
 		
 		// Sanity checks
 		if (height <= 0) {
@@ -456,5 +456,23 @@ public class Parameters {
 		value.append("fullscreen: ").append(fullscreen).append("\n");
 		value.append("opacity: ").append(opacity).append("\n");
 		return value.toString();
+	}
+	
+	/**
+	 * Extends the additional jars with the given one, but only if there isn't
+	 * already a jar added with the same filename.
+	 * 
+	 * @param jarToAdd the jar to add.
+	 */
+	private void extendAdditionalJars(String jarToAdd) {
+		String jarToAddFilename = new File(jarToAdd).getName();
+		
+		for (String jar : additionalJars) {
+			if (jar.endsWith(jarToAddFilename)) {
+				return;
+			}
+		}
+		
+		additionalJars.add(jarToAdd);
 	}
 }
